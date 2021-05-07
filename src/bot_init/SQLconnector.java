@@ -12,7 +12,7 @@ import java.sql.Statement;
 public class SQLconnector {
 	//Initializing variables
 		static int records = 0;
-		static String dbAdress = "jdbc:mysql://localhost:3306/lazyjavie";
+		static String dbAdress = "jdbc:mysql://localhost:3306/lazydfjavie";
 		static String dbID = "root";
 		static String dbPass = "lol no";
 
