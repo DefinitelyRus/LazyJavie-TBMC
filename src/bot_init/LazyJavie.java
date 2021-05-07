@@ -37,7 +37,7 @@ public class LazyJavie {
 			 */
 			
 			//Looks for the text file "lazyjavie_token.txt".
-			File file = new File("F:\\Personal Files\\Project Files\\Programming Projects\\Git Repositories\\Discord Bot\\lazyjavie_token.txt");
+			File file = new File("C:\\lazyjavie_token.txt");
 			print("[A-2] File found.");
 			//Scans the file.
 		    Scanner reader = new Scanner(file);
