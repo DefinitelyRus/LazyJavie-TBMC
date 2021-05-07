@@ -1,4 +1,4 @@
-drop database lazyjavie;
+-- drop database lazyjavie;
 create database lazyjavie;
 create table lazyjavie.member_registry (
 id int not null auto_increment,

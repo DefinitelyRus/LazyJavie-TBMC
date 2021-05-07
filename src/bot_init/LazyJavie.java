@@ -29,7 +29,7 @@ public class LazyJavie {
 			//[A] Getting the Token----------------------------------------
 			print("[A-1] Getting token from file");
 			/*
-			 * This part0 is important because if this step is skipped,
+			 * This part is important because if this step is skipped,
 			 * the discord bot's API token is visible publicly on GitHub.
 			 * 
 			 * This solution allows the token to be stored locally on the host's computer,
@@ -42,8 +42,8 @@ public class LazyJavie {
 			//Scans the file.
 		    Scanner reader = new Scanner(file);
 		    print("[A-3] Scanning...");
-		    while (reader.hasNextLine()) {token = reader.nextLine();}
-		    print("[A-4] Token assigned.");
+		    while (reader.hasNextLine()) {token = reader.nextLine(); break;}
+		    print("[A-4] Token assigned: " + token);
 		    
 		    //Closes the scanner.
 		    reader.close();
