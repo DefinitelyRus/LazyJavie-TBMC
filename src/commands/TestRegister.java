@@ -4,7 +4,6 @@
 package commands;
 
 import java.util.List;
-
 import bot_init.LazyJavie;
 import bot_init.SQLconnector;
 import net.dv8tion.jda.api.entities.Message;
@@ -23,13 +22,14 @@ public class TestRegister extends ListenerAdapter{
 				List<Message> messages = event.getChannel().getHistory().retrievePast(2).complete();
 				event.getChannel().deleteMessages(messages).queue();
 				
-				SQLconnector.createRecord(event.getMember().getId(), password);
-				event.getChannel().sendMessage(event.getMember().getAsMention() + " has been registered successfully.").queue();
+				SQLconnector.update("insert into lazyjavie.member_registry (userid, userpass) values (\"" + event.getMember().getId() + "\", \"" + password + "\")");
+				String returnPass = SQLconnector.get("select * from lazyjavie.member_registry where userid = \"" + event.getMember().getId() + "\"", "userpass");
+				event.getChannel().sendMessage(event.getMember().getAsMention() + " has been registered successfully. (" + returnPass + ")").queue();
 				P.print("Registered member: " + event.getMember().getUser() + "");
 			}
 			catch (Exception e) {
 				if (e.toString().startsWith("java.lang.ArrayIndexOutOfBoundsException: Index")) {
-					event.getChannel().sendMessage("Please enter a password. `>>register [password]`").queue();
+					event.getChannel().sendMessage("Please enter an argument. `>>register [anything]`").queue();
 				} else { event.getChannel().sendMessage("Error: `" + e + "`").queue();}
 
 				P.print(e.toString());
