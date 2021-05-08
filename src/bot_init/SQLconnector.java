@@ -1,11 +1,22 @@
 /*
  * This module serves as the connector between the program and the local SQL server.
  * 
- * [1]	Test command
+ * [1]	Update function
+ * 		This function takes an SQL command and updates the selected table.
+ * 		Both adding and updating records can be done with this function by putting
+ * 		INSERT INTO instead of UPDATE.
+ * 
+ * [2]	Get function
+ * 		This function takes an SQL query and a column to return then returns the result.
+ * 		In case there are multiple results, this function will return the last one.
+ * 
+ * [3]	GetList function
+ * 		This function takes an SQL query and a column to return then returns the results.
+ * 		Only use this if you intend to get an ARRAY not a SINGLE STRING.
+ * 
+ * [4]	Test command
  * 		This checks if the connection between the local SQL database is stable.
  * 		It takes password as input, but it could really be anything under 256 characters.
- * 
- * 
  */
 
 package bot_init;
@@ -29,7 +40,7 @@ public class SQLconnector {
 	
 	public static String update(String query) {
 		/*
-		 * Updates or adds a record to the database.
+		 * Updates or adds a record to the database, depends on what argument is entered.
 		 * update() requires one argument, query.
 		 * 
 		 * "query" is the SQL command to be executed.
