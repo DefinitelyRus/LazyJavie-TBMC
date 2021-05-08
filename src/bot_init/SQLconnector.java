@@ -6,11 +6,11 @@ package bot_init;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.DriverManager;
 //import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Scanner;
 import commands.P;
 
 public class SQLconnector {
@@ -32,26 +32,15 @@ public class SQLconnector {
 	
 	public static String createRecord(String username, String password) {
 		
-
-		/*
-		 * KNOWN ISSUE:
-		 * Since we have to test connection to databases, we need to host the database individually.
-		 * The problem is that we don't have the same database passwords,
-		 * this means we have to save the password along with the token file, or in another file.
-		 * 
-		 * But for some reason, the program errors out whenever I use the command
-		 * but there's no error message.
-		 */
-		//TODO FIX THIS BUG AAAAAAAAAAAAAAAAAAAAAAAA
-		print("1");
+		System.out.println("1");
 		try {
-			String pass = null;
+			String pass = "TEST";
 			File file = new File("C:\\lazyjavie_token.txt");
 			
-			print("2");
+			P.print("2");
 			Scanner reader = new Scanner(file);
 			
-			print("3");
+			P.print("3");
 		    while (reader.hasNextLine()) {
 	    		pass = reader.nextLine();
 		    }
@@ -98,9 +87,5 @@ public class SQLconnector {
 	
 	public static String updatePassword(String username, String password, String s) {
 		return "";
-	}
-	
-	public static void print(String string) {
-		System.out.println(string);
 	}
 }
