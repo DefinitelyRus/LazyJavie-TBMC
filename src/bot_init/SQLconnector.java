@@ -38,7 +38,7 @@ public class SQLconnector {
 	static String dbID = "root";
 	static String dbPass;
 	
-	public static String update(String query) {
+	public static String update(String query) {	//[1]
 		/*
 		 * Updates or adds a record to the database, depends on what argument is entered.
 		 * update() requires one argument, query.
@@ -86,7 +86,7 @@ public class SQLconnector {
 		}
 	}
 	
-	public static String get(String query, String toReturn) {
+	public static String get(String query, String toReturn) {	//[2]
 		/*
 		 * Returns a record from the database.
 		 * get() requires two arguments, query and toReturn.
@@ -140,7 +140,7 @@ public class SQLconnector {
 		}
 	}
 	
-	public static LinkedList<String> getList(String query, String toReturn) {
+	public static LinkedList<String> getList(String query, String toReturn) {	//[3]
 		/* WORK-IN-PROGRESS
 		 * Returns an array of records from the database.
 		 * getArray() requires two arguments, query and toReturn.
@@ -194,7 +194,7 @@ public class SQLconnector {
 	}
 	
 	@Deprecated
-	public static String createRecord(String username, String password) {	//[1]
+	public static String createRecord(String username, String password) {	//[4]
 		/*
 		 * A legacy command intended for testing only.
 		 * Only use this as template for SQL connections.
