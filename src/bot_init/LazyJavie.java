@@ -14,6 +14,8 @@ import commands.Returns;
 import commands.TestRegister;
 import commands.GetPointEvent;
 import commands.shop;
+import commands.toConsole;
+import commands.P;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -27,12 +29,13 @@ public class LazyJavie {
 	public static String prefix = ">>";
 	public static String token = "";
 	EventWaiter waiter = new EventWaiter();
+	
 	//Startup
 	public static void main(String[] args) throws LoginException, SQLException {
 		
 		try {
 			//[A] Getting the Token----------------------------------------
-			print("[A-1] Getting token from file");
+			P.print("[A-1] Getting token from file");
 			/*
 			 * This part is important because if this step is skipped,
 			 * the discord bot's API token is visible publicly on GitHub.
@@ -43,50 +46,45 @@ public class LazyJavie {
 			
 			//Looks for the text file "lazyjavie_token.txt".
 			File file = new File("C:\\lazyjavie_token.txt");
-			print("[A-2] File found.");
+			P.print("[A-2] File found.");
 			//Scans the file.
 		    Scanner reader = new Scanner(file);
-		    print("[A-3] Scanning...");
+		    P.print("[A-3] Scanning...");
 		    while (reader.hasNextLine()) {token = reader.nextLine(); break;}
-		    print("[A-4] Token assigned: " + token);
+		    P.print("[A-4] Token assigned: " + token);
 		    
 		    //Closes the scanner.
 		    reader.close();
-		    print("[A-5] Scanner closed.");
+		    P.print("[A-5] Scanner closed.");
 		      
 			//[B] Logging in the bot----------------------------------------
-			print("[B-1] Logging in...");
+			P.print("[B-1] Logging in...");
 			jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_MEMBERS).build();
 			
-			print("[B-2] Setting status...");
+			P.print("[B-2] Setting status...");
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 			jda.getPresence().setActivity(Activity.listening("to Rick Astley - Never Gonna Give You Up"));
 			
-			print("[B-3] Opening to commands...");
+			P.print("[B-3] Opening to commands...");
 			//[IMPORTANT] Add new commands here.
 			jda.addEventListener(new Returns());
 			jda.addEventListener(new TestRegister());
 			jda.addEventListener(new Clear());
 			jda.addEventListener(new shop());
 			jda.addEventListener(new GetPointEvent());
+			jda.addEventListener(new toConsole());
 
-			print("[B-4] Ready!");
+			P.print("[B-4] Ready!");
 			
 		}
 		catch (FileNotFoundException file404) {
 			//[A] File not found.
-			print("Missing file error.\n" + file404.toString());
+			P.print("Missing file error.\n" + file404.toString());
 		}
 		catch (Exception e) {
 			//[A-B] Every other exception.
-			print(e.toString());
+			P.print(e.toString());
 			e.printStackTrace();
 		}
-	}
-	
-	public static void print(String str) {
-		//I couldn't be bothered to type this every single time I need to test something.
-		//So I made this function to make life easier.
-		System.out.println(str);
 	}
 }
