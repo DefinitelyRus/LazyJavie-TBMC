@@ -8,9 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.Scanner;
-
 import javax.security.auth.login.LoginException;
-
 import commands.Clear;
 import commands.Returns;
 import commands.TestRegister;
@@ -91,5 +89,4 @@ public class LazyJavie {
 		//So I made this function to make life easier.
 		System.out.println(str);
 	}
-
 }
