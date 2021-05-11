@@ -5,9 +5,7 @@ package commands;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import javax.security.auth.login.LoginException;
-
 import bot_init.LazyJavie;
 import bot_init.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -15,7 +13,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class TestRegister extends ListenerAdapter{	
+public class Register extends ListenerAdapter{	
 
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		
@@ -31,7 +29,7 @@ public class TestRegister extends ListenerAdapter{
 				event.getChannel().deleteMessages(messages).queue();
 				
 				SQLconnector.update("insert into lazyjavie.members (userid, userpass) values (\"" + event.getMember().getId() + "\", \"" + password + "\")");
-				String returnPass = SQLconnector.get("select * from lazyjavie.members where userid = \"" + event.getMember().getId() + "\"", "userpass");
+				String returnPass = SQLconnector.get("select * from lazyjavie.members where userid = \"" + event.getMember().getId() + "\"", "userpass", true);
 				event.getChannel().sendMessage(event.getMember().getAsMention() + " has been registered successfully. (" + returnPass + ")").queue();
 				P.print("Registered member: " + event.getMember().getUser() + "");
 			}
@@ -42,8 +40,6 @@ public class TestRegister extends ListenerAdapter{
 
 				P.print(e.toString());
 			}
-
-			
 		}
 		
 		//UNREGISTER
@@ -59,10 +55,8 @@ public class TestRegister extends ListenerAdapter{
 							try {
 								SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId());
 							} catch (LoginException er) {
-								// TODO Auto-generated catch block
 								er.printStackTrace();
 							} catch (SQLException er) {
-								// TODO Auto-generated catch block
 								er.printStackTrace();
 							}
 							
@@ -71,7 +65,6 @@ public class TestRegister extends ListenerAdapter{
 							successUnregister.setTitle("Successfully deleted the user: " + event.getMember().getId());			
 							successUnregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 							event.getChannel().sendMessage(successUnregister.build()).queue();
-							
 						}
 						if (args[0].equalsIgnoreCase(LazyJavie.prefix + "unregister " + "no" )) {
 							EmbedBuilder successUnregister = new EmbedBuilder();
@@ -83,7 +76,5 @@ public class TestRegister extends ListenerAdapter{
 
 		}
    //e.getAuthor().equals(event.getAuthor()) && e.getChannel().equals(event.getChannel())
-
-
 	}
 }

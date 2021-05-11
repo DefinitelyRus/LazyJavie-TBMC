@@ -28,6 +28,7 @@ public class shopInventory extends ListenerAdapter{
 					 * If not, throw an error and list the available items.
 					 */
 				} else if (args[1] == "add" || args[1] == "newitem") {
+					//shopupdate add itemname price quantity description
 					//args[2] is the item name
 					//args[3] is the price
 					//args[4] is the # of available items

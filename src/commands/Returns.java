@@ -20,7 +20,7 @@ public class Returns extends ListenerAdapter{
 		
 		//PING. Returns the latency.
 		else if (args[0].equalsIgnoreCase(LazyJavie.prefix + "ping")) {
-			P.print("\nRequesting ping: " + event.getMember().getUser());
+			P.print("\n[Returns] Requesting ping: " + event.getMember().getUser().getName());
 			long ping = event.getJDA().getGatewayPing();
 			P.print("Latency gathered.");
 			event.getChannel().sendMessage(ping + "ms").queue();
@@ -30,18 +30,18 @@ public class Returns extends ListenerAdapter{
 		//TEST. Just returns a confirmation message to see if the bot works.
 		else if (args[0].equalsIgnoreCase(LazyJavie.prefix + "test")) {
 			event.getChannel().sendMessage("Pong!").queue();
-			P.print("[Returns] Pong! Sender: " + event.getMember());
+			P.print("\n[Returns] Pong! Sender: " + event.getMember().getUser().getName());
 		}
 		
 		//POINTS. Displays the points of the current user.
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "points") || args[0].equalsIgnoreCase(LazyJavie.prefix + "point")) {
-			P.print("\n[Returns] Requesting point query: " + event.getMember().getUser());
+			P.print("\n[Returns] Requesting point query: " + event.getMember().getUser().getName());
 			
 			//Initialization
 			String memberName = event.getMember().getUser().getName();
 			String memberId = event.getMessage().getMember().getId();
 			P.print("Getting query...");
-			Integer pts = Integer.parseInt(SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points"));
+			Integer pts = Integer.parseInt(SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points", true));
 			
 			P.print("Displaying points...");
 			//Displaying points as embed.

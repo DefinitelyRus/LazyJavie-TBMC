@@ -19,7 +19,8 @@ public class GetPointEvent extends ListenerAdapter {
 			String memberId = event.getMessage().getMember().getId();
 			
 			//Gets the sender's points, and increments it by 1.
-			Integer pts = Integer.parseInt(SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points"));
+			//P.print("\n[GetPointEvent] Receiving message from " + event.getMember().getUser().getName());
+			Integer pts = Integer.parseInt(SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points", false));
 			pts += 1;
 			
 			//Applies the changes and uploads it to the database.
@@ -29,7 +30,7 @@ public class GetPointEvent extends ListenerAdapter {
 		catch (SQLException e) {e.printStackTrace();}
 		catch (NumberFormatException e) {
 			if (e.toString().startsWith("java.lang.NumberFormatException: For input string: \"Statement created.\"")) {
-				P.print("[pointSystem] SQL Statement created. (False error)");
+				//P.print("\n[GetPointEvent] NumberFormatException: False error");
 		}	}
 		catch (Exception e) {e.printStackTrace();}
 	}

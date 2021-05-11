@@ -83,7 +83,7 @@ public class SQLconnector {
 		}
 	}
 	
-	public static String get(String query, String toReturn) {
+	public static String get(String query, String toReturn, boolean tp) {
 		/*
 		 * Returns a record from the database.
 		 * get() requires two arguments, query and toReturn.
@@ -111,21 +111,21 @@ public class SQLconnector {
 		
 		try {
 			//Starts a connection to the database using the JDBC driver.
-			P.print("[SQLcB-1] Starting connection with the database...");
+			if (tp == true) {P.print("[SQLcB-1] Starting connection with the database...");}
 			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
 			returnMsg = "Connection started.";
 			
 			//Creates a statement
-			P.print("[SQLcB-2] Creating statement...");
+			if (tp == true) {P.print("[SQLcB-2] Creating statement...");}
 			Statement statement = connection.createStatement();
 			returnMsg = "Statement created.";
 			
 			//Starts the SQL query.
-			P.print("[SQLcB-3] Executing SQL script...");
+			if (tp == true) {P.print("[SQLcB-3] Executing SQL script...");}
 			ResultSet results = statement.executeQuery(exeScript);
 			
 			//Returns the requested record.
-			System.out.println("[SQLcB-4] Outputting results...");
+			if (tp == true) {P.print("[SQLcB-4] Outputting results...");}
 			while (results.next()) {returnMsg = results.getString(toReturn);}
 			
 			//Closes the connection then returns the result.

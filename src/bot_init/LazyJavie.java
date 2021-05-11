@@ -11,9 +11,10 @@ import java.util.Scanner;
 import javax.security.auth.login.LoginException;
 import commands.Clear;
 import commands.Returns;
-import commands.TestRegister;
+import commands.Register;
 import commands.GetPointEvent;
 import commands.shop;
+import commands.shopInventory;
 import commands.toConsole;
 import commands.P;
 import net.dv8tion.jda.api.JDA;
@@ -68,11 +69,12 @@ public class LazyJavie {
 			P.print("[B-3] Opening to commands...");
 			//[IMPORTANT] Add new commands here.
 			jda.addEventListener(new Returns());
-			jda.addEventListener(new TestRegister());
+			jda.addEventListener(new Register());
 			jda.addEventListener(new Clear());
 			jda.addEventListener(new shop());
 			jda.addEventListener(new GetPointEvent());
 			jda.addEventListener(new toConsole());
+			jda.addEventListener(new shopInventory());
 
 			P.print("[B-4] Ready!");
 			
