@@ -23,22 +23,27 @@ package bot_init;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.Scanner;
+
+import javax.security.auth.login.LoginException;
+
 import commands.P;
 
 public class SQLconnector {
 	//Initializing variables
 	static int records = 0;
+	static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	static String dbAdress = "jdbc:mysql://localhost:3306/lazyjavie";
 	static String dbID = "root";
-	static String dbPass;
+	static String dbPass = "password";
 	
-	public static String update(String query) {
+	public static String update(String query) throws LoginException, SQLException {
 		/*
 		 * Updates or adds a record to the database, depends on what argument is entered.
 		 * update() requires one argument, query.
@@ -51,6 +56,7 @@ public class SQLconnector {
 			File file = new File("C:\\lazyjavie_token.txt");
 			Scanner reader = new Scanner(file);
 		    while (reader.hasNextLine()) {dbPass = reader.nextLine();}
+		    P.print(dbPass);
 		    reader.close();}
 		catch (FileNotFoundException e) {P.print("404: C:\\lazyjavie_token.txt is missing.");}
 		catch (Exception e) {e.printStackTrace();}
@@ -210,7 +216,7 @@ public class SQLconnector {
 		catch (Exception e) {e.printStackTrace();}
 		/* TO PASTE----------------------------------------------------------------------------
 		 * Paste this try-catch block for every function using JDBC.
-		 * Its purpsose is to get the password from lazyjavie_token.txt.
+		 * Its purpose is to get the password from lazyjavie_token.txt.
 		 * This is needed because each contributor has to test the program locally.
 		 * Local MySQL servers are set with different passwords.
 		 * So the program has to adjust accordingly. 

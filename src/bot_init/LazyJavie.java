@@ -6,15 +6,21 @@ package bot_init;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.Scanner;
+
 import javax.security.auth.login.LoginException;
+
 import commands.Clear;
 import commands.Returns;
 import commands.TestRegister;
+import commands.pointSystem;
+import commands.shop;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class LazyJavie {
 	
@@ -22,9 +28,10 @@ public class LazyJavie {
 	public static JDA jda;
 	public static String prefix = ">>";
 	public static String token = "";
-	
+	EventWaiter waiter = new EventWaiter();
 	//Startup
-	public static void main(String[] args) throws LoginException {
+	public static void main(String[] args) throws LoginException, SQLException {
+		
 		try {
 			//[A] Getting the Token----------------------------------------
 			print("[A-1] Getting token from file");
@@ -51,7 +58,7 @@ public class LazyJavie {
 		      
 			//[B] Logging in the bot----------------------------------------
 			print("[B-1] Logging in...");
-			jda = JDABuilder.createDefault(token).build();
+			jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_MEMBERS).build();
 			
 			print("[B-2] Setting status...");
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
@@ -62,7 +69,9 @@ public class LazyJavie {
 			jda.addEventListener(new Returns());
 			jda.addEventListener(new TestRegister());
 			jda.addEventListener(new Clear());
-			
+			jda.addEventListener(new shop());
+			jda.addEventListener(new pointSystem());
+
 			print("[B-4] Ready!");
 			
 		}
@@ -82,4 +91,5 @@ public class LazyJavie {
 		//So I made this function to make life easier.
 		System.out.println(str);
 	}
+
 }
