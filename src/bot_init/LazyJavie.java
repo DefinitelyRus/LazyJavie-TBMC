@@ -12,7 +12,7 @@ import javax.security.auth.login.LoginException;
 import commands.Clear;
 import commands.Returns;
 import commands.TestRegister;
-import commands.pointSystem;
+import commands.GetPointEvent;
 import commands.shop;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -68,7 +68,7 @@ public class LazyJavie {
 			jda.addEventListener(new TestRegister());
 			jda.addEventListener(new Clear());
 			jda.addEventListener(new shop());
-			jda.addEventListener(new pointSystem());
+			jda.addEventListener(new GetPointEvent());
 
 			print("[B-4] Ready!");
 			
