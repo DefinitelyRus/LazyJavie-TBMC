@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-import bot_init.EventWaiter;
 import bot_init.LazyJavie;
 import bot_init.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -16,9 +15,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class TestRegister extends ListenerAdapter{
-	private EventWaiter waiter;
-	
+public class TestRegister extends ListenerAdapter{	
 
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		
@@ -54,11 +51,11 @@ public class TestRegister extends ListenerAdapter{
 				EmbedBuilder unregister = new EmbedBuilder();
 				unregister.setColor(0xD82D42);
 				unregister.setTitle("Are you sure you want to unregister?");
-				unregister.setDescription("enter `>>yes` if you are sure." + "\r\n" + "enter `>>no` if you want to cancel.");			
+				unregister.setDescription("enter `"+ LazyJavie.prefix + "unregister yes` if you are sure." + "\r\n" + "enter `" + LazyJavie.prefix + "unregister no` if you want to cancel.");			
 				unregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 				event.getChannel().sendMessage(unregister.build()).queue();
-				 waiter.waitForEvent(GuildMessageReceivedEvent.class, e -> args[0].equalsIgnoreCase(LazyJavie.prefix + "yes") , e -> {
-						if(args[0].equalsIgnoreCase(LazyJavie.prefix + "yes" )) {
+
+						if(args[0].equalsIgnoreCase(LazyJavie.prefix + "unregister " + "yes" )) {
 							try {
 								SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId());
 							} catch (LoginException er) {
@@ -68,6 +65,7 @@ public class TestRegister extends ListenerAdapter{
 								// TODO Auto-generated catch block
 								er.printStackTrace();
 							}
+							
 							EmbedBuilder successUnregister = new EmbedBuilder();
 							successUnregister.setColor(0x77B255);
 							successUnregister.setTitle("Successfully deleted the user: " + event.getMember().getId());			
@@ -75,15 +73,14 @@ public class TestRegister extends ListenerAdapter{
 							event.getChannel().sendMessage(successUnregister.build()).queue();
 							
 						}
-				 });
-				 waiter.waitForEvent(GuildMessageReceivedEvent.class, e -> args[0].equalsIgnoreCase(LazyJavie.prefix + "no")  , e -> {
+						if (args[0].equalsIgnoreCase(LazyJavie.prefix + "unregister " + "no" )) {
 							EmbedBuilder successUnregister = new EmbedBuilder();
 							successUnregister.setColor(0x77B255);
 							successUnregister.setTitle("Cancelled your request.");		
 							successUnregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 							event.getChannel().sendMessage(successUnregister.build()).queue();
+						}
 
-				 });
 		}
    //e.getAuthor().equals(event.getAuthor()) && e.getChannel().equals(event.getChannel())
 

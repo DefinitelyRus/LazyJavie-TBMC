@@ -59,8 +59,8 @@ public class shop extends ListenerAdapter {
 		}
 		
 		
-		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "shop")) {
-			System.out.println("Test");
-		}
+//		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "shop")) {
+//			System.out.println("Test");
+//		}
 	}
 }
