@@ -14,15 +14,17 @@ public class pointSystem extends ListenerAdapter {
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		
 		try {
-			//grabs the message and get the (discord id) of the member who sent the message
-			Message message = event.getMessage();
-			String memberId = message.getMember().getId();
-			//gets the member's amount of points (database)
+			//Gets the sender's discord ID.
+			String memberId = event.getMessage().getMember().getId();
+			
+			//Gets the sender's points, and increments it by 1.
 			Integer pts = Integer.parseInt(SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points"));
 			pts += 1;
-			//updates the number of points to the new one
+			
+			//Applies the changes and uploads it to the database.
 			SQLconnector.update("UPDATE lazyjavie.members "+ "SET points = " + pts + " WHERE userid=" + memberId + ";");
 			
+			//TODO Put this command in a different module (class).
 			String[] args = event.getMessage().getContentRaw().split("\\s+");	
 			String memberName = event.getMember().getUser().getName();
 
