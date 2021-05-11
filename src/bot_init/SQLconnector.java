@@ -30,9 +30,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.Scanner;
-
 import javax.security.auth.login.LoginException;
-
 import commands.P;
 
 public class SQLconnector {
@@ -43,7 +41,7 @@ public class SQLconnector {
 	static String dbID = "root";
 	static String dbPass = "password";
 	
-	public static String update(String query) throws LoginException, SQLException {
+	public static void update(String query) throws LoginException, SQLException {
 		/*
 		 * Updates or adds a record to the database, depends on what argument is entered.
 		 * update() requires one argument, query.
@@ -62,33 +60,26 @@ public class SQLconnector {
 		catch (Exception e) {e.printStackTrace();}
 		
 		//Initialization
-		String returnMsg = "Attempting to update table.";
 		String exeScript = query;
 		
 		try {
 			//Starts a connection to the database using the JDBC driver.
 			P.print("[SQLcA-1] Starting connection with the database...");
 			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
-			returnMsg = "Connection started.";
 			
 			//Creates a statement
 			P.print("[SQLcA-2] Creating statement...");
 			Statement statement = connection.createStatement();
-			returnMsg = "Statement created.";
 			
 			//Starts the SQL query.
 			P.print("[SQLcA-3] Executing SQL script...");
 			statement.execute(exeScript);
-			returnMsg = "Script executed.";
 			
 			P.print("[SQLcA-4] Done!");
-			returnMsg = "All finished.";
 			
 			connection.close();
-			return returnMsg;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Error encountered: " + e;
 		}
 	}
 	
