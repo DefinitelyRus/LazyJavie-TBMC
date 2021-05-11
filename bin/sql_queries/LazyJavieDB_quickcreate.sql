@@ -1,5 +1,9 @@
 -- drop database lazyjavie;
-create database lazyjavie;
+-- create database lazyjavie;
+
+drop table lazyjavie.members;
+drop table lazyjavie.shop;
+drop table lazyjavie.cmdlog;
 
 create table lazyjavie.members (
 id int not null auto_increment,
@@ -16,8 +20,10 @@ quantity int,
 itemdesc varchar(250),
 primary key(itemid));
 
-create table lazyjavie.bot_status (
+create table lazyjavie.cmdlog (
 id int not null auto_increment,
-activity varchar(24),
-act_desc varchar(32),
+eventdate datetime,
+userquery varchar(255),
 primary key(id));
+
+-- insert into lazyjavie.cmdlog values (0, "", current_time()); 
