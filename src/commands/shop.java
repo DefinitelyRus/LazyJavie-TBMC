@@ -13,8 +13,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class shop extends ListenerAdapter {
 	
-
-	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 				
 		String[] args = event.getMessage().getContentRaw().split("\\s+");	
@@ -24,17 +22,15 @@ public class shop extends ListenerAdapter {
 	    StringBuilder displayRoles = new StringBuilder();
 	    for (Role r : roles) {
 	    	// Filters out role with:
-	    	if(r.getColorRaw() == 0x696969) {
-	    	} else if (r.getColorRaw() == 105) {
-	    	} else if (r.getName() == "@everyone" || r.getName() == "everyone" || r.getPosition() == 0) {
-	    	}
+	    	if(r.getColorRaw() == 0x696969) {}
+	    	else if (r.getColorRaw() == 105) {}
+	    	else if (r.getName() == "@everyone" || r.getName() == "everyone" || r.getPosition() == 0) {}
 	    	else {
 	    	    // Role gets appended in the stringbuilder (sb)
 		    	displayRoles.append(r.getName()).append("\n");
 	    	}	
 	    }
 		
-
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "shop")) {
 				// Usage
 			   if (roles.isEmpty()) {
@@ -69,26 +65,23 @@ public class shop extends ListenerAdapter {
 		}
 			//>>shop buy (role)
 			try {
-		    for (Role r : roles) {
-		    	
-		        if (args[2].equalsIgnoreCase(r.getName())) {
-					EmbedBuilder purchaseComplete = new EmbedBuilder();
-					purchaseComplete.setColor(0xD82D42);
-					purchaseComplete.addField("You have purchased the role: ", "" + r.getName() + "", true);
-					event.getChannel().sendMessage(purchaseComplete.build()).queue();
-					//TODO: GIVE ROLE
-					//making member and the role an object so I can use addRoleToMember
-					Member member = event.getMember();
-					Role role = event.getGuild().getRoleById(r.getId());
-					event.getGuild().addRoleToMember(member, role).queue();;
-					event.getGuild().modifyMemberRoles(member, role).queue();;
-		
-		        }
-		    } 
-		}	catch (Exception e) {
-	    	P.print("Giving role: ERROR");
-	    }
-
+			    for (Role r : roles) {
+			    	
+			        if (args[2].equalsIgnoreCase(r.getName())) {
+						EmbedBuilder purchaseComplete = new EmbedBuilder();
+						purchaseComplete.setColor(0xD82D42);
+						purchaseComplete.addField("You have purchased the role: ", "" + r.getName() + "", true);
+						event.getChannel().sendMessage(purchaseComplete.build()).queue();
+						//TODO: GIVE ROLE
+						//making member and the role an object so I can use addRoleToMember
+						Member member = event.getMember();
+						Role role = event.getGuild().getRoleById(r.getId());
+						event.getGuild().addRoleToMember(member, role).queue();;
+						event.getGuild().modifyMemberRoles(member, role).queue();;
+			
+			        }
+			    } 
+		    } catch (Exception e) {P.print("Giving role: ERROR"); e.printStackTrace();}
+		}
 	}
-  }
 }
