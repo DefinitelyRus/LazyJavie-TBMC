@@ -32,7 +32,7 @@ public class Returns extends ListenerAdapter{
 			String requestby = event.getMember().getUser().getName();
 			EmbedBuilder test = new EmbedBuilder();
 			test.setColor(0x77B255);
-			test.setTitle("✅ Test success!");
+			test.setTitle(":white_check_mark: Test success!");
 			test.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 			event.getChannel().sendMessage(test.build()).queue();
 			P.print("\n[Returns] Pong! Sender: " + event.getMember().getUser().getName());
@@ -52,7 +52,7 @@ public class Returns extends ListenerAdapter{
 			//Displaying points as embed.
 			EmbedBuilder points = new EmbedBuilder();
 			points.setColor(0xffae00);
-			points.setTitle("💰 Your current points: 💰");
+			points.setTitle(":moneybag: Your current points: :moneybag:");
 			points.setDescription("" + pts  + "");
 			points.setFooter("Requested by " + memberName , event.getMember().getUser().getAvatarUrl());
 			event.getChannel().sendMessage(points.build()).queue();

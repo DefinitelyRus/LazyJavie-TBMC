@@ -2,9 +2,11 @@ package commands;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import bot_init.LazyJavie;
 import bot_init.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -32,6 +34,9 @@ public class shop extends ListenerAdapter {
 		    	//Any role colored #696969 (Hex)
 		    	if(r.getColorRaw() == 0x696969) {}
 		    	
+		    	//Any role with the permission [ADMINISTRATOR,KICK_MEMBERS,BAN_MEMBERS]
+		    	else if (r.hasPermission(Permission.ADMINISTRATOR) || r.hasPermission(Permission.KICK_MEMBERS) || r.hasPermission(Permission.BAN_MEMBERS)) {}
+		    	
 		    	//Any role colored 105 (?)
 		    	else if (r.getColorRaw() == 105) {}
 		    	
@@ -42,7 +47,7 @@ public class shop extends ListenerAdapter {
 		    	else if (r.getName() == "@everyone" || r.getName() == "everyone" || r.getPosition() == 0) {}
 		    	
 		    	//Role gets added to the displayed list.
-		    	else {displayRoles.append(r.getName()).append("\n");}	
+		    	else {displayRoles.append("� " + r.getName()).append("\n");}	
 		    }
 
 			//Checks if there are no roles in the server.
@@ -58,7 +63,7 @@ public class shop extends ListenerAdapter {
 			if (args.length == 1){
 				EmbedBuilder shop = new EmbedBuilder();
 				shop.setColor(0xffae00);
-				shop.setTitle("💰 Welcome to the LazyJavie shop! 💰");
+				shop.setTitle(":moneybag: Welcome to the LazyJavie shop! :moneybag:");
 				shop.setDescription("To purchase a role, type '>>shop buy [role]'" + "\r\n" + "");
 			    event.getGuild().getRolesByName("bots", true);
 				shop.addField("List of Available Roles:","" + displayRoles , true);
@@ -95,8 +100,13 @@ public class shop extends ListenerAdapter {
 								purchaseComplete.setColor(0xD82D42);
 								purchaseComplete.addField("You have purchased the role: ", "" + r.getName() + "", true);
 								event.getChannel().sendMessage(purchaseComplete.build()).queue();
+								
 								Member member = event.getMember();
 								Role role = event.getGuild().getRoleById(r.getId());
+								
+											
+
+								
 								event.getGuild().addRoleToMember(member, role).queue();;
 								event.getGuild().modifyMemberRoles(member, role).queue();;
 					        }

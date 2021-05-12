@@ -18,7 +18,7 @@ public class Clear extends ListenerAdapter {
 				// Usage
 				EmbedBuilder error = new EmbedBuilder();
 				error.setColor(0xD82D42);
-				error.setTitle("❌ You haven't specified the amount of messages to delete");
+				error.setTitle(":x: You haven't specified the amount of messages to delete");
 				error.setDescription("Command: '" + LazyJavie.prefix + "clear [# of messages]'" + "\r\n" + "You can only delete 2 - 100 messages one at a time.");
 				event.getChannel().sendMessage(error.build()).queue();
 			}
@@ -29,7 +29,7 @@ public class Clear extends ListenerAdapter {
 					
 					EmbedBuilder success = new EmbedBuilder();
 					success.setColor(0x77B255);
-					success.setTitle("✅ Sucessfully deleted " + args[1] + " messages.");
+					success.setTitle(":white_check_mark: Sucessfully deleted " + args[1] + " messages.");
 					event.getChannel().sendMessage(success.build()).queue();
 				}
 				catch (IllegalArgumentException e) {
@@ -37,7 +37,7 @@ public class Clear extends ListenerAdapter {
 						// Too many messages
 						EmbedBuilder error = new EmbedBuilder();
 						error.setColor(0xD82D42);
-						error.setTitle("❌ You've selected too many messages to be deleted");
+						error.setTitle(":x: You've selected too many messages to be deleted");
 						error.setDescription("You can only delete 1 - 100 messages once at a time.");
 						event.getChannel().sendMessage(error.build()).queue();
 					}
@@ -45,7 +45,7 @@ public class Clear extends ListenerAdapter {
 					else {
 						EmbedBuilder error = new EmbedBuilder();
 						error.setColor(0xD82D42);
-						error.setTitle("❌ Selected messages are older than 2 weeks or selected messages is not between 2 - 100.");
+						error.setTitle(":x: Selected messages are older than 2 weeks or selected messages is not between 2 - 100.");
 						error.setDescription("Messages that are older than 2 weeks cannot be deleted. You can only select messages between 2 - 100.");
 						event.getChannel().sendMessage(error.build()).queue();
 						}	
