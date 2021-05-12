@@ -30,7 +30,11 @@ public class Register extends ListenerAdapter{
 				
 				SQLconnector.update("insert into lazyjavie.members (userid, userpass) values (\"" + event.getMember().getId() + "\", \"" + password + "\")");
 				String returnPass = SQLconnector.get("select * from lazyjavie.members where userid = \"" + event.getMember().getId() + "\"", "userpass", true);
-				event.getChannel().sendMessage(event.getMember().getAsMention() + " has been registered successfully. (" + returnPass + ")").queue();
+				EmbedBuilder successRegister = new EmbedBuilder();
+				successRegister.setColor(0x77B255);
+				successRegister.setTitle("You have successfully registered " + event.getMember().getUser() + " (" + returnPass + ") ");
+				successRegister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+				event.getChannel().sendMessage(successRegister.build()).queue();
 				P.print("Registered member: " + event.getMember().getUser() + "");
 			}
 			catch (Exception e) {
@@ -44,14 +48,16 @@ public class Register extends ListenerAdapter{
 		
 		//UNREGISTER
 		 if (args[0].equalsIgnoreCase(LazyJavie.prefix + "unregister")) {
-				EmbedBuilder unregister = new EmbedBuilder();
-				unregister.setColor(0xD82D42);
-				unregister.setTitle("Are you sure you want to unregister?");
-				unregister.setDescription("enter `"+ LazyJavie.prefix + "unregister yes` if you are sure." + "\r\n" + "enter `" + LazyJavie.prefix + "unregister no` if you want to cancel.");			
-				unregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
-				event.getChannel().sendMessage(unregister.build()).queue();
+			 if(args.length < 2) {
+					EmbedBuilder unregister = new EmbedBuilder();
+					unregister.setColor(0xD82D42);
+					unregister.setTitle("Are you sure you want to unregister?");
+					unregister.setDescription("enter `"+ LazyJavie.prefix + "unregister yes` if you are sure." + "\r\n" + "enter `" + LazyJavie.prefix + "unregister no` if you want to cancel.");			
+					unregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+					event.getChannel().sendMessage(unregister.build()).queue();
+			 }
 
-						if(args[0].equalsIgnoreCase(LazyJavie.prefix + "unregister " + "yes" )) {
+						if(event.getMessage().getContentRaw().equalsIgnoreCase(LazyJavie.prefix + "unregister " + "yes" )) {
 							try {
 								SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId());
 							} catch (LoginException er) {
@@ -66,7 +72,7 @@ public class Register extends ListenerAdapter{
 							successUnregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 							event.getChannel().sendMessage(successUnregister.build()).queue();
 						}
-						if (args[0].equalsIgnoreCase(LazyJavie.prefix + "unregister " + "no" )) {
+						if (event.getMessage().getContentRaw().equalsIgnoreCase(LazyJavie.prefix + "unregister " + "no" )) {
 							EmbedBuilder successUnregister = new EmbedBuilder();
 							successUnregister.setColor(0x77B255);
 							successUnregister.setTitle("Cancelled your request.");		

@@ -29,7 +29,12 @@ public class Returns extends ListenerAdapter{
 		
 		//TEST. Just returns a confirmation message to see if the bot works.
 		else if (args[0].equalsIgnoreCase(LazyJavie.prefix + "test")) {
-			event.getChannel().sendMessage("Pong!").queue();
+			String requestby = event.getMember().getUser().getName();
+			EmbedBuilder test = new EmbedBuilder();
+			test.setColor(0x77B255);
+			test.setTitle("✅ Test success!");
+			test.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+			event.getChannel().sendMessage(test.build()).queue();
 			P.print("\n[Returns] Pong! Sender: " + event.getMember().getUser().getName());
 		}
 		
@@ -47,7 +52,7 @@ public class Returns extends ListenerAdapter{
 			//Displaying points as embed.
 			EmbedBuilder points = new EmbedBuilder();
 			points.setColor(0xffae00);
-			points.setTitle("💲 Your current points: 💲");
+			points.setTitle("💰 Your current points: 💰");
 			points.setDescription("" + pts  + "");
 			points.setFooter("Requested by " + memberName , event.getMember().getUser().getAvatarUrl());
 			event.getChannel().sendMessage(points.build()).queue();

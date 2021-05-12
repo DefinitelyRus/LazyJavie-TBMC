@@ -54,7 +54,6 @@ public class SQLconnector {
 			File file = new File("C:\\lazyjavie_token.txt");
 			Scanner reader = new Scanner(file);
 		    while (reader.hasNextLine()) {dbPass = reader.nextLine();}
-		    P.print(dbPass);
 		    reader.close();}
 		catch (FileNotFoundException e) {P.print("404: C:\\lazyjavie_token.txt is missing.");}
 		catch (Exception e) {e.printStackTrace();}
