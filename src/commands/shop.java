@@ -1,5 +1,7 @@
 package commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,15 +29,33 @@ public class shop extends ListenerAdapter {
 	    	List<String> blacklist = SQLconnector.getList("select * from lazyjavie.roleblacklist", "rolename");
 		    StringBuilder displayRoles = new StringBuilder();
 		    
+		    
 		    //Checks for blacklisted roles; only includes non-blacklisted roles.
 		    P.print("Removing blacklisted roles from output...");
 		    for (Role r : roles) {
+
+		    	//TODO Move this to database
+		    	boolean[] permsArray = {
+		    			r.hasPermission(Permission.ADMINISTRATOR),
+		    			r.hasPermission(Permission.KICK_MEMBERS),
+		    			r.hasPermission(Permission.BAN_MEMBERS),
+		    			r.hasPermission(Permission.MANAGE_SERVER),
+		    			r.hasPermission(Permission.MANAGE_CHANNEL),
+		    			r.hasPermission(Permission.MANAGE_PERMISSIONS),
+		    			r.hasPermission(Permission.MESSAGE_MANAGE),
+		    			r.hasPermission(Permission.MANAGE_EMOTES),
+		    			r.hasPermission(Permission.MANAGE_WEBHOOKS)
+				    };
+		    	
+		    	//Adds the array to a list.
+			    ArrayList<Boolean> perms = new ArrayList<Boolean>();
+			    for (boolean item : permsArray) {perms.add(item);}
 		    	
 		    	//Any role colored #696969 (Hex)
 		    	if(r.getColorRaw() == 0x696969) {}
 		    	
 		    	//Any role with the permission [ADMINISTRATOR,KICK_MEMBERS,BAN_MEMBERS]
-		    	else if (r.hasPermission(Permission.ADMINISTRATOR) || r.hasPermission(Permission.KICK_MEMBERS) || r.hasPermission(Permission.BAN_MEMBERS)) {}
+		    	else if (perms.contains(true)) {P.print("HAHA GoTCHA BITCH");}
 		    	
 		    	//Any role colored 105 (?)
 		    	else if (r.getColorRaw() == 105) {}
@@ -104,14 +124,11 @@ public class shop extends ListenerAdapter {
 								Member member = event.getMember();
 								Role role = event.getGuild().getRoleById(r.getId());
 								
-											
-
-								
 								event.getGuild().addRoleToMember(member, role).queue();;
 								event.getGuild().modifyMemberRoles(member, role).queue();;
 					        }
 					    } 
-				    } catch (Exception e) {P.print("Giving role: ERROR"); e.printStackTrace();}
+				    } catch (Exception e) {P.print("Error encountered: " + e); e.printStackTrace();}
 				} else if(args.length == 2 && args[1] == "buy") {
 					//For when a member attempts to buy a role but doesn't enter a name.
 					EmbedBuilder buyRole = new EmbedBuilder();
