@@ -52,10 +52,19 @@ public class Returns extends ListenerAdapter{
 			//Displaying points as embed.
 			EmbedBuilder points = new EmbedBuilder();
 			points.setColor(0xffae00);
-			points.setTitle(":moneybag: Your current points: :moneybag:");
-			points.setDescription("" + pts  + "");
+			points.addField(":moneybag: Your current points: :moneybag:", "`"+pts+"`", true);
 			points.setFooter("Requested by " + memberName , event.getMember().getUser().getAvatarUrl());
 			event.getChannel().sendMessage(points.build()).queue();
+		}
+		
+		if(args[0].equalsIgnoreCase(LazyJavie.prefix + "help")) {
+			String memberName = event.getMember().getUser().getName();
+
+			EmbedBuilder help = new EmbedBuilder();
+			help.setColor(0xffae00);
+			help.addField("     Prefix: "+ LazyJavie.prefix +"\nCurrent commands: ","```register``` ```shop```  ```points``` ```unregister```  ```clear```  ```ping```  ```test```", true);
+			help.setFooter("Requested by " + memberName , event.getMember().getUser().getAvatarUrl());
+			event.getChannel().sendMessage(help.build()).queue();
 		}
 	}
 }

@@ -32,7 +32,7 @@ public class LazyJavie {
 	
 	//Initialization of objects and variables
 	public static JDA jda;
-	public static String prefix = ">>";
+	public static String prefix = "$";
 	public static String token = "";
 	
 	public static void insertRole(String[] args) throws SQLException {

@@ -19,10 +19,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class shop extends ListenerAdapter {
 	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-
-
-		
-		
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 	    
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "shop")) {
@@ -40,11 +36,10 @@ public class shop extends ListenerAdapter {
 		    //Checks for blacklisted roles; only includes non-blacklisted roles.
 		    P.print("Removing blacklisted roles from output..."); 
 		    
-		    //getname 
 		    
 		    for (Role r : roles) {
 		    	String memberName = String.valueOf(r.getName());
-
+		    	
 
 		    	//TODO Move this to database
 		    	boolean[] permsArray = {
@@ -69,9 +64,6 @@ public class shop extends ListenerAdapter {
 		    	//Any role with the permission [ADMINISTRATOR,KICK_MEMBERS,BAN_MEMBERS]
 		    	else if (perms.contains(true)) {P.print("HAHA GoTCHA BITCH");}
 		    	
-		    	//Any role colored 105 (?)
-		    	else if (r.getColorRaw() == 105) {}
-		    	
 		    	//Any role part of the blacklist.
 		    	else if (blacklist.contains(r.getName().toLowerCase())) {P.print("BLACKLISTED " + r.getName());}
 		    	
@@ -79,7 +71,11 @@ public class shop extends ListenerAdapter {
 		    	else if (r.getName() == "@everyone" || r.getName() == "everyone" || r.getPosition() == 0) {}
 		    	
 		    	//Role gets added to the displayed list.
-		    	else {displayRoles.append("• " + r.getName()).append("\n");
+		    	
+		    	else {
+			    	String stringRolePrice = SQLconnector.get("SELECT * FROM lazyjavie.sellroles\r\n"+ "WHERE roleName='"+ r.getName() +"'; ", "rolePrice", true);
+			    	//Integer intRolePrice = Integer.parseInt(stringRolePrice);
+		    		displayRoles.append("• **" + r.getName() + ":** `" + stringRolePrice + " points`").append("\n");
 				try {
 					P.print("Inserting into lazyjavie.roles");
 					try {
@@ -117,7 +113,7 @@ public class shop extends ListenerAdapter {
 				EmbedBuilder shop = new EmbedBuilder();
 				shop.setColor(0xffae00);
 				shop.setTitle(":moneybag: Welcome to the LazyJavie shop! :moneybag:");
-				shop.setDescription("To purchase a role, type '>>shop buy [role]'" + "\r\n" + "");
+				shop.setDescription("To purchase a role, type `" + LazyJavie.prefix + "shop buy [role]`" + "\r\n" + "");
 			    event.getGuild().getRolesByName("bots", true);
 				shop.addField("List of Available Roles:","" + displayRoles , true);
 	     		shop.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
@@ -128,8 +124,9 @@ public class shop extends ListenerAdapter {
 				EmbedBuilder buyRole = new EmbedBuilder();
 				buyRole.setColor(0xffae00);
 				buyRole.setTitle("You didn't enter a role to buy");
-				buyRole.setDescription("To purchase a role, type '>>shop buy [role]'" + "\r\n" + "");
+				buyRole.setDescription("To purchase a role, type `" + LazyJavie.prefix + "shop buy [role]`" + "\r\n" + "");
 				buyRole.addField("List of Available Roles:", "" + displayRoles , true);
+			    buyRole.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 				event.getChannel().sendMessage(buyRole.build()).queue();
 			}
 			//Check if there are no additional arguments.
@@ -151,41 +148,56 @@ public class shop extends ListenerAdapter {
 			    	}
 			    }
 				//[BUY] A successful attempt at purchasing.
-				if (args[1].equalsIgnoreCase("buy") && args.length > 2) {
+				if (args[1].equalsIgnoreCase("buy") && args.length >= 2) {
 					try {
 					    for (Role r : roles) {
 					    	//TODO FIX THIS CONDITION.
 					    
-					    //rolename to string(idk)
-						String memberName = String.valueOf(r.getName());
+					    //Grabs the price of the role
+							if(args[2].equals(r.getName())) {
+								//Initialization
+								String memberId = event.getMessage().getMember().getId();	
+								String stringRolePrice = SQLconnector.get("SELECT * FROM lazyjavie.sellroles\r\n"+ "WHERE roleName='"+ r.getName() +"'; ", "rolePrice", true);
+								Integer intRolePrice = Integer.parseInt(stringRolePrice);
+								Integer pts = Integer.parseInt(SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points", true));
 
-					    //Grabs the price of the role 
-						Integer rolePrice = Integer.parseInt(SQLconnector.get("SELECT * FROM lazyjavie.sellroles WHERE roleName=" + memberName, "rolePrice", true));
-						
+								//Cancels purchase if there isn't a price on the role (not working)
+								 if (stringRolePrice == "0" || intRolePrice == 0) {
+									P.print("CANCELLED PURCHASE (NOPRICE)");
+									EmbedBuilder noPrice = new EmbedBuilder();
+									noPrice.setColor(0xD82D42);
+									noPrice.addField("There is not a set price for that role!","Current points: `" + pts + "`",true);
+								    noPrice.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+									event.getChannel().sendMessage(noPrice.build()).queue();
+						        }
+						        //Actual purchase part:
+						        else if (intRolePrice < pts && args[2].equalsIgnoreCase(r.getName()) && !blacklist.contains(args[2].toLowerCase())) {
+						        	
+										EmbedBuilder purchaseComplete = new EmbedBuilder();
+										purchaseComplete.setColor(0xD82D42);
+										purchaseComplete.addField("You have purchased the role: ", "`" + r.getName() + "`", true);
+										event.getChannel().sendMessage(purchaseComplete.build()).queue();
+										
+										Member member = event.getMember();
+										Role role = event.getGuild().getRoleById(r.getId());
+										
+										//DEDUCTING POINTS
+										P.print("Deducting pts...");
+										pts -= intRolePrice;
+										SQLconnector.update("UPDATE lazyjavie.members "+ "SET points = " + pts + " WHERE userid=" + memberId + ";");
 
-					    //Cancels purchase if there isn't a price on the role
-						if (rolePrice <= 0 || rolePrice == null) {
-							P.print("CANCELLED PURCHASE (NOPRICE)");
-							EmbedBuilder noPrice = new EmbedBuilder();
-							noPrice.setColor(0xffae00);
-							noPrice.setTitle("There is not a set price for that role!");
-						    noPrice.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
-							event.getChannel().sendMessage(noPrice.build()).queue();
-				        }
-				        //Actual purchase part:
-				        else if (args[2].equalsIgnoreCase(r.getName()) && !blacklist.contains(args[2].toLowerCase())) {
-
-								EmbedBuilder purchaseComplete = new EmbedBuilder();
-								purchaseComplete.setColor(0xD82D42);
-								purchaseComplete.addField("You have purchased the role: ", "" + r.getName() + "", true);
-								event.getChannel().sendMessage(purchaseComplete.build()).queue();
-								
-								Member member = event.getMember();
-								Role role = event.getGuild().getRoleById(r.getId());
-								
-								event.getGuild().addRoleToMember(member, role).queue();;
-								event.getGuild().modifyMemberRoles(member, role).queue();;
-					        }
+										//APPLYING ROLE
+										event.getGuild().addRoleToMember(member, role).queue();;
+										event.getGuild().modifyMemberRoles(member, role).queue();;
+							        }	
+						        else if (intRolePrice > pts  && args[2].equalsIgnoreCase(r.getName()) && !blacklist.contains(args[2].toLowerCase())) {
+						        	EmbedBuilder noMoney = new EmbedBuilder();
+						        	noMoney.setColor(0xD82D42);
+						        	noMoney.addField("You don't have enough money", "Current points: `" + pts + "`", true);
+								    noMoney.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+									event.getChannel().sendMessage(noMoney.build()).queue();
+						        }
+					    	}
 					    } 
 				    } catch (Exception e) {P.print("Error encountered: " + e); e.printStackTrace();}
 				} 
