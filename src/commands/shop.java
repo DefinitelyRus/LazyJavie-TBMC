@@ -1,9 +1,11 @@
 package commands;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
 
 import bot_init.LazyJavie;
 import bot_init.SQLconnector;
@@ -17,6 +19,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class shop extends ListenerAdapter {
 	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+
+
+		
+		
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 	    
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "shop")) {
@@ -28,11 +34,17 @@ public class shop extends ListenerAdapter {
 			P.print("Getting list of blacklisted roles...");
 	    	List<String> blacklist = SQLconnector.getList("select * from lazyjavie.roleblacklist", "rolename");
 		    StringBuilder displayRoles = new StringBuilder();
+
 		    
 		    
 		    //Checks for blacklisted roles; only includes non-blacklisted roles.
-		    P.print("Removing blacklisted roles from output...");
+		    P.print("Removing blacklisted roles from output..."); 
+		    
+		    //getname 
+		    
 		    for (Role r : roles) {
+		    	String memberName = String.valueOf(r.getName());
+
 
 		    	//TODO Move this to database
 		    	boolean[] permsArray = {
@@ -67,8 +79,29 @@ public class shop extends ListenerAdapter {
 		    	else if (r.getName() == "@everyone" || r.getName() == "everyone" || r.getPosition() == 0) {}
 		    	
 		    	//Role gets added to the displayed list.
-		    	else {displayRoles.append("• " + r.getName()).append("\n");}	
+		    	else {displayRoles.append("• " + r.getName()).append("\n");
+				try {
+					P.print("Inserting into lazyjavie.roles");
+					try {
+						SQLconnector.update("INSERT INTO lazyjavie.sellroles (roleName, rolePrice) VALUES('" + memberName + "', 0);");
+					} catch (SQLException e) {
+						if (e.toString().startsWith("java.lang.IllegalArgumentException: Message retrieval")) {
+							P.print("ROLE EXISTS:(notaddingtotable)");
+						}
+						e.printStackTrace();
+					}
+					
+					P.print("" + SQLconnector.getList("select * from lazyjavie.sellroles", "roleName"));
+
+			} catch (LoginException e) {
+				P.print("\n[sellroles] Error encountered: " + e);
+			}
+		      }	
 		    }
+		    
+		    //Insert non blacklisted role into the database:
+
+
 
 			//Checks if there are no roles in the server.
 			if (roles.isEmpty()) {
@@ -90,7 +123,15 @@ public class shop extends ListenerAdapter {
 	     		shop.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 				event.getChannel().sendMessage(shop.build()).queue();
 			}
-		    
+			//For when a member attempts to buy a role but doesn't enter a name.
+			if(args.length == 2) {
+				EmbedBuilder buyRole = new EmbedBuilder();
+				buyRole.setColor(0xffae00);
+				buyRole.setTitle("You didn't enter a role to buy");
+				buyRole.setDescription("To purchase a role, type '>>shop buy [role]'" + "\r\n" + "");
+				buyRole.addField("List of Available Roles:", "" + displayRoles , true);
+				event.getChannel().sendMessage(buyRole.build()).queue();
+			}
 			//Check if there are no additional arguments.
 		    if (args.length > 1) {
 		    	
@@ -109,13 +150,31 @@ public class shop extends ListenerAdapter {
 			    		e.printStackTrace();
 			    	}
 			    }
-				
 				//[BUY] A successful attempt at purchasing.
 				if (args[1].equalsIgnoreCase("buy") && args.length > 2) {
 					try {
 					    for (Role r : roles) {
 					    	//TODO FIX THIS CONDITION.
-					        if (args[2].equalsIgnoreCase(r.getName()) && !blacklist.contains(args[2].toLowerCase())) {
+					    
+					    //rolename to string(idk)
+						String memberName = String.valueOf(r.getName());
+
+					    //Grabs the price of the role 
+						Integer rolePrice = Integer.parseInt(SQLconnector.get("SELECT * FROM lazyjavie.sellroles WHERE roleName=" + memberName, "rolePrice", true));
+						
+
+					    //Cancels purchase if there isn't a price on the role
+						if (rolePrice <= 0 || rolePrice == null) {
+							P.print("CANCELLED PURCHASE (NOPRICE)");
+							EmbedBuilder noPrice = new EmbedBuilder();
+							noPrice.setColor(0xffae00);
+							noPrice.setTitle("There is not a set price for that role!");
+						    noPrice.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+							event.getChannel().sendMessage(noPrice.build()).queue();
+				        }
+				        //Actual purchase part:
+				        else if (args[2].equalsIgnoreCase(r.getName()) && !blacklist.contains(args[2].toLowerCase())) {
+
 								EmbedBuilder purchaseComplete = new EmbedBuilder();
 								purchaseComplete.setColor(0xD82D42);
 								purchaseComplete.addField("You have purchased the role: ", "" + r.getName() + "", true);
@@ -129,16 +188,8 @@ public class shop extends ListenerAdapter {
 					        }
 					    } 
 				    } catch (Exception e) {P.print("Error encountered: " + e); e.printStackTrace();}
-				} else if(args.length == 2 && args[1] == "buy") {
-					//For when a member attempts to buy a role but doesn't enter a name.
-					EmbedBuilder buyRole = new EmbedBuilder();
-					buyRole.setColor(0xffae00);
-					buyRole.setTitle("You didn't enter a role to buy");
-					buyRole.setDescription("To purchase a role, type '>>shop buy [role]'" + "\r\n" + "");
-					buyRole.addField("List of Available Roles:", "" + displayRoles , true);
-					event.getChannel().sendMessage(buyRole.build()).queue();
-				}
+				} 
 			}
 		}
-	}
+  }
 }

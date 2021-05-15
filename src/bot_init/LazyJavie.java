@@ -7,20 +7,25 @@ package bot_init;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
+
 import javax.security.auth.login.LoginException;
+
 import commands.Clear;
-import commands.Returns;
-import commands.Register;
 import commands.GetPointEvent;
+import commands.P;
+import commands.Register;
+import commands.Returns;
+import commands.setPrice;
 import commands.shop;
 import commands.shopInventory;
 import commands.toConsole;
-import commands.P;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class LazyJavie {
@@ -29,11 +34,16 @@ public class LazyJavie {
 	public static JDA jda;
 	public static String prefix = ">>";
 	public static String token = "";
-	EventWaiter waiter = new EventWaiter();
+	
+	public static void insertRole(String[] args) throws SQLException {
+
+		
+	}
+	
 	
 	//Startup
 	public static void main(String[] args) throws LoginException, SQLException {
-		
+
 		try {
 			//[A] Getting the Token----------------------------------------
 			P.print("[A-1] Getting token from file");
@@ -75,8 +85,21 @@ public class LazyJavie {
 			jda.addEventListener(new GetPointEvent());
 			jda.addEventListener(new toConsole());
 			jda.addEventListener(new shopInventory());
+			jda.addEventListener(new setPrice());
 
 			P.print("[B-4] Ready!");
+			
+			List<Role> roles = jda.getRoles();
+			try {
+				for(Role r : roles) {
+					SQLconnector.update("INSERT INTO lazyjavie.sellroles (roleName) VALUES(" + r.getName() + ");");
+				}
+			} catch (LoginException e) {
+				P.print("\n[sellroles] Error enscountered: " + e);
+			} catch (SQLException e) {
+				P.print("\n[sellroles] Error encountered: " + e);
+			}
+
 			
 		}
 		catch (FileNotFoundException file404) {
@@ -88,5 +111,7 @@ public class LazyJavie {
 			P.print(e.toString());
 			e.printStackTrace();
 		}
+
 	}
+	
 }

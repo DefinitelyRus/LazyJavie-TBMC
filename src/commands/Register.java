@@ -17,6 +17,8 @@ public class Register extends ListenerAdapter{
 
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		
+		
+		
 		String requestby = event.getMember().getUser().getName();
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		
@@ -59,7 +61,9 @@ public class Register extends ListenerAdapter{
 
 						if(event.getMessage().getContentRaw().equalsIgnoreCase(LazyJavie.prefix + "unregister " + "yes" )) {
 							try {
-								SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId());
+								//Purpose of SET SQL_SAFE_UPDATEs = 0 - Error Code: 1175
+								SQLconnector.update("SET SQL_SAFE_UPDATES = 0;\r\n"
+										+ "DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId());
 							} catch (LoginException er) {
 								er.printStackTrace();
 							} catch (SQLException er) {
