@@ -17,7 +17,7 @@ import commands.GetPointEvent;
 import commands.P;
 import commands.Register;
 import commands.Returns;
-import commands.setPrice;
+import commands.adminShop;
 import commands.shop;
 import commands.shopInventory;
 import commands.toConsole;
@@ -82,17 +82,17 @@ public class LazyJavie {
 			jda.addEventListener(new Register());
 			jda.addEventListener(new Clear());
 			jda.addEventListener(new shop());
+			jda.addEventListener(new adminShop());
 			jda.addEventListener(new GetPointEvent());
 			jda.addEventListener(new toConsole());
 			jda.addEventListener(new shopInventory());
-			jda.addEventListener(new setPrice());
 
 			P.print("[B-4] Ready!");
 			
 			List<Role> roles = jda.getRoles();
 			try {
 				for(Role r : roles) {
-					SQLconnector.update("INSERT INTO lazyjavie.sellroles (roleName) VALUES(" + r.getName() + ");");
+					SQLconnector.update("INSERT INTO lazyjavie.sellroles (roleName) VALUES(" + r.getName() + ");", true);
 				}
 			} catch (LoginException e) {
 				P.print("\n[sellroles] Error enscountered: " + e);

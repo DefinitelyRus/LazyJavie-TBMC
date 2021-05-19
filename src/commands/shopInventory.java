@@ -35,7 +35,7 @@ public class shopInventory extends ListenerAdapter{
 					//args[5] is the item description
 					try {
 						P.print(insertcmd + "0" +z+ args[2] +z+ Integer.parseInt(args[3]) +z+ Integer.parseInt(args[4]) +z+ args[5] + ")\n");
-						SQLconnector.update(insertcmd + "0" +z+ args[2] +z+ Integer.parseInt(args[3]) +z+ Integer.parseInt(args[4]) +z+ args[5] + ")");
+						SQLconnector.update(insertcmd + "0" +z+ args[2] +z+ Integer.parseInt(args[3]) +z+ Integer.parseInt(args[4]) +z+ args[5] + ")", true);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

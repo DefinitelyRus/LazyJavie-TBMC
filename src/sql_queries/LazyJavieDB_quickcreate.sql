@@ -1,17 +1,17 @@
--- drop database lazyjavie;
--- create database lazyjavie;
+drop database lazyjavie;
+create database lazyjavie;
 
-drop table lazyjavie.members;
-drop table lazyjavie.shop;
-drop table lazyjavie.cmdlog;
-drop table lazyjavie.roleblacklist;
-drop table lazyjavie.sellroles;
+-- drop table lazyjavie.members;
+-- drop table lazyjavie.shop;
+-- drop table lazyjavie.cmdlog;
+-- drop table lazyjavie.roleblacklist;
+-- drop table lazyjavie.sellroles;
 
 create table lazyjavie.members (
 id int not null auto_increment,
 userid varchar(255),
 userpass varchar(255),
-points int,
+points int default 0,
 primary key(id));
 
 create table lazyjavie.shop (
@@ -36,10 +36,10 @@ insert into lazyjavie.roleblacklist (rolename) values ("admins"), ("admin"), ("m
 
 -- insert into lazyjavie.cmdlog values (0, "", current_time()); 
 
-CREATE TABLE `sellroles` (
-  `idsellRoles` int NOT NULL AUTO_INCREMENT,
-  `roleName` varchar(255) DEFAULT NULL,
-  `rolePrice` varchar(255) DEFAULT '0',
-  PRIMARY KEY (`idsellRoles`),
-  UNIQUE KEY `roleName_UNIQUE` (`roleName`)
+create table lazyjavie.sellroles (
+  idsellRoles int NOT NULL AUTO_INCREMENT,
+  roleName varchar(255) DEFAULT NULL,
+  rolePrice int default null,
+  PRIMARY KEY (idsellRoles),
+  UNIQUE KEY roleName_UNIQUE (roleName)
 ) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -16,7 +16,7 @@ public class GetPointEvent extends ListenerAdapter {
 		
 		try {
 			//Gets the sender's discord ID.
-			String memberId = event.getMessage().getMember().getId();
+			String memberId = event.getMember().getId();
 			
 			//Gets the sender's points, and increments it by 1.
 			//P.print("\n[GetPointEvent] Receiving message from " + event.getMember().getUser().getName());
@@ -24,14 +24,11 @@ public class GetPointEvent extends ListenerAdapter {
 			pts += 1;
 			
 			//Applies the changes and uploads it to the database.
-			SQLconnector.update("UPDATE lazyjavie.members "+ "SET points = " + pts + " WHERE userid=" + memberId + ";");
+			SQLconnector.update("UPDATE lazyjavie.members "+ "SET points = " + pts + " WHERE userid=" + memberId + ";",true);
 		}
 		catch (LoginException e) {e.printStackTrace();}
 		catch (SQLException e) {e.printStackTrace();}
-		catch (NumberFormatException e) {
-			if (e.toString().startsWith("java.lang.NumberFormatException: For input string: \"Statement created.\"")) {
-				//P.print("\n[GetPointEvent] NumberFormatException: False error");
-		}	}
+		catch (NumberFormatException e) {if (e.toString().startsWith("java.lang.NumberFormatException: For input string: \"Statement created.\"")) {}}
 		catch (Exception e) {e.printStackTrace();}
 	}
 }

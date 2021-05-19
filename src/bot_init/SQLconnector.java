@@ -41,7 +41,8 @@ public class SQLconnector {
 	static String dbID = "root";
 	static String dbPass = "password";
 	
-	public static void update(String query) throws LoginException, SQLException {
+	//-------------------------UPDATE-------------------------
+	public static void update(String query, boolean tp) throws LoginException, SQLException {
 		/*
 		 * Updates or adds a record to the database, depends on what argument is entered.
 		 * update() requires one argument, query.
@@ -63,18 +64,18 @@ public class SQLconnector {
 		
 		try {
 			//Starts a connection to the database using the JDBC driver.
-			P.print("[SQLcA-1] Starting connection with the database...");
+			if (tp == true) {P.print("|[SQLcA-1] Starting connection with the database...");}
 			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
 			
 			//Creates a statement
-			P.print("[SQLcA-2] Creating statement...");
+			if (tp == true) {P.print("|[SQLcA-2] Creating statement...");}
 			Statement statement = connection.createStatement();
 			
 			//Starts the SQL query.
-			P.print("[SQLcA-3] Executing SQL script...");
+			if (tp == true) {P.print("|[SQLcA-3] Executing SQL script...");}
 			statement.execute(exeScript);
 			
-			P.print("[SQLcA-4] Done!");
+			if (tp == true) {P.print("|[SQLcA-4] Done!");}
 			
 			connection.close();
 		} catch (Exception e) {
@@ -82,7 +83,8 @@ public class SQLconnector {
 		}
 	}
 	
-	public static String get(String query, String toReturn, boolean tp) {
+	//-------------------------GET-------------------------
+	public static String get(String query, String toReturn, boolean tp) throws LoginException, SQLException {
 		/*
 		 * Returns a record from the database.
 		 * get() requires two arguments, query and toReturn.
@@ -110,21 +112,23 @@ public class SQLconnector {
 		
 		try {
 			//Starts a connection to the database using the JDBC driver.
-			if (tp == true) {P.print("[SQLcB-1] Starting connection with the database...");}
+			if (tp == true) {P.print("|[SQLcB-1] Starting connection with the database...");}
 			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
 			returnMsg = "Connection started.";
 			
 			//Creates a statement
-			if (tp == true) {P.print("[SQLcB-2] Creating statement...");}
+			if (tp == true) {P.print("|[SQLcB-2] Creating statement...");}
 			Statement statement = connection.createStatement();
 			returnMsg = "Statement created.";
 			
 			//Starts the SQL query.
-			if (tp == true) {P.print("[SQLcB-3] Executing SQL script...");}
+			if (tp == true) {P.print("|[SQLcB-3] Executing SQL script...");}
 			ResultSet results = statement.executeQuery(exeScript);
+			returnMsg = "Executed.";
 			
 			//Returns the requested record.
-			if (tp == true) {P.print("[SQLcB-4] Outputting results...");}
+			if (tp == true) {P.print("|[SQLcB-4] Outputting results...");}
+			returnMsg = "Empty result.";
 			while (results.next()) {returnMsg = results.getString(toReturn);}
 			
 			//Closes the connection then returns the result.
@@ -136,7 +140,8 @@ public class SQLconnector {
 		}
 	}
 	
-	public static LinkedList<String> getList(String query, String toReturn) {
+	//-------------------------GET LIST-------------------------
+	public static LinkedList<String> getList(String query, String toReturn, boolean tp) throws LoginException, SQLException {
 		/* WORK-IN-PROGRESS
 		 * Returns an array of records from the database.
 		 * getArray() requires two arguments, query and toReturn.
@@ -165,19 +170,19 @@ public class SQLconnector {
 		
 		try {
 			//Starts a connection to the database using the JDBC driver.
-			P.print("[SQLcB-1] Starting connection with the database...");
+			if (tp == true) {P.print("|[SQLcB-1] Starting connection with the database...");}
 			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
 			
 			//Creates a statement
-			P.print("[SQLcB-2] Creating statement...");
+			if (tp == true) {P.print("|[SQLcB-2] Creating statement...");}
 			Statement statement = connection.createStatement();
 			
 			//Starts the SQL query.
-			P.print("[SQLcB-3] Executing SQL script...");
+			if (tp == true) {P.print("|[SQLcB-3] Executing SQL script...");}
 			ResultSet results = statement.executeQuery(exeScript);
 			
 			//Returns the requested record.
-			System.out.println("[SQLcB-4] Outputting results...");
+			if (tp == true) {P.print("|[SQLcB-4] Outputting results...");}
 			while (results.next()) {returnList.add(results.getString(toReturn));}
 			
 			//Closes the connection then returns the result.
@@ -189,6 +194,7 @@ public class SQLconnector {
 		}
 	}
 	
+	//-------------------------CREATE RECORD-------------------------
 	@Deprecated
 	public static String createRecord(String username, String password) {	//[1]
 		/*
