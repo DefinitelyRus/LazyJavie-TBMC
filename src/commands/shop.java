@@ -66,16 +66,16 @@ public class shop extends ListenerAdapter {
 			    for (boolean item : permsArray) {perms.add(item);}
 		    	
 			    //Checks if the player has the currently iterated role.
-			    if (event.getMember().getRoles().contains(r)) {P.print("Blacklisted " + r.getName() + " (Already claimed)");}
+			    if (event.getMember().getRoles().contains(r)) {P.print("|Blacklisted " + r.getName() + " (Already claimed)");}
 			    
 		    	//Any role colored #696969 (Hex); filters out bots.
-			    else if(r.getColorRaw() == 0x696969) {}
+			    else if(r.getColorRaw() == 0x696969) {P.print("|Blacklisted " + r.getName());}
 		    	
 		    	//Any role with the permission
-		    	else if (perms.contains(true)) {P.print("Removed " + r.getName());}
+		    	else if (perms.contains(true)) {P.print("|Blacklisted " + r.getName());}
 		    	
 		    	//Any role part of the blacklist.
-		    	else if (blacklist.contains(r.getName().toLowerCase())) {P.print("Blacklisted " + r.getName());}
+		    	else if (blacklist.contains(r.getName().toLowerCase())) {P.print("|Blacklisted " + r.getName());}
 		    	
 		    	else {
 		    		//Gets the role's price.
@@ -101,7 +101,8 @@ public class shop extends ListenerAdapter {
 		    P.print("Blacklist check done.");
 		    
 		    //Displays the items available for purchase.
-			if (args.length == 1 && args[0] == LazyJavie.prefix + "shop"){
+			if (args.length < 2 && args[0].equalsIgnoreCase(LazyJavie.prefix + "shop")){
+				P.print("Missing arguments.");
 				//Embed block
 				EmbedBuilder shop = new EmbedBuilder();
 				shop.setColor(0xffae00);
@@ -114,20 +115,8 @@ public class shop extends ListenerAdapter {
 				return;
 			}
 			
-			//<BUY: NO NAME> For when a member attempts to buy a role but doesn't enter a name.
-			if(args.length == 2 && args[1] == "buy") {
-				//Embed block
-				EmbedBuilder buyRole = new EmbedBuilder();
-				buyRole.setColor(0xffae00);
-				buyRole.setTitle("You didn't enter a role to buy");
-				buyRole.setDescription("To purchase a role, type `" + LazyJavie.prefix + "shop buy [role]`" + "\r\n" + "");
-				buyRole.addField("List of Available Roles:", "" + displayRoles , true);
-			    buyRole.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
-				event.getChannel().sendMessage(buyRole.build()).queue();
-				return;
-			}
 			//-------------------------[BUY] A successful attempt at purchasing.-------------------------
-			if (args[1].equalsIgnoreCase("buy") && args.length >= 3) {
+			else if (args.length > 2 && args[1].equalsIgnoreCase("buy")) {
 				P.print("[shop] Buy request by: " + event.getMember().getUser().getName());
 				try {
 					P.print("Checking through roles...");
@@ -197,6 +186,21 @@ public class shop extends ListenerAdapter {
 				    } 
 			    } catch (Exception e) {P.print("Error encountered: " + e); e.printStackTrace();}
 			} 
+			//<BUY: NO NAME> For when a member attempts to buy a role but doesn't enter a name.
+			else if(args.length < 3 && args[1].equalsIgnoreCase("buy")) {
+				P.print("Missing argument.");
+				//Embed block
+				EmbedBuilder buyRole = new EmbedBuilder();
+				buyRole.setColor(0xffae00);
+				buyRole.setTitle("You didn't enter a role to buy");
+				buyRole.setDescription("To purchase a role, type `" + LazyJavie.prefix + "shop buy [role]`" + "\r\n" + "");
+				buyRole.addField("List of Available Roles:", "" + displayRoles , true);
+			    buyRole.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+				event.getChannel().sendMessage(buyRole.build()).queue();
+				return;
+			}
+			//This will print out if any part of the function isn't properly closed with a RETURN statement.
+			P.print("\nUNRETURNED FUNTION: " + event.getMessage().getContentRaw());
 		}
 	}
 }

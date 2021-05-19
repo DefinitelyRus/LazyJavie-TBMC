@@ -35,9 +35,9 @@ public class LazyJavie {
 	public static String prefix = "$";
 	public static String token = "";
 	
+	//TODO Consider for removal.
 	public static void insertRole(String[] args) throws SQLException {
-
-		
+		//What does this do / what is this for?
 	}
 	
 	
@@ -89,16 +89,15 @@ public class LazyJavie {
 
 			P.print("[B-4] Ready!");
 			
+			//TODO Put this in shop.java as its own function, then call from here as an import.
 			List<Role> roles = jda.getRoles();
 			try {
 				for(Role r : roles) {
 					SQLconnector.update("INSERT INTO lazyjavie.sellroles (roleName) VALUES(" + r.getName() + ");", true);
 				}
-			} catch (LoginException e) {
-				P.print("\n[sellroles] Error enscountered: " + e);
-			} catch (SQLException e) {
-				P.print("\n[sellroles] Error encountered: " + e);
 			}
+			catch (LoginException e) {P.print("\n[sellroles] Error enscountered: " + e);}
+			catch (SQLException e) {P.print("\n[sellroles] Error encountered: " + e);}
 
 			
 		}

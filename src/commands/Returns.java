@@ -1,5 +1,6 @@
 /*
- * 
+ * ---------------!!! ADD TO README !!!---------------
+ * TODO Write documentation
  */
 package commands;
 

@@ -1,4 +1,5 @@
 /*
+ * ---------------!!! ADD TO README !!!---------------
  * This module serves as the connector between the program and the local SQL server.
  * 
  * [1]	Update function

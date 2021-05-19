@@ -1,108 +1,124 @@
 /*
- * 
+ * TODO Write documentation
  */
 package commands;
 
 import java.sql.SQLException;
-import java.util.List;
 import javax.security.auth.login.LoginException;
 import bot_init.LazyJavie;
 import bot_init.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class Register extends ListenerAdapter{	
-
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		
-		
 		
 		String requestby = event.getMember().getUser().getName();
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		
+		//-------------------------REGISTER-------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "register")) {
 			P.print("\nRegistration request: " + event.getMember().getUser());
 			try {
-				P.print("Attempting registration...");
-				String password = args[1];
-				List<Message> messages = event.getChannel().getHistory().retrievePast(2).complete();
-				event.getChannel().deleteMessages(messages).queue();
 				
+				//Initialization
+				String password = args[1];
+				
+				//This part is soft-removed due to minor issues and generally lack of usefulness.
+				//List<Message> messages = event.getChannel().getHistory().retrievePast(2).complete();
+				//event.getChannel().deleteMessages(messages).queue();
+				
+				//Checks if the member is already registered.
 				try {
+					P.print("Attempting registration...");
 					String s = SQLconnector.get("select * from lazyjavie.members where userid = \"" + event.getMember().getId() + "\"", "userid", true);
-					if (s == "Empty result.") {P.print("Member found. Cancelling. " + s);
-					//TODO Turn this into an embed.
-					event.getChannel().sendMessage("You are already registered.").queue();
-					return;
+					
+					//<MEMBER ALREADY REGISTERED>
+					if (s != "Empty result.") {
+						P.print("Member found. Cancelling. " + s);
+						//TODO Turn this into an embed.
+						event.getChannel().sendMessage("You are already registered.").queue();
+						return;
 					}
 				}
-				catch (LoginException e) {P.print("Error encountered: " + e.toString());}
-				catch (SQLException e) {
-					P.print("Error encountered: " + e.toString());
-					}
+				catch (LoginException e) {P.print("Error encountered: " + e.toString()); return;}
+				catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
+				catch (Exception e) {P.print("Error encountered: " + e.toString()); return;}
 				
+				P.print("Registering...");
 				SQLconnector.update("insert into lazyjavie.members (userid, userpass) values (\"" + event.getMember().getId() + "\", \"" + password + "\")",true);
-				String returnPass = SQLconnector.get("select * from lazyjavie.members where userid = \"" + event.getMember().getId() + "\"", "userpass", true);
+				
+				//Embed block
 				EmbedBuilder successRegister = new EmbedBuilder();
 				successRegister.setColor(0x77B255);
-				successRegister.setTitle("You have successfully registered " + event.getMember().getUser() + " (" + returnPass + ") ");
+				successRegister.setTitle("You have successfully been registered, " + event.getMember().getUser().getName() + "!");
 				successRegister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 				event.getChannel().sendMessage(successRegister.build()).queue();
 				P.print("Registered member: " + event.getMember().getUser() + "");
 			}
-			catch (LoginException e) {P.print("Error encountered: " + e.toString());}
-			catch (SQLException e) {P.print("Error encountered: " + e.toString());}
-			catch (Exception e) {
-				if (e.toString().startsWith("java.lang.ArrayIndexOutOfBoundsException: Index")) {
-					event.getChannel().sendMessage("Please enter an argument. `>>register [anything]`").queue();
-				} else { event.getChannel().sendMessage("Error: `" + e + "`").queue();}
-
-				P.print(e.toString());
+			catch (LoginException e) {P.print("Error encountered: " + e.toString()); return;}
+			catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
+			catch (ArrayIndexOutOfBoundsException e) {
+				P.print("Cancelling; missing argument.");
+				event.getChannel().sendMessage("Please enter an argument. `>>register [anything]`").queue();
+				return;
 			}
+			//TODO Turn ithis into an embed.
+			catch (Exception e) {event.getChannel().sendMessage("Error encountered: `" + e + "`").queue(); return;}
 		}
 		
-		//UNREGISTER
-		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "unregister")) {
-			P.print(args[0] + " " + args[1]);
+		//-------------------------DEREGISTER-------------------------
+		else if (args[0].equalsIgnoreCase(LazyJavie.prefix + "deregister")) {
+			P.print("\nDeregistration request: " + event.getMember().getUser().getName());
+			
+			//Gets the member's password.
+			P.print("Getting the member's password...");
+			String pass = null;
+			try {pass = SQLconnector.get("select * from lazyjavie.members where userid ='" + event.getMember().getId() + "'", "userpass", true);}
+			catch (LoginException e) {P.print(e.toString()); return;}
+			catch (SQLException e ) {P.print(e.toString()); return;}
+			catch (Exception e) {P.print(e.toString()); return;}
+			
+			//<DEREGISTER: MISSING ARGS> Checks if there are missing arguments.
+			P.print("Checking for invalid arguments...");
 			if(args.length < 2) {
-					EmbedBuilder unregister = new EmbedBuilder();
-					unregister.setColor(0xD82D42);
-					unregister.setTitle("Are you sure you want to unregister?");
-					unregister.setDescription("enter `"+ LazyJavie.prefix + "unregister yes` if you are sure." + "\r\n" + "enter `" + LazyJavie.prefix + "unregister no` if you want to cancel.");			
-					unregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
-					event.getChannel().sendMessage(unregister.build()).queue();
-					return;
+				P.print("Cancelling; missing argument.");
+				EmbedBuilder deregister = new EmbedBuilder();
+				deregister.setColor(0xD82D42);
+				deregister.setTitle("Are you sure you want to deregister?");
+				deregister.setDescription("Enter `"+ LazyJavie.prefix + "deregister <password>` to confirm.");			
+				deregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+				event.getChannel().sendMessage(deregister.build()).queue();
+				return;
 			}
-			else if(args[1].equalsIgnoreCase("yes")) {
+			
+			//<DEREGISTER: SUCCESS> Deregisters the member.
+			else if(args[1].equals(pass)) {
+				P.print("Deregistering...");
 				try {
-					//Purpose of SET SQL_SAFE_UPDATEs = 0 - Error Code: 1175
-					SQLconnector.update("SET SQL_SAFE_UPDATES = 0;\r\n"
-							+ "DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId(), true);
-				} catch (LoginException e) {
-					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
+					//[REMOVED] Purpose of SET SQL_SAFE_UPDATEs = 0 - Error Code: 1175
+					SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId(), true);
 				}
+				catch (LoginException e) {P.print(e.toString()); return;}
+				catch (SQLException e) {P.print(e.toString()); return;}
+				catch (Exception e) {P.print(e.toString()); return;}
 				
-				EmbedBuilder successUnregister = new EmbedBuilder();
+				P.print("Successfully deregistered " + event.getMember().getUser().getName());
+				
 				//Embed block
-				successUnregister.setColor(0x77B255);
-				successUnregister.setTitle("Successfully deleted the user: " + event.getMember().getId());			
-				successUnregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
-				event.getChannel().sendMessage(successUnregister.build()).queue();
+				EmbedBuilder successDeregister = new EmbedBuilder();
+				successDeregister.setColor(0x77B255);
+				successDeregister.setTitle("Successfully deleted the user: `" + event.getMember() + "` from the database.");			
+				successDeregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+				event.getChannel().sendMessage(successDeregister.build()).queue();
 			}
-			else if (args[1].equalsIgnoreCase("no")) {
-				//Embed block
-				EmbedBuilder successUnregister = new EmbedBuilder();
-				successUnregister.setColor(0x77B255);
-				successUnregister.setTitle("Cancelled your request.");		
-				successUnregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
-				event.getChannel().sendMessage(successUnregister.build()).queue();
-			}
+			
+			//<UNREGISER: INVALID INPUT> When the user enters an incorrect password.
 			else {
-				P.print("Invalid input: " + event.getMessage());
+				P.print("Invalid password: " + event.getMessage().getContentRaw());
+				//TODO Turn this into an embed.
+				event.getChannel().sendMessage("Incorrect password!").queue();
 			}
 		}
 	}
