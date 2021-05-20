@@ -19,6 +19,19 @@ public class shop extends ListenerAdapter {
 	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
+		
+		//<BUY: NO NAME> For when a member attempts to buy a role but doesn't enter a name.
+		if(args.length == 2 && args[1].equalsIgnoreCase("buy")) {
+			String requestby = event.getMember().getUser().getName();
+			P.print("Missing argument.");
+			//Embed block
+			EmbedBuilder buyRole = new EmbedBuilder();
+			buyRole.setColor(0xffae00);
+			buyRole.setTitle("You didn't enter a role to buy");
+			buyRole.setDescription("To purchase a role, type `" + LazyJavie.prefix + "shop buy [role]`" + "\r\n" + "");
+		    buyRole.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+			event.getChannel().sendMessage(buyRole.build()).queue();
+		}
 	    
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "shop")) {
 			P.print("\n[shop] Shop query by: " + event.getMember().getUser().getName());
@@ -116,6 +129,7 @@ public class shop extends ListenerAdapter {
 			}
 			
 			//-------------------------[BUY] A successful attempt at purchasing.-------------------------
+			
 			else if (args.length > 2 && args[1].equalsIgnoreCase("buy")) {
 				P.print("[shop] Buy request by: " + event.getMember().getUser().getName());
 				try {
@@ -145,7 +159,7 @@ public class shop extends ListenerAdapter {
 							    event.getChannel().sendMessage(noPrice.build()).queue();
 							    return;
 					        }
-							
+
 					        //<BUY: SUCCESS> Successful purchase.
 					        else if (intRolePrice < pts && args[2].equalsIgnoreCase(r.getName()) && !blacklist.contains(args[2].toLowerCase())) {
 				        		
@@ -182,23 +196,30 @@ public class shop extends ListenerAdapter {
 								event.getChannel().sendMessage(noMoney.build()).queue();
 								return;
 					        }
-				    	}
-				    } 
-			    } catch (Exception e) {P.print("Error encountered: " + e); e.printStackTrace();}
+
+							//TODO: maybe check if the role is already assigned
+				    	} 
+				    }
+				    
+
+			    } catch (Exception e) {
+			    	P.print("Error encountered: " + e); e.printStackTrace();
+
+			    }
+				
+			if (args.length > 2) {
+				//<BUY: ROLE DOESNT EXIST>
+	        	P.print("1");
+	        	P.print("Purchase cancelled: Role doesnt exist");
+	        	EmbedBuilder roleNoExist = new EmbedBuilder();
+	        	roleNoExist.setColor(0xD82D42);
+	        	roleNoExist.setDescription(args[2] + " does not exist");
+	        	roleNoExist.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+				event.getChannel().sendMessage(roleNoExist.build()).queue();
+			    }
+				
 			} 
-			//<BUY: NO NAME> For when a member attempts to buy a role but doesn't enter a name.
-			else if(args.length < 3 && args[1].equalsIgnoreCase("buy")) {
-				P.print("Missing argument.");
-				//Embed block
-				EmbedBuilder buyRole = new EmbedBuilder();
-				buyRole.setColor(0xffae00);
-				buyRole.setTitle("You didn't enter a role to buy");
-				buyRole.setDescription("To purchase a role, type `" + LazyJavie.prefix + "shop buy [role]`" + "\r\n" + "");
-				buyRole.addField("List of Available Roles:", "" + displayRoles , true);
-			    buyRole.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
-				event.getChannel().sendMessage(buyRole.build()).queue();
-				return;
-			}
+
 			//This will print out if any part of the function isn't properly closed with a RETURN statement.
 			P.print("\nUNRETURNED FUNTION: " + event.getMessage().getContentRaw());
 		}

@@ -13,13 +13,19 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class Register extends ListenerAdapter{	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		
 		//-------------------------REGISTER-------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "register")) {
 			String requestby = event.getMember().getUser().getName();
 			P.print("\nRegistration request: " + event.getMember().getUser());
+			if (args.length > 2) {
+				EmbedBuilder noArgsRegister = new EmbedBuilder();
+				noArgsRegister.setColor(0x77B255);
+				noArgsRegister.addField("Please don't use spaces for your password", "```" + LazyJavie.prefix + "register [password]```",true);
+				event.getChannel().sendMessage(noArgsRegister.build()).queue();				
+				return;
+			}
 			try {
 				
 				//Initialization
@@ -37,8 +43,10 @@ public class Register extends ListenerAdapter{
 					//<MEMBER ALREADY REGISTERED>
 					if (s != "Empty result.") {
 						P.print("Member found. Cancelling. " + s);
-						//TODO Turn this into an embed.
-						event.getChannel().sendMessage("You are already registered.").queue();
+						EmbedBuilder alreadyRegistered = new EmbedBuilder();
+						alreadyRegistered.setColor(0x77B255);
+						alreadyRegistered.addField("You are already registered","If you wish to deregister: ```" + LazyJavie.prefix + "deregister``` :warning: This will reset your points.",true);
+						event.getChannel().sendMessage(alreadyRegistered.build()).queue();
 						return;
 					}
 				}
@@ -49,7 +57,7 @@ public class Register extends ListenerAdapter{
 				P.print("Registering...");
 				SQLconnector.update("insert into lazyjavie.members (userid, userpass) values (\"" + event.getMember().getId() + "\", \"" + password + "\")",true);
 				
-				//Embed block
+				//<SUCCESSFULY REGISTERED> EmbedBlock
 				EmbedBuilder successRegister = new EmbedBuilder();
 				successRegister.setColor(0x77B255);
 				successRegister.setTitle("You have successfully been registered, " + event.getMember().getUser().getName() + "!");
@@ -61,11 +69,18 @@ public class Register extends ListenerAdapter{
 			catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
 			catch (ArrayIndexOutOfBoundsException e) {
 				P.print("Cancelling; missing argument.");
-				event.getChannel().sendMessage("Please enter an argument. `>>register [anything]`").queue();
+				EmbedBuilder noArgsRegister = new EmbedBuilder();
+				noArgsRegister.setColor(0x77B255);
+				noArgsRegister.addField("Please enter an argument.", "```" + LazyJavie.prefix + "register [password]```",true);
+				event.getChannel().sendMessage(noArgsRegister.build()).queue();
 				return;
 			}
-			//TODO Turn this into an embed.
-			catch (Exception e) {event.getChannel().sendMessage("Error encountered: `" + e + "`").queue(); return;}
+			catch (Exception e) {
+				EmbedBuilder errorEncountered = new EmbedBuilder();
+				errorEncountered.setColor(0x77B255);
+				errorEncountered.addField("Error encountered: " + e, "type ```" + LazyJavie.prefix + "register [password]",true);
+				event.getChannel().sendMessage(errorEncountered.build()).queue();
+			return;}
 		}
 		
 		//-------------------------DEREGISTER-------------------------

@@ -17,7 +17,7 @@ import commands.GetPointEvent;
 import commands.P;
 import commands.Register;
 import commands.Returns;
-import commands.adminShop;
+//import commands.adminShop;
 import commands.shop;
 import commands.shopInventory;
 import commands.toConsole;
@@ -82,7 +82,7 @@ public class LazyJavie {
 			jda.addEventListener(new Register());
 			jda.addEventListener(new Clear());
 			jda.addEventListener(new shop());
-			jda.addEventListener(new adminShop());
+			//jda.addEventListener(new adminShop());
 			jda.addEventListener(new GetPointEvent());
 			jda.addEventListener(new toConsole());
 			jda.addEventListener(new shopInventory());
