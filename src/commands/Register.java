@@ -14,11 +14,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class Register extends ListenerAdapter{	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		
-		String requestby = event.getMember().getUser().getName();
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		
 		//-------------------------REGISTER-------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "register")) {
+			String requestby = event.getMember().getUser().getName();
 			P.print("\nRegistration request: " + event.getMember().getUser());
 			try {
 				
@@ -64,12 +64,13 @@ public class Register extends ListenerAdapter{
 				event.getChannel().sendMessage("Please enter an argument. `>>register [anything]`").queue();
 				return;
 			}
-			//TODO Turn ithis into an embed.
+			//TODO Turn this into an embed.
 			catch (Exception e) {event.getChannel().sendMessage("Error encountered: `" + e + "`").queue(); return;}
 		}
 		
 		//-------------------------DEREGISTER-------------------------
 		else if (args[0].equalsIgnoreCase(LazyJavie.prefix + "deregister")) {
+			String requestby = event.getMember().getUser().getName();
 			P.print("\nDeregistration request: " + event.getMember().getUser().getName());
 			
 			//Gets the member's password.
