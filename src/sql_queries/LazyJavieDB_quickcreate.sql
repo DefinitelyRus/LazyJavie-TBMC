@@ -5,7 +5,8 @@ create database lazyjavie;
 -- drop table lazyjavie.shop;
 -- drop table lazyjavie.cmdlog;
 -- drop table lazyjavie.roleblacklist;
--- drop table lazyjavie.sellroles;
+-- drop table lazyjavie.helplist;
+-- drop table lazyjavie.version_handler; -- Do not delete or alter.
 
 create table lazyjavie.members (
 id int not null auto_increment,
@@ -36,14 +37,6 @@ insert into lazyjavie.roleblacklist (rolename) values ("admins"), ("admin"), ("m
 
 -- insert into lazyjavie.cmdlog values (0, "", current_time()); 
 
-create table lazyjavie.sellroles (
-  idsellRoles int NOT NULL AUTO_INCREMENT,
-  roleName varchar(255) DEFAULT NULL,
-  rolePrice int default null,
-  PRIMARY KEY (idsellRoles),
-  UNIQUE KEY roleName_UNIQUE (roleName)
-) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 create table lazyjavie.helplist (
 id int not null auto_increment,
 cmd varchar(32) default null,
@@ -62,4 +55,10 @@ insert into lazyjavie.helplist (cmd, dsc, adminonly) values
 ("clear", "Clears 2-100 messages sent within 14 days from now.", true),
 ("ashop", "Where you can manage your shop.", true);
 
+create table lazyjavie.version_handler (
+ver_release decimal(5,1),
+build int auto_increment,
+title varchar(64) default null,
+primary key (build));
 
+insert into lazyjavie.version_handler (ver_release, build) values (1.0, 0);

@@ -1,6 +1,7 @@
 /*
  * ---------------!!! ADD TO README !!!---------------
  * TODO Write documentation
+ * UHH
  */
 
 package commands;
@@ -23,13 +24,15 @@ public class adminShop extends ListenerAdapter{
 		
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "ashop") && event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
 			
+			P.print(event.getMessage().getContentRaw());
+			
 			//Initialization
 			String requestby = event.getMember().getUser().getName();
 			
 			//<ASHOP: MISSING ARGS> Checks if there are no additional arguments.
 			if (args.length == 1) {
 				P.print("Missing arguments.");
-				event.getChannel().sendMessage("Correct syntax: `" +LazyJavie.prefix+ " <subcommands> <arguments>`").queue();
+				event.getChannel().sendMessage("Correct syntax: `" +LazyJavie.prefix+ "ashop <subcommands> <arguments>`").queue();
 				//TODO Replace message with guide & available commands.
 				return;
 			}
@@ -40,7 +43,7 @@ public class adminShop extends ListenerAdapter{
 				
 				if (args.length < 3) {
 					P.print("Missing arguments.");
-					event.getChannel().sendMessage("Correct syntax: `" +LazyJavie.prefix+ "blacklist <arguments>`").queue();
+					event.getChannel().sendMessage("Correct syntax: `" +LazyJavie.prefix+ "ashop blacklist <arguments>`").queue();
 					return;
 				} else {
 			    	try {
@@ -89,7 +92,7 @@ public class adminShop extends ListenerAdapter{
 					EmbedBuilder setPrice1 = new EmbedBuilder();
 					setPrice1.setColor(0x77B255);
 					setPrice1.setTitle("To set a price for a role:");
-					setPrice1.setDescription(LazyJavie.prefix + "setprice [role] [price]");
+					setPrice1.setDescription(LazyJavie.prefix + "ashop setprice [role] [price]");
 					setPrice1.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 					event.getChannel().sendMessage(setPrice1.build()).queue();
 					
@@ -100,9 +103,10 @@ public class adminShop extends ListenerAdapter{
 					for (Role r : roles) {
 						//TODO fix this (might break due to some roles having spaces):
 						//<SETPRICE: SUCCESS>
-						if (args[1].equalsIgnoreCase("setprice") && args[2].equals(r.getName()) && args.length > 2) {
+						if (args[2].equalsIgnoreCase(r.getName()) && args.length > 2) {
 							try {
 								P.print("\n[ashop] Setprice request by: " + event.getMember().getUser().getName());
+								
 								P.print("Updating price...");
 								P.print("Target: " +args[2]+ "; Price: " +args[3]);
 								SQLconnector.update("update lazyjavie.shop set price = " +args[3]+ " where itemname = '" +args[2]+ "';", false);

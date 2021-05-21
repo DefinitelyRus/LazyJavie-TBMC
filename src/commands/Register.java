@@ -17,28 +17,28 @@ public class Register extends ListenerAdapter{
 		
 		//-------------------------REGISTER-------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "register")) {
+			
+			//Initialization
 			String requestby = event.getMember().getUser().getName();
 			P.print("\nRegistration request: " + event.getMember().getUser());
+			
+			//<REGISTER: PASSWORD WITH SPACE>
 			if (args.length > 2) {
+				//Embed block
 				EmbedBuilder noArgsRegister = new EmbedBuilder();
 				noArgsRegister.setColor(0x77B255);
-				noArgsRegister.addField("Please don't use spaces for your password", "```" + LazyJavie.prefix + "register [password]```",true);
+				noArgsRegister.addField("Please don't use spaces for your password", "```" + LazyJavie.prefix + "register <password>```",true);
 				event.getChannel().sendMessage(noArgsRegister.build()).queue();				
 				return;
 			}
 			try {
-				
 				//Initialization
 				String password = args[1];
-				
-				//This part is soft-removed due to minor issues and generally lack of usefulness.
-				//List<Message> messages = event.getChannel().getHistory().retrievePast(2).complete();
-				//event.getChannel().deleteMessages(messages).queue();
 				
 				//Checks if the member is already registered.
 				try {
 					P.print("Attempting registration...");
-					String s = SQLconnector.get("select * from lazyjavie.members where userid = \"" + event.getMember().getId() + "\"", "userid", true);
+					String s = SQLconnector.get("select * from lazyjavie.members where userid = '" + event.getMember().getId() + "'", "userid", true);
 					
 					//<MEMBER ALREADY REGISTERED>
 					if (s != "Empty result.") {
@@ -54,10 +54,11 @@ public class Register extends ListenerAdapter{
 				catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
 				catch (Exception e) {P.print("Error encountered: " + e.toString()); return;}
 				
+				//<REGISTER: SUCCESS>
 				P.print("Registering...");
 				SQLconnector.update("insert into lazyjavie.members (userid, userpass) values (\"" + event.getMember().getId() + "\", \"" + password + "\")",true);
 				
-				//<SUCCESSFULY REGISTERED> EmbedBlock
+				//EmbedBlock
 				EmbedBuilder successRegister = new EmbedBuilder();
 				successRegister.setColor(0x77B255);
 				successRegister.setTitle("You have successfully been registered, " + event.getMember().getUser().getName() + "!");
@@ -69,22 +70,26 @@ public class Register extends ListenerAdapter{
 			catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
 			catch (ArrayIndexOutOfBoundsException e) {
 				P.print("Cancelling; missing argument.");
+				//Embed block
 				EmbedBuilder noArgsRegister = new EmbedBuilder();
 				noArgsRegister.setColor(0x77B255);
-				noArgsRegister.addField("Please enter an argument.", "```" + LazyJavie.prefix + "register [password]```",true);
+				noArgsRegister.addField("Please enter an argument.", "```" + LazyJavie.prefix + "register <password>```",true);
 				event.getChannel().sendMessage(noArgsRegister.build()).queue();
 				return;
 			}
 			catch (Exception e) {
+				//Embed block
 				EmbedBuilder errorEncountered = new EmbedBuilder();
 				errorEncountered.setColor(0x77B255);
-				errorEncountered.addField("Error encountered: " + e, "type ```" + LazyJavie.prefix + "register [password]",true);
+				errorEncountered.addField("Error encountered: " + e, "type ```" + LazyJavie.prefix + "register <password>",true);
 				event.getChannel().sendMessage(errorEncountered.build()).queue();
 			return;}
 		}
 		
 		//-------------------------DEREGISTER-------------------------
 		else if (args[0].equalsIgnoreCase(LazyJavie.prefix + "deregister")) {
+			
+			//Initialization
 			String requestby = event.getMember().getUser().getName();
 			P.print("\nDeregistration request: " + event.getMember().getUser().getName());
 			
@@ -109,11 +114,13 @@ public class Register extends ListenerAdapter{
 				return;
 			}
 			
+			//<DEREGISTER: NOT REGISTERED> Checks if the member isn't already registered.
+			//TODO Stuff
+			
 			//<DEREGISTER: SUCCESS> Deregisters the member.
 			else if(args[1].equals(pass)) {
 				P.print("Deregistering...");
 				try {
-					//[REMOVED] Purpose of SET SQL_SAFE_UPDATEs = 0 - Error Code: 1175
 					SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId(), true);
 				}
 				catch (LoginException e) {P.print(e.toString()); return;}
@@ -130,7 +137,7 @@ public class Register extends ListenerAdapter{
 				event.getChannel().sendMessage(successDeregister.build()).queue();
 			}
 			
-			//<UNREGISER: INVALID INPUT> When the user enters an incorrect password.
+			//<UNREGISER: INVALID PASSWORD> When the user enters an incorrect password.
 			else {
 				P.print("Invalid password: " + event.getMessage().getContentRaw());
 				//TODO Turn this into an embed.

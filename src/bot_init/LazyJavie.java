@@ -7,17 +7,15 @@ package bot_init;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.util.List;
+import java.text.DecimalFormat;
 import java.util.Scanner;
-
 import javax.security.auth.login.LoginException;
-
 import commands.Clear;
 import commands.GetPointEvent;
 import commands.P;
 import commands.Register;
 import commands.Returns;
-//import commands.adminShop;
+import commands.adminShop;
 import commands.shop;
 import commands.shopInventory;
 import commands.toConsole;
@@ -25,7 +23,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class LazyJavie {
@@ -35,6 +32,8 @@ public class LazyJavie {
 	public static String prefix = "$";
 	public static String token = "";
 	
+	
+	
 	//TODO Consider for removal.
 	public static void insertRole(String[] args) throws SQLException {
 		//What does this do / what is this for?
@@ -43,7 +42,48 @@ public class LazyJavie {
 	
 	//Startup
 	public static void main(String[] args) throws LoginException, SQLException {
-
+		
+		//Automatic version handling.
+		String version;
+		String defaultVer = "1.0";
+		String build = null;
+		String title = null;	//Only set to a proper title BEFORE releasing.
+		int intBuild = 0;
+		try {
+			//TODO Save version in a .json file, not SQL database.
+			version = SQLconnector.get("select * from lazyjavie.version_handler", "ver_release", false);
+			build = SQLconnector.get("select * from lazyjavie.version_handler", "build", false);
+			
+			//Checks if build count is empty.
+			if (build.equals("Empty result.")) {
+				P.print("Build not found; setting default...");
+				build = "1";
+				//SQLconnector.update("insert into lazyjavie.version_handler (build) values (" +build+ ")", false);
+			}
+			
+			//Updates the build number.
+			else {intBuild = Integer.parseInt(build) + 1;}
+			
+			//Checks if the version is empty.
+			if (version.equals("Empty result.") || !version.equals(defaultVer.toString())) {
+				P.print("Version not found; setting default...");
+				version = defaultVer;
+				//SQLconnector.update("insert into lazyjavie.version_handler (ver_release) values (" +version+ ")", false);
+			}
+			
+			//Converts explicitly to 1 decimal place.
+			DecimalFormat df = new DecimalFormat("0.0");
+			version = df.format(Float.parseFloat(version));
+			
+			//Updates the version listing.
+			SQLconnector.update("insert into lazyjavie.version_handler (ver_release, build, title) values (" +version+ ", " +intBuild+ ", " +title+ ")", false);
+		}
+		catch (LoginException e) {P.print("Error encountered: " + e.toString()); return;}
+		catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
+		catch (Exception e) {P.print("Error encountered: " + e.toString()); e.printStackTrace(); return;}
+		P.print("LazyJavie v" +version+ " build " +intBuild);
+		P.print("Starting...");
+		
 		try {
 			//[A] Getting the Token----------------------------------------
 			P.print("[A-1] Getting token from file");
@@ -82,7 +122,7 @@ public class LazyJavie {
 			jda.addEventListener(new Register());
 			jda.addEventListener(new Clear());
 			jda.addEventListener(new shop());
-			//jda.addEventListener(new adminShop());
+			jda.addEventListener(new adminShop());
 			jda.addEventListener(new GetPointEvent());
 			jda.addEventListener(new toConsole());
 			jda.addEventListener(new shopInventory());
@@ -90,6 +130,7 @@ public class LazyJavie {
 			P.print("[B-4] Ready!");
 			
 			//TODO Put this in shop.java as its own function, then call from here as an import.
+			/*
 			List<Role> roles = jda.getRoles();
 			try {
 				for(Role r : roles) {
@@ -98,6 +139,8 @@ public class LazyJavie {
 			}
 			catch (LoginException e) {P.print("\n[sellroles] Error enscountered: " + e);}
 			catch (SQLException e) {P.print("\n[sellroles] Error encountered: " + e);}
+			catch (Exception e) {P.print("\n[sellroles] Error encountered: " + e);}
+			*/
 
 			
 		}

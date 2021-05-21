@@ -79,36 +79,41 @@ public class shop extends ListenerAdapter {
 			    for (boolean item : permsArray) {perms.add(item);}
 		    	
 			    //Checks if the player has the currently iterated role.
-			    if (event.getMember().getRoles().contains(r)) {P.print("|Blacklisted " + r.getName() + " (Already claimed)");}
+			    if (event.getMember().getRoles().contains(r)) {P.print("|Blacklisted " + r.getName() + " (Already claimed)"); continue;}
 			    
 		    	//Any role colored #696969 (Hex); filters out bots.
-			    else if(r.getColorRaw() == 0x696969) {P.print("|Blacklisted " + r.getName());}
+			    else if(r.getColorRaw() == 0x696969) {P.print("|Blacklisted " + r.getName()); continue;}
 		    	
 		    	//Any role with the permission
-		    	else if (perms.contains(true)) {P.print("|Blacklisted " + r.getName());}
+		    	else if (perms.contains(true)) {P.print("|Blacklisted " + r.getName()); continue;}
 		    	
 		    	//Any role part of the blacklist.
-		    	else if (blacklist.contains(r.getName().toLowerCase())) {P.print("|Blacklisted " + r.getName());}
+		    	else if (blacklist.contains(r.getName().toLowerCase())) {P.print("|Blacklisted " + r.getName()); continue;}
 		    	
 		    	else {
-		    		//Gets the role's price.
+		    		//Sets the role's price.
 		    		String stringRolePrice = null;
+		    		
 		    		try {
-		    		P.print("Getting role price...");
-			    	stringRolePrice = SQLconnector.get("SELECT * FROM lazyjavie.sellroles WHERE roleName='"+ r.getName() +"'", "rolePrice", false);
-		    		} catch (LoginException e) {P.print("Error encountered: " + e.toString());}
+			    		P.print("Getting role price...");
+				    	stringRolePrice = SQLconnector.get("SELECT * FROM lazyjavie.shop WHERE itemname='"+ r.getName() +"'", "price", false);
+		    		}
+		    		catch (LoginException e) {P.print("Error encountered: " + e.toString());}
 		    		catch (SQLException e) {P.print("Error encountered: " + e.toString());}
 			    	//Adds the role to the displayed list.
 		    		displayRoles.append("• **" + r.getName() + ":** `" + stringRolePrice + " points`").append("\n");
 		    		
 		    		//Adds the role to the table.
 					try {
-						P.print("Adding role to table...");
-						SQLconnector.update("INSERT INTO lazyjavie.shop (itemname, price) VALUES ('" + roleName + "', 0);", true);
-					} catch (SQLException e) {
-						if (e.toString().contains("Duplicate entry")) {P.print("Failed: Role already exists in table.");}}
+						String x = SQLconnector.get("select * from lazyjavie.shop where itemname = '" +roleName+ "'", "itemname", false);
+						boolean exists = !x.equals("Empty result.");
+						
+						if (exists == false) {
+							P.print("Adding" + roleName + " to the database...");
+							SQLconnector.update("INSERT INTO lazyjavie.shop (itemname, price) VALUES ('" + roleName + "', 0);", false);
+						} else {P.print(roleName + " already exists in database; skipping...");}
+					} catch (SQLException e) {}
 					catch (Exception e) {e.printStackTrace();}
-					//P.print(SQLconnector.getList("select * from lazyjavie.sellroles", "roleName").toString());
 		    	}	
 		    }	//-------------------------Blacklist block ends here.-------------------------
 		    P.print("Blacklist check done.");

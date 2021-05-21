@@ -16,8 +16,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class Returns extends ListenerAdapter{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		String requestby = event.getMember().getUser().getName();
+		
+		//Initialization
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
+		String requestby = null;
+		if (args[0].startsWith(LazyJavie.prefix)) {requestby = event.getMember().getUser().getName();}
 		
 		//[BOT TOKEN] Returns the bot's token... not really.----------------------------------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "bottoken")) {
@@ -30,19 +33,19 @@ public class Returns extends ListenerAdapter{
 			P.print("\n[Returns] Requesting ping: " + event.getMember().getUser().getName());
 			long ping = event.getJDA().getGatewayPing();
 			P.print("Latency gathered.");
-			//Embed Message:
 			
-			event.getChannel().sendMessage(ping + "ms").queue();
+			//Embed block
 			P.print("Ping: " + ping + "ms");
 			EmbedBuilder pingEmbed = new EmbedBuilder();
 			pingEmbed.setColor(0x77B255);
-			pingEmbed.setDescription(pingEmbed + "ms");
+			pingEmbed.setDescription("Pong: **" +ping+ "ms**");
 			pingEmbed.setFooter("Requested by " + requestby , event.getMember(	).getUser().getAvatarUrl());
 			event.getChannel().sendMessage(pingEmbed.build()).queue();
 		}
 		
 		//[TEST] Just returns a confirmation message to see if the bot works.-----------------------------------
 		else if (args[0].equalsIgnoreCase(LazyJavie.prefix + "test")) {
+			//Embed block
 			EmbedBuilder test = new EmbedBuilder();
 			test.setColor(0x77B255);
 			test.setTitle(":white_check_mark: Test success!");

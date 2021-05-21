@@ -26,6 +26,7 @@ public class GetPointEvent extends ListenerAdapter {
 			//Applies the changes and uploads it to the database.
 			SQLconnector.update("UPDATE lazyjavie.members "+ "SET points = " + pts + " WHERE userid=" + memberId + ";",true);
 		}
+		catch (NullPointerException e) {P.print("Ignoring error: " + e.toString());}
 		catch (LoginException e) {e.printStackTrace();}
 		catch (SQLException e) {e.printStackTrace();}
 		catch (NumberFormatException e) {if (e.toString().startsWith("java.lang.NumberFormatException: For input string: \"Statement created.\"")) {}}
