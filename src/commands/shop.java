@@ -1,11 +1,18 @@
+/*
+ * ---------------!!! ADD TO README !!!---------------
+ * The SHOP command allows members to buy rewards using points they have accumulated during their stay in the server.
+ * As of version 1.0, members can only buy server roles as rewards.
+ * This will be updated later on to allow for more rewards to be set by the server admins.
+ * BUY is also the only sub-command under the SHOP command. There will be more soon as well.
+ * 
+ */
+
 package commands;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.security.auth.login.LoginException;
-
 import bot_init.LazyJavie;
 import bot_init.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;

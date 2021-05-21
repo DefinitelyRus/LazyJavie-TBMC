@@ -1,7 +1,15 @@
+/*
+ * ---------------!!! ADD TO README !!!---------------
+ * Clear command is a standard moderation tool for cleaning channels, usually to clear out verbal issues between members.
+ * A limitation of 2 to 100 messages have been set by the JDA developers for server-safety.
+ * 
+ * -	$clear <# of messages>
+ * 		Will delete a specified number of messages sent within 14 days prior to the command sent.
+ */
+
 package commands;
 
 import java.util.List;
-
 import bot_init.LazyJavie;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;

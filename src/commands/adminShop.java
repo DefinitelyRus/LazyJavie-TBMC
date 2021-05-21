@@ -1,7 +1,20 @@
 /*
  * ---------------!!! ADD TO README !!!---------------
- * TODO Write documentation
- * UHH
+ * ADMINSHOP or ASHOP is an admin-only command where administrators can change the settings of their server's shop.
+ * 
+ * Available subcommands are as follows:
+ * 
+ * -	$ashop blacklist <role>
+ * 		This command removes a role from the shop inventory, preventing players from purchasing certain roles.
+ * 
+ * -	$ashop setprice <role> <price>
+ * 		Updates the price of a certain role.
+ * 
+ * -	[TO BE ADDED] $ashop setstock <role> <stock>
+ * 		Updates how many times a role can be purchased.
+ * 
+ * -	[TO BE ADDED] $ashop setdesc <role> <description>
+ * 		Updates the product description to be displayed.
  */
 
 package commands;

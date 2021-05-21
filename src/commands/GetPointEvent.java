@@ -1,5 +1,5 @@
 /*
- * 
+ * Each time a registered member sends a message, they will earn a point.
  */
 
 package commands;

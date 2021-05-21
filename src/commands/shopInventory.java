@@ -1,3 +1,8 @@
+/*
+ * SHOPUPDATE is a work-in-progress command where admins can change individual settings for each product in the shop.
+ * Due to a lack of development time, this module will be left out for the v1.0 release.
+ */
+
 package commands;
 
 import bot_init.LazyJavie;

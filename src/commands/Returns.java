@@ -1,6 +1,22 @@
 /*
  * ---------------!!! ADD TO README !!!---------------
- * TODO Write documentation
+ * This is where all return commands go. Commands that only returns a message and does nothing else.
+ * 
+ * Available commands are as follows:
+ * -	$bottoken
+ * 		Rick rolls you.
+ * 
+ * -	$ping
+ * 		Returns the latency from the server to the bot's host.
+ * 
+ * -	$test
+ * 		Confirms that the bot is still connected. 
+ * 
+ * -	$points
+ * 		Returns how many points a member has accumulated.
+ * 
+ * -	$help
+ * 		Returns a list of available commands, their syntax, and description.
  */
 package commands;
 

@@ -1,5 +1,5 @@
 /*
- * 
+ * This file serves as the initializer for the entire program.
  */
 
 package bot_init;
@@ -32,17 +32,7 @@ public class LazyJavie {
 	public static String prefix = "$";
 	public static String token = "";
 	
-	
-	
-	//TODO Consider for removal.
-	public static void insertRole(String[] args) throws SQLException {
-		//What does this do / what is this for?
-	}
-	
-	
-	//Startup
-	public static void main(String[] args) throws LoginException, SQLException {
-		
+	public static String version(boolean toUpdate, boolean toPrint) {
 		//Automatic version handling.
 		String version;
 		String defaultVer = "1.0";
@@ -76,12 +66,21 @@ public class LazyJavie {
 			version = df.format(Float.parseFloat(version));
 			
 			//Updates the version listing.
-			SQLconnector.update("insert into lazyjavie.version_handler (ver_release, build, title) values (" +version+ ", " +intBuild+ ", " +title+ ")", false);
+			if (toUpdate == true) SQLconnector.update("insert into lazyjavie.version_handler (ver_release, build, title) values (" +version+ ", " +intBuild+ ", " +title+ ")", false);
+			
+			if (toPrint == true) P.print("LazyJavie v" +version+ " build " +intBuild);
+			return "v" +version+ " build " + intBuild;
 		}
-		catch (LoginException e) {P.print("Error encountered: " + e.toString()); return;}
-		catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
-		catch (Exception e) {P.print("Error encountered: " + e.toString()); e.printStackTrace(); return;}
-		P.print("LazyJavie v" +version+ " build " +intBuild);
+		catch (LoginException e) {P.print("Error encountered: " + e.toString()); return e.toString();}
+		catch (SQLException e) {P.print("Error encountered: " + e.toString()); return e.toString();}
+		catch (Exception e) {P.print("Error encountered: " + e.toString()); e.printStackTrace(); return e.toString();}
+
+	}
+	
+	//Startup
+	public static void main(String[] args) throws LoginException, SQLException {
+		
+		version(true, true);	//Set the first argument to FALSE for releases.
 		P.print("Starting...");
 		
 		try {
@@ -128,21 +127,6 @@ public class LazyJavie {
 			jda.addEventListener(new shopInventory());
 
 			P.print("[B-4] Ready!");
-			
-			//TODO Put this in shop.java as its own function, then call from here as an import.
-			/*
-			List<Role> roles = jda.getRoles();
-			try {
-				for(Role r : roles) {
-					SQLconnector.update("INSERT INTO lazyjavie.sellroles (roleName) VALUES(" + r.getName() + ");", true);
-				}
-			}
-			catch (LoginException e) {P.print("\n[sellroles] Error enscountered: " + e);}
-			catch (SQLException e) {P.print("\n[sellroles] Error encountered: " + e);}
-			catch (Exception e) {P.print("\n[sellroles] Error encountered: " + e);}
-			*/
-
-			
 		}
 		catch (FileNotFoundException file404) {
 			//[A] File not found.

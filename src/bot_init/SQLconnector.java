@@ -1,19 +1,22 @@
 /*
  * ---------------!!! ADD TO README !!!---------------
  * This module serves as the connector between the program and the local SQL server.
+ * Given the complexity of this program, we decided to put all MySQL-related
+ * code in this module so all we have to do is call a function if we ever
+ * need to get records from the database or update a table.
  * 
- * [1]	Update function
+ * [1]	update() function
  * 		This function takes an SQL command and updates the selected table.
  * 		Both adding and updating records can be done with this function by putting
  * 		INSERT INTO instead of UPDATE.
  * 
- * [2]	Get function
+ * [2]	get() function
  * 		This function takes an SQL query and a column to return then returns the result.
  * 		In case there are multiple results, this function will return the last one.
  * 
- * [3]	GetList function
- * 		This function takes an SQL query and a column to return then returns the results.
- * 		Only use this if you intend to get an ARRAY not a SINGLE STRING.
+ * [3]	getList() function
+ * 		This function takes an SQL query and a column to return then return a list of results.
+ * 		Only use this if you intend to get a LINKED LIST not just a STRING.
  * 
  * [4]	Test command
  * 		This checks if the connection between the local SQL database is stable.
@@ -21,6 +24,7 @@
  */
 
 package bot_init;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;

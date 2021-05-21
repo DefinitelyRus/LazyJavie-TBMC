@@ -1,3 +1,8 @@
+/*
+ * ---------------!!! ADD TO README !!!---------------
+ * A lazy way of communicating between the server and the console.
+ */
+
 package commands;
 
 import bot_init.LazyJavie;

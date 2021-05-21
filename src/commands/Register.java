@@ -1,5 +1,18 @@
 /*
- * TODO Write documentation
+ * ---------------!!! ADD TO README !!!---------------
+ * This module houses the registration process for point accumulation.
+ * Members have to be registered in order to get points since, by default,
+ * they will earn a point everytime they send a message on the server.
+ * If we let all members to earn points without registering, the bot can get
+ * overloaded with requests since it has to connect with the database twice
+ * each time a member earns a point.
+ * 
+ * Available commands are as follows:
+ * -	$register <password>
+ * 		Registers the member to the database. A password is required for later use.
+ * 
+ * -	$deregister <password>
+ * 		Removes the member from the database and will no longer earn points.
  */
 package commands;
 
