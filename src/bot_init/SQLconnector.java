@@ -18,9 +18,9 @@
  * 		This function takes an SQL query and a column to return then return a list of results.
  * 		Only use this if you intend to get a LINKED LIST not just a STRING.
  * 
- * [4]	Test command
- * 		This checks if the connection between the local SQL database is stable.
- * 		It takes password as input, but it could really be anything under 256 characters.
+ * [4]	NoDBfixer() function
+ * 		Its function is to automatically fix a missing database.
+ * 		It takes no input. Used for checking upon startup.
  */
 
 package bot_init;
@@ -259,11 +259,15 @@ public class SQLconnector {
 		public static void NoDBfixer() {
 			/*
 			 * In the event that the database is missing, this function is called instead of update().
+			 * 
+			 * NOTE: COMPILED .JAR WILL CRASH IF THIS METHOD IS CALLED.
+			 * Reason: NoDB_autofix.sql cannot be found
 			 */
 			try {
 				P.print("\nError ecountered: Starting automatic database setup.");
 				P.print("|[SQLcD-1] Finding fixer script...");
 				File sqlfile = new File(".\\src\\sql_queries\\NoDB_autofix.sql");
+				//File sqlfile = new File(".\\src\\sql_queries\\NoDB_autofix.sql");
 				P.print("|[SQLcD-2] Scanning file...");
 				Scanner reader = new Scanner(sqlfile);
 				String statement = "";

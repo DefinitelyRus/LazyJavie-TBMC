@@ -7,7 +7,6 @@ package bot_init;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 import javax.security.auth.login.LoginException;
@@ -53,9 +52,13 @@ public class LazyJavie {
 				//SQLconnector.update("insert into lazyjavie.version_handler (build) values (" +build+ ")", false);
 			}
 			else {
+				//Checks if the program encounters an SQL error.
 				if (build.startsWith("Error encountered: java.sql.SQLSyntaxErrorException")) {
+					//Starts the automatic database setup.
 					SQLconnector.NoDBfixer();
-					return version(true, true);
+					
+					//Recurs the function from itself.
+					return version(toUpdate, toPrint);
 				}
 
 				//Updates the build number.
@@ -95,8 +98,8 @@ public class LazyJavie {
 	//Startup
 	public static void main(String[] args) throws LoginException, SQLException {
 		try {
-			String x = version(true, true);	//Set the first argument to FALSE for releases.
-			//if (x.startsWith("java.lang.NumberFormatException")) return;
+			version(false, true);	//Set the first argument to FALSE for releases.
+			
 			P.print("Starting...");
 			//[A] Getting the Token----------------------------------------
 			P.print("[A-1] Getting token from file");
