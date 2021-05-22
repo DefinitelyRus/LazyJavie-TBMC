@@ -11,11 +11,11 @@
 - [item]
 
 ## Commands
-###[command 1]
+### [command 1]
 	[syntax]
 [description]
 
-###[command 2]
+### [command 2]
 	[syntax]
 [description]
     
