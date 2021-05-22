@@ -42,7 +42,8 @@ public class SQLconnector {
 	//Initializing variables
 	static int records = 0;
 	static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static String dbAdress = "jdbc:mysql://localhost:3306/lazyjavie";
+	static String dbAddress = "jdbc:mysql://localhost:3306/lazyjavie";
+	static String defaultAddress = "jdbc:mysql://localhost:3306";
 	static String dbID = "root";
 	static String dbPass = "password";
 	
@@ -70,7 +71,7 @@ public class SQLconnector {
 		try {
 			//Starts a connection to the database using the JDBC driver.
 			if (tp == true) {P.print("|[SQLcA-1] Starting connection with the database...");}
-			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
+			Connection connection = DriverManager.getConnection(dbAddress, dbID, dbPass);
 			
 			//Creates a statement
 			if (tp == true) {P.print("|[SQLcA-2] Creating statement...");}
@@ -118,7 +119,7 @@ public class SQLconnector {
 		try {
 			//Starts a connection to the database using the JDBC driver.
 			if (tp == true) {P.print("|[SQLcB-1] Starting connection with the database...");}
-			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
+			Connection connection = DriverManager.getConnection(dbAddress, dbID, dbPass);
 			returnMsg = "Connection started.";
 			
 			//Creates a statement
@@ -176,7 +177,7 @@ public class SQLconnector {
 		try {
 			//Starts a connection to the database using the JDBC driver.
 			if (tp == true) {P.print("|[SQLcB-1] Starting connection with the database...");}
-			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
+			Connection connection = DriverManager.getConnection(dbAddress, dbID, dbPass);
 			
 			//Creates a statement
 			if (tp == true) {P.print("|[SQLcB-2] Creating statement...");}
@@ -230,7 +231,7 @@ public class SQLconnector {
 		try {
 			//Starts a connection to the database using the JDBC driver.
 			P.print("[A-1] Starting connection with the database...");
-			Connection connection = DriverManager.getConnection(dbAdress, dbID, dbPass);
+			Connection connection = DriverManager.getConnection(dbAddress, dbID, dbPass);
 			returnMsg = "Connection started.";
 			
 			//Creates a statement
@@ -253,4 +254,78 @@ public class SQLconnector {
 			return "Error encountered: " + e;
 		}
 	}
+	
+	//-------------------------AUTO CREATE DB-------------------------
+		public static void NoDBfixer() {
+			/*
+			 * In the event that the database is missing, this function is called instead of update().
+			 */
+			try {
+				P.print("\nError ecountered: Starting automatic database setup.");
+				P.print("|[SQLcD-1] Finding fixer script...");
+				File sqlfile = new File(".\\src\\sql_queries\\NoDB_autofix.sql");
+				P.print("|[SQLcD-2] Scanning file...");
+				Scanner reader = new Scanner(sqlfile);
+				String statement = "";
+				while (reader.hasNextLine()) {
+					statement = reader.nextLine();
+					P.print("|MySQL Statement: " + statement);
+					updateOtherDB(statement, defaultAddress);
+				}
+				P.print("|[SQLcD-4] New database created.\n");
+				reader.close();
+			}
+			catch (LoginException e2) {P.print("Error encountered: " + e2.toString()); return;}
+			catch (SQLException e2) {P.print("Error encountered: " + e2.toString()); return;}
+			catch (FileNotFoundException e2) {
+				P.print("NoDB_autofix.sql is missing; exiting...");
+				System.exit(0);
+			}
+			catch (Exception e2) {P.print("Error encountered: " + e2.toString()); return;}
+		}
+		
+		public static void updateOtherDB(String query, String dbAddressOverride) throws LoginException, SQLException {
+			/*
+			 * In the event that the target database is different, this function is called instead of update().
+			 * updateOtherDB() requires one argument, query.
+			 * 
+			 * "query" is the SQL command to be executed.
+			 */
+			
+			dbAddress = dbAddressOverride;
+			
+			//Local scan password
+			try {
+				File file = new File("C:\\lazyjavie_token.txt");
+				Scanner reader = new Scanner(file);
+			    while (reader.hasNextLine()) {dbPass = reader.nextLine();}
+			    reader.close();}
+			catch (FileNotFoundException e) {P.print("404: C:\\lazyjavie_token.txt is missing.");}
+			catch (Exception e) {e.printStackTrace();}
+			
+			//Initialization
+			String exeScript = query;
+			
+			try {
+				//Starts a connection to the database using the JDBC driver.
+				Connection connection = DriverManager.getConnection(dbAddress, dbID, dbPass);
+				
+				//Creates a statement
+				Statement statement = connection.createStatement();
+				
+				//Starts the SQL query.
+				P.print("|[SQLcD-3] Executing SQL script...");
+				statement.execute(exeScript);
+				
+				//Closes the connection.
+				connection.close();
+			}
+			catch (SQLException e) {
+				if (e.toString().startsWith("java.sql.SQLException: Can not issue empty query.")) {P.print("");}
+				else e.printStackTrace();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 }

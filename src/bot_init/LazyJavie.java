@@ -7,12 +7,14 @@ package bot_init;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 import javax.security.auth.login.LoginException;
 import commands.Clear;
 import commands.GetPointEvent;
 import commands.P;
+import commands.Quit;
 import commands.Register;
 import commands.Returns;
 import commands.adminShop;
@@ -35,7 +37,7 @@ public class LazyJavie {
 	public static String version(boolean toUpdate, boolean toPrint) {
 		//Automatic version handling.
 		String version;
-		String defaultVer = "1.0";
+		String defaultVer = "1.1";
 		String build = null;
 		String title = null;	//Only set to a proper title BEFORE releasing.
 		int intBuild = 0;
@@ -50,11 +52,23 @@ public class LazyJavie {
 				build = "1";
 				//SQLconnector.update("insert into lazyjavie.version_handler (build) values (" +build+ ")", false);
 			}
+			else {
+				if (build.startsWith("Error encountered: java.sql.SQLSyntaxErrorException")) {
+					SQLconnector.NoDBfixer();
+					return version(true, true);
+				}
+
+				//Updates the build number.
+				try {
+					intBuild = Integer.parseInt(build);
+					if (toUpdate == true) intBuild++;
+				}
+				catch (Exception e) {
+					P.print("Error encountered: " + e.toString()); return e.toString();
+				}
+			}
 			
-			//Updates the build number.
-			else {intBuild = Integer.parseInt(build) + 1;}
-			
-			//Checks if the version is empty.
+			//Checks if the version is empty or if the in-code version is different.
 			if (version.equals("Empty result.") || !version.equals(defaultVer.toString())) {
 				P.print("Version not found; setting default...");
 				version = defaultVer;
@@ -71,6 +85,7 @@ public class LazyJavie {
 			if (toPrint == true) P.print("LazyJavie v" +version+ " build " +intBuild);
 			return "v" +version+ " build " + intBuild;
 		}
+		//catch (SQLSyntaxErrorException e) {}
 		catch (LoginException e) {P.print("Error encountered: " + e.toString()); return e.toString();}
 		catch (SQLException e) {P.print("Error encountered: " + e.toString()); return e.toString();}
 		catch (Exception e) {P.print("Error encountered: " + e.toString()); e.printStackTrace(); return e.toString();}
@@ -79,11 +94,10 @@ public class LazyJavie {
 	
 	//Startup
 	public static void main(String[] args) throws LoginException, SQLException {
-		
-		version(true, true);	//Set the first argument to FALSE for releases.
-		P.print("Starting...");
-		
 		try {
+			String x = version(true, true);	//Set the first argument to FALSE for releases.
+			//if (x.startsWith("java.lang.NumberFormatException")) return;
+			P.print("Starting...");
 			//[A] Getting the Token----------------------------------------
 			P.print("[A-1] Getting token from file");
 			/*
@@ -125,17 +139,21 @@ public class LazyJavie {
 			jda.addEventListener(new GetPointEvent());
 			jda.addEventListener(new toConsole());
 			jda.addEventListener(new shopInventory());
+			jda.addEventListener(new Quit());
 
 			P.print("[B-4] Ready!");
 		}
+		//catch (NumberFormatException e) {}
 		catch (FileNotFoundException file404) {
 			//[A] File not found.
-			P.print("Missing file error.\n" + file404.toString());
+			P.print("Missing file error: " + file404.toString());
+			return;
 		}
 		catch (Exception e) {
 			//[A-B] Every other exception.
 			P.print(e.toString());
 			e.printStackTrace();
+			return;
 		}
 
 	}
