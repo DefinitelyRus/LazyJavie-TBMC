@@ -37,8 +37,6 @@ public class adminShop extends ListenerAdapter{
 		
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "ashop") && event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
 			
-			P.print(event.getMessage().getContentRaw());
-			
 			//Initialization
 			String requestby = event.getMember().getUser().getName();
 			

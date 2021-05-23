@@ -28,6 +28,7 @@ public class Register extends ListenerAdapter{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		String masterPass = "masterPassword6969";
+		
 		//-------------------------REGISTER-------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "register")) {
 			
@@ -40,7 +41,7 @@ public class Register extends ListenerAdapter{
 				//Embed block
 				EmbedBuilder noArgsRegister = new EmbedBuilder();
 				noArgsRegister.setColor(0x77B255);
-				noArgsRegister.addField("Please don't use spaces for your password", "```" + LazyJavie.prefix + "register <password>```",true);
+				noArgsRegister.addField("Please don't use spaces for your password", "```" + LazyJavie.prefix + "register <password>```.",true);
 				event.getChannel().sendMessage(noArgsRegister.build()).queue();				
 				return;
 			}
@@ -96,7 +97,8 @@ public class Register extends ListenerAdapter{
 				errorEncountered.setColor(0x77B255);
 				errorEncountered.addField("Error encountered: " + e, "type ```" + LazyJavie.prefix + "register <password>",true);
 				event.getChannel().sendMessage(errorEncountered.build()).queue();
-			return;}
+			return;
+			}
 		}
 		
 		//-------------------------DEREGISTER-------------------------
