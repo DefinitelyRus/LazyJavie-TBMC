@@ -23,7 +23,8 @@
 [Ask Rus for an explanation]
  
 ## Installation
-[Leave this empty for now]
+The latest stable major releases are included in this list of downloadable .JAR files.
+[LINK]
  
 ## How to invite
 [Leave this empty for now]
