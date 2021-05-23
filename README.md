@@ -38,12 +38,12 @@ We want to release the bot as a server-hosted bot similar to [Mee6](https://mee6
 
 ## Code Contributors
 ### Head Development Team
-- @DefinitelyRus
-- @fancybaby404
+- [@DefinitelyRus](https://github.com/DefinitelyRus)
+- [@fancybaby404](https://github.com/fancybaby404)
 
 ### Documentation
-- @[username]
-- @[username]
+- [@hansl04](https://github.com/hansl04)
+- [@triciafaye](https://github.com/triciafaye)
 
 ## License
 This project uses GNU General Public License v3.0. See LICENSE for more information.
