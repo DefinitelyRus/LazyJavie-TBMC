@@ -91,7 +91,7 @@ public class Clear extends ListenerAdapter {
 				return;
 			}
 			catch (IllegalArgumentException e) {
-				//Checks if the messagesa re too old.
+				//Checks if the messages are too old.
 				if (e.toString().startsWith("java.lang.IllegalArgumentException: Message retrieval")) {
 					P.print("Messages too old; cancelling.");
 					//Embed block

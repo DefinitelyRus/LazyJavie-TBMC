@@ -83,7 +83,7 @@ public class Returns extends ListenerAdapter{
 			//Checks if the member is registered.
 			try {
 				String x;
-				x = SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points", true);
+				x = SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points", false);
 				if (x == "Empty result.") {
 					//TODO Turn this to embed.
 					event.getChannel().sendMessage("Type `" +LazyJavie.prefix+ "register <password>` to have your points recorded.").queue();
@@ -119,9 +119,9 @@ public class Returns extends ListenerAdapter{
 			
 			try {
 				P.print("Getting lists from database...");
-				cmdlist = SQLconnector.getList("select * from lazyjavie.helplist", "cmd", true);
-				dsclist = SQLconnector.getList("select * from lazyjavie.helplist", "dsc", true);
-				foradminlist = SQLconnector.getList("select * from lazyjavie.helplist", "adminonly", true);
+				cmdlist = SQLconnector.getList("select * from lazyjavie.helplist", "cmd", false);
+				dsclist = SQLconnector.getList("select * from lazyjavie.helplist", "dsc", false);
+				foradminlist = SQLconnector.getList("select * from lazyjavie.helplist", "adminonly", false);
 				
 				P.print("Converting to arrays...");
 				cmdlist.toArray(cmdarray);

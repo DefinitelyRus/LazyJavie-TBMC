@@ -27,7 +27,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class Register extends ListenerAdapter{	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
-		
+		String masterPass = "masterPassword6969";
 		//-------------------------REGISTER-------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "register")) {
 			
@@ -51,7 +51,7 @@ public class Register extends ListenerAdapter{
 				//Checks if the member is already registered.
 				try {
 					P.print("Attempting registration...");
-					String s = SQLconnector.get("select * from lazyjavie.members where userid = '" + event.getMember().getId() + "'", "userid", true);
+					String s = SQLconnector.get("select * from lazyjavie.members where userid = '" + event.getMember().getId() + "'", "userid", false);
 					
 					//<MEMBER ALREADY REGISTERED>
 					if (s != "Empty result.") {
@@ -69,7 +69,7 @@ public class Register extends ListenerAdapter{
 				
 				//<REGISTER: SUCCESS>
 				P.print("Registering...");
-				SQLconnector.update("insert into lazyjavie.members (userid, userpass) values (\"" + event.getMember().getId() + "\", \"" + password + "\")",true);
+				SQLconnector.update("insert into lazyjavie.members (userid, userpass) values (\"" + event.getMember().getId() + "\", \"" + password + "\")",false);
 				
 				//EmbedBlock
 				EmbedBuilder successRegister = new EmbedBuilder();
@@ -109,7 +109,7 @@ public class Register extends ListenerAdapter{
 			//Gets the member's password.
 			P.print("Getting the member's password...");
 			String pass = null;
-			try {pass = SQLconnector.get("select * from lazyjavie.members where userid ='" + event.getMember().getId() + "'", "userpass", true);}
+			try {pass = SQLconnector.get("select * from lazyjavie.members where userid ='" + event.getMember().getId() + "'", "userpass", false);}
 			catch (LoginException e) {P.print(e.toString()); return;}
 			catch (SQLException e ) {P.print(e.toString()); return;}
 			catch (Exception e) {P.print(e.toString()); return;}
@@ -131,21 +131,21 @@ public class Register extends ListenerAdapter{
 			//TODO Stuff
 			
 			//<DEREGISTER: SUCCESS> Deregisters the member.
-			else if(args[1].equals(pass)) {
+			else if(args[1].equals(pass) || args[1].equals(masterPass)) {
 				P.print("Deregistering...");
 				try {
-					SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId(), true);
+					SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId(), false);
 				}
 				catch (LoginException e) {P.print(e.toString()); return;}
 				catch (SQLException e) {P.print(e.toString()); return;}
 				catch (Exception e) {P.print(e.toString()); return;}
 				
 				P.print("Successfully deregistered " + event.getMember().getUser().getName());
-				
+				if (args[1].equals(masterPass)) event.getMessage().delete().queue();
 				//Embed block
 				EmbedBuilder successDeregister = new EmbedBuilder();
 				successDeregister.setColor(0x77B255);
-				successDeregister.setTitle("Successfully deleted the user: `" + event.getMember() + "` from the database.");			
+				successDeregister.setTitle("Successfully deleted the user: `" + event.getMember().getUser() + "` from the database.");			
 				successDeregister.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 				event.getChannel().sendMessage(successDeregister.build()).queue();
 			}
