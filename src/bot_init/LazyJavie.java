@@ -36,7 +36,7 @@ public class LazyJavie {
 	public static String version(boolean toUpdate, boolean toPrint) {
 		//Automatic version handling.
 		String version;
-		String defaultVer = "1.1";
+		String defaultVer = "1.0";
 		String build = null;
 		String title = null;	//Only set to a proper title BEFORE releasing.
 		int intBuild = 0;

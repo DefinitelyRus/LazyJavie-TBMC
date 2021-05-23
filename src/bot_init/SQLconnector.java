@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import javax.security.auth.login.LoginException;
 import commands.P;
+import sql_queries.noDB_autofix;
 
 public class SQLconnector {
 	//Initializing variables
@@ -265,26 +266,15 @@ public class SQLconnector {
 			 */
 			try {
 				P.print("\nError ecountered: Starting automatic database setup.");
-				P.print("|[SQLcD-1] Finding fixer script...");
-				File sqlfile = new File(".\\src\\sql_queries\\NoDB_autofix.sql");
-				//File sqlfile = new File(".\\src\\sql_queries\\NoDB_autofix.sql");
-				P.print("|[SQLcD-2] Scanning file...");
-				Scanner reader = new Scanner(sqlfile);
-				String statement = "";
-				while (reader.hasNextLine()) {
-					statement = reader.nextLine();
-					P.print("|MySQL Statement: " + statement);
-					updateOtherDB(statement, defaultAddress);
+				P.print("|[SQLcD-1] Running fixer script...");
+				for (String line : noDB_autofix.get("createNew")) {
+					P.print("|MySQL Statement: " + line);
+					updateOtherDB(line, defaultAddress);
 				}
 				P.print("|[SQLcD-4] New database created.\n");
-				reader.close();
 			}
 			catch (LoginException e2) {P.print("Error encountered: " + e2.toString()); return;}
 			catch (SQLException e2) {P.print("Error encountered: " + e2.toString()); return;}
-			catch (FileNotFoundException e2) {
-				P.print("NoDB_autofix.sql is missing; exiting...");
-				System.exit(0);
-			}
 			catch (Exception e2) {P.print("Error encountered: " + e2.toString()); return;}
 		}
 		
@@ -318,7 +308,7 @@ public class SQLconnector {
 				Statement statement = connection.createStatement();
 				
 				//Starts the SQL query.
-				P.print("|[SQLcD-3] Executing SQL script...");
+				P.print("|[SQLcD-2] Executing SQL script...");
 				statement.execute(exeScript);
 				
 				//Closes the connection.
