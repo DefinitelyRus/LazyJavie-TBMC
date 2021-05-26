@@ -1,23 +1,52 @@
 # LazyJavie
- [DESCRIPTION]
+LazyJavie is a multi-purpose utility Discord bot made using Discord JDA. Its primary purpose, as of v1.0, is to host a shop where server members can buy server roles. Server admins can specify which roles are available for purchase and which are not. Newly made roles are automatically added upon using $shop.
 
 ## Features
 ### Highly-flexible shop system
 [description]
-- [item]
+- RETURNS
+  - $bottoken
+     - How about your try it out for yourself?
+
 
 ### Moderation tools
 [description]
 - [item]
 
 ## Commands
-### [command 1]
+### REGISTER (REMOVE CAPS)
 	[syntax]
-[description]
+REGISTER simply adds the sender to the database. This allows the server to track user activity inside the server. As of v1.0, the bot only tracks how many messages were sent by the user while the bot is online.
 
-### [command 2]
+### UNREGISTER (REMOVE CAPS)
 	[syntax]
-[description]
+UNREGISTER removes the sender from the database.
+
+### Shop
+	[syntax]
+The SHOP command allows members to buy rewards using points they have accumulated during their stay in the server. As of version 1.0, members can only buy server roles as rewards. This will be updated later on to allow for more rewards to be set by the server admins. BUY is also the only sub-command under the SHOP command. More will be added in later updates.
+
+### Admin Shop
+	[syntax]
+ADMINSHOP or ASHOP is an admin-only command where administrators can change the settings of their server's shop.
+
+Available subcommands are as follows:
+
+-$ashop blacklist <role>: This command removes a role from the shop inventory, preventing players from purchasing certain roles.
+   
+-$ashop setprice <role> <price>: Updates the price of a certain role.
+
+-[TO BE ADDED] $ashop setstock <role> <stock>: Updates how many times a role can be purchased.
+
+-[TO BE ADDED] $ashop setdesc <role> <description>: Updates the product description to be displayed.
+
+### Miscellaneous
+	[syntax]
+These commands aren't in any particular category, so we compiled them here instead.
+- $msgc
+   - $msgc Sends a message directly to the console.
+- $quit
+   - $quit Turns the bot offline.
     
 ## How it works
 [Ask Rus for an explanation]
