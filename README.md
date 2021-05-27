@@ -24,6 +24,7 @@ Removes the sender from the database.
 ### Shop
 	$shop <subcommand> <arguments>
 Allows members to buy rewards using points they have accumulated during their stay in the server. As of version 1.0, members can only buy server roles as rewards. This will be updated later on to allow for more rewards to be set by the server admins. BUY is also the only sub-command under the SHOP command. More will be added in later updates.
+- `$shop`: Lists the available items and their prices.
 - `$shop buy <role>`: Gives the sender the requested role given that the role is available and the sender has enough points.
 
 ### Admin Shop
