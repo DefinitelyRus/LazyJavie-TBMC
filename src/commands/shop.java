@@ -168,9 +168,11 @@ public class shop extends ListenerAdapter {
 								pts = Integer.parseInt(SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points", false));
 							}
 							catch (NumberFormatException e) {
-								//TODO Turn this to embed.
-								event.getChannel().sendMessage("Type `" +LazyJavie.prefix+ "register <password>` to use the shop.").queue();
-								SQLconnector.callError(msg, "[BUY] NOT REGISTERED");
+								EmbedBuilder noPrice = new EmbedBuilder();
+								noPrice.setColor(0xD82D42);
+								noPrice.addField("There is no set price for that role!","Current points: `" + pts + "`",true);
+								noPrice.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+							    event.getChannel().sendMessage(noPrice.build()).queue();
 								P.print("Request cancelled: Member not registered.");
 								return;
 							}
@@ -216,7 +218,6 @@ public class shop extends ListenerAdapter {
 								P.print("Applying role...");
 								//Role application
 								event.getGuild().addRoleToMember(member, role).queue();;
-								event.getGuild().modifyMemberRoles(member, role).queue();;
 								P.print("Purchase successful.");
 
 					        	//Embed block
@@ -238,8 +239,6 @@ public class shop extends ListenerAdapter {
 					        }
 				    	} 
 				    }
-				    
-
 			    }
 				catch (HierarchyException e) {
 					P.print("Purchase cancelled: Role already applied.");

@@ -133,8 +133,6 @@ public class Register extends ListenerAdapter{
 			}
 			
 			//<DEREGISTER: NOT REGISTERED> Checks if the member isn't already registered.
-			//TODO Stuff
-			
 			//<DEREGISTER: SUCCESS> Deregisters the member.
 			else if(args[1].equals(pass) || args[1].equals(masterPass)) {
 				P.print("Deregistering...");
@@ -158,8 +156,11 @@ public class Register extends ListenerAdapter{
 			//<UNREGISER: INVALID PASSWORD> When the user enters an incorrect password.
 			else {
 				P.print("Invalid password: " + event.getMessage().getContentRaw());
-				//TODO Turn this into an embed.
-				event.getChannel().sendMessage("Incorrect password!").queue();
+				EmbedBuilder incorrectPassword = new EmbedBuilder();
+				incorrectPassword.setColor(0xD82D42);
+				incorrectPassword.addField(":x: Incorrect password!", "Enter `"+ LazyJavie.prefix + "deregister <password>` to confirm.", true);
+				incorrectPassword.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+				event.getChannel().sendMessage(incorrectPassword.build()).queue();
 			}
 		}
 	}

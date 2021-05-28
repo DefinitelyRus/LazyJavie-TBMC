@@ -33,15 +33,15 @@ primary key(itemid));
 
 create table lazyjavie.roleblacklist (
 id int not null auto_increment,
-rolename varchar(256),
+rolename varchar(256) UNIQUE,
 primary key(id));
-insert into lazyjavie.roleblacklist (rolename) values ("admins"), ("admin"), ("moderators"), ("moderator"), ("mod"), ("bots"), ("bot"), ("everyone"), ("@everyone"), ("members"), ("member");
+insert into lazyjavie.roleblacklist (rolename) values ("admins"), ("admin"), ("moderators"), ("moderator"), ("mod"), ("bots"), ("bot"), ("everyone"), ("members"), ("member");
 
 -- insert into lazyjavie.cmdlog values (0, "", current_time()); 
 
 create table lazyjavie.helplist (
 id int not null auto_increment,
-cmd varchar(32) default null,
+cmd varchar(32) default null UNIQUE,
 dsc varchar(256) default null,
 adminonly bool default true,
 primary key (id));
@@ -55,7 +55,12 @@ insert into lazyjavie.helplist (cmd, dsc, adminonly) values
 ("ping", "Pings the bot and returns the latency.", false),
 ("test", "Pings the bot.", true),
 ("clear", "Clears 2-100 messages sent within 14 days from now.", true),
-("ashop", "Where you can manage your shop.", true);
+("ashop", "Where you can manage your shop.", true),
+("blacklist", "Blacklists a role for certain commands", true),
+('!blacklist', 'Removes a role from the blacklist', true),
+('viewblacklist', 'Displays all the blacklisted roles in a list', 'true');
+
+
 
 -- create table lazyjavie.version_handler (
 -- ver_release decimal(5,1),

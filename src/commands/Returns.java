@@ -86,8 +86,11 @@ public class Returns extends ListenerAdapter{
 				String x;
 				x = SQLconnector.get("select points from lazyjavie.members WHERE userid=" + memberId + ";", "points", false);
 				if (x == "Empty result.") {
-					//TODO Turn this to embed.
-					event.getChannel().sendMessage("Type `" +LazyJavie.prefix+ "register <password>` to have your points recorded.").queue();
+					EmbedBuilder notRegistered = new EmbedBuilder();
+					notRegistered.setColor(0xD82D42);
+					notRegistered.addField(":x: Not registered", "Type `" + LazyJavie.prefix + "register <password>` to have your points recorded.", true);
+					notRegistered.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
+					event.getChannel().sendMessage(notRegistered.build()).queue();
 					P.print("Request cancelled: Member not registered.");
 					return;
 				} else {pts = Integer.parseInt(x);}
