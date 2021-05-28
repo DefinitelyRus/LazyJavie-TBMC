@@ -1,17 +1,17 @@
 -- drop database lazyjavie;
-create database lazyjavie;
+-- create database lazyjavie;
 
--- drop table lazyjavie.members;
--- drop table lazyjavie.shop;
--- drop table lazyjavie.cmdlog;
--- drop table lazyjavie.roleblacklist;
--- drop table lazyjavie.helplist;
+drop table lazyjavie.members;
+drop table lazyjavie.shop;
+drop table lazyjavie.roleblacklist;
+drop table lazyjavie.helplist;
+-- drop table lazyjavie.cmdlog; -- Do not delete or alter
 -- drop table lazyjavie.version_handler; -- Do not delete or alter.
 
 create table lazyjavie.members (
 id int not null auto_increment,
-userid varchar(255),
-userpass varchar(255),
+userid varchar(256),
+userpass varchar(256),
 points int default 0,
 primary key(id));
 
@@ -20,18 +20,20 @@ itemid int not null auto_increment,
 itemname varchar(24),
 price int,
 quantity int,
-itemdesc varchar(250),
+itemdesc varchar(256),
 primary key(itemid));
 
-create table lazyjavie.cmdlog (
-id int not null auto_increment,
-eventdate datetime,
-userquery varchar(255),
-primary key(id));
+-- create table lazyjavie.cmdlog (
+-- id int not null auto_increment,
+-- userid varchar(256) default null,
+-- userquery varchar(1024) default null,
+-- errorid varchar(128) default null,
+-- eventdate datetime,
+-- primary key(id));
 
 create table lazyjavie.roleblacklist (
 id int not null auto_increment,
-rolename varchar(255),
+rolename varchar(256),
 primary key(id));
 insert into lazyjavie.roleblacklist (rolename) values ("admins"), ("admin"), ("moderators"), ("moderator"), ("mod"), ("bots"), ("bot"), ("everyone"), ("@everyone"), ("members"), ("member");
 
@@ -55,10 +57,10 @@ insert into lazyjavie.helplist (cmd, dsc, adminonly) values
 ("clear", "Clears 2-100 messages sent within 14 days from now.", true),
 ("ashop", "Where you can manage your shop.", true);
 
-create table lazyjavie.version_handler (
-ver_release decimal(5,1),
-build int auto_increment,
-title varchar(64) default null,
-primary key (build));
+-- create table lazyjavie.version_handler (
+-- ver_release decimal(5,1),
+-- build int auto_increment,
+-- title varchar(64) default null,
+-- primary key (build));
 
-insert into lazyjavie.version_handler (ver_release, build) values (1.0, 0);
+-- insert into lazyjavie.version_handler (ver_release, build) values (1.0, 0);

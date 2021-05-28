@@ -257,69 +257,88 @@ public class SQLconnector {
 	}
 	
 	//-------------------------AUTO CREATE DB-------------------------
-		public static void NoDBfixer() {
-			/*
-			 * In the event that the database is missing, this function is called instead of update().
-			 * 
-			 * NOTE: COMPILED .JAR WILL CRASH IF THIS METHOD IS CALLED.
-			 * Reason: NoDB_autofix.sql cannot be found
-			 */
-			try {
-				P.print("\nError ecountered: Starting automatic database setup.");
-				P.print("|[SQLcD-1] Running fixer script...");
-				for (String line : noDB_autofix.get("createNew")) {
-					P.print("|MySQL Statement: " + line);
-					updateOtherDB(line, defaultAddress);
-				}
-				P.print("|[SQLcD-4] New database created.\n");
+	public static void NoDBfixer() {
+		/*
+		 * In the event that the database is missing, this function is called instead of update().
+		 * 
+		 * NOTE: COMPILED .JAR WILL CRASH IF THIS METHOD IS CALLED.
+		 * Reason: NoDB_autofix.sql cannot be found
+		 */
+		try {
+			P.print("\nError ecountered: Starting automatic database setup.");
+			P.print("|[SQLcD-1] Running fixer script...");
+			for (String line : noDB_autofix.get("createNew")) {
+				P.print("|MySQL Statement: " + line);
+				updateOtherDB(line, defaultAddress);
 			}
-			catch (LoginException e2) {P.print("Error encountered: " + e2.toString()); return;}
-			catch (SQLException e2) {P.print("Error encountered: " + e2.toString()); return;}
-			catch (Exception e2) {P.print("Error encountered: " + e2.toString()); return;}
+			P.print("|[SQLcD-4] New database created.\n");
 		}
+		catch (LoginException e2) {P.print("Error encountered: " + e2.toString()); return;}
+		catch (SQLException e2) {P.print("Error encountered: " + e2.toString()); return;}
+		catch (Exception e2) {P.print("Error encountered: " + e2.toString()); return;}
+	}
+	
+	public static void updateOtherDB(String query, String dbAddressOverride) throws LoginException, SQLException {
+		/*
+		 * In the event that the target database is different, this function is called instead of update().
+		 * updateOtherDB() requires one argument, query.
+		 * 
+		 * "query" is the SQL command to be executed.
+		 */
 		
-		public static void updateOtherDB(String query, String dbAddressOverride) throws LoginException, SQLException {
-			/*
-			 * In the event that the target database is different, this function is called instead of update().
-			 * updateOtherDB() requires one argument, query.
-			 * 
-			 * "query" is the SQL command to be executed.
-			 */
+		dbAddress = dbAddressOverride;
+		
+		//Local scan password
+		try {
+			File file = new File("C:\\lazyjavie_token.txt");
+			Scanner reader = new Scanner(file);
+		    while (reader.hasNextLine()) {dbPass = reader.nextLine();}
+		    reader.close();}
+		catch (FileNotFoundException e) {P.print("404: C:\\lazyjavie_token.txt is missing.");}
+		catch (Exception e) {e.printStackTrace();}
+		
+		//Initialization
+		String exeScript = query;
+		
+		try {
+			//Starts a connection to the database using the JDBC driver.
+			Connection connection = DriverManager.getConnection(dbAddress, dbID, dbPass);
 			
-			dbAddress = dbAddressOverride;
+			//Creates a statement
+			Statement statement = connection.createStatement();
 			
-			//Local scan password
-			try {
-				File file = new File("C:\\lazyjavie_token.txt");
-				Scanner reader = new Scanner(file);
-			    while (reader.hasNextLine()) {dbPass = reader.nextLine();}
-			    reader.close();}
-			catch (FileNotFoundException e) {P.print("404: C:\\lazyjavie_token.txt is missing.");}
-			catch (Exception e) {e.printStackTrace();}
+			//Starts the SQL query.
+			P.print("|[SQLcD-2] Executing SQL script...");
+			statement.execute(exeScript);
 			
-			//Initialization
-			String exeScript = query;
-			
-			try {
-				//Starts a connection to the database using the JDBC driver.
-				Connection connection = DriverManager.getConnection(dbAddress, dbID, dbPass);
-				
-				//Creates a statement
-				Statement statement = connection.createStatement();
-				
-				//Starts the SQL query.
-				P.print("|[SQLcD-2] Executing SQL script...");
-				statement.execute(exeScript);
-				
-				//Closes the connection.
-				connection.close();
-			}
-			catch (SQLException e) {
-				if (e.toString().startsWith("java.sql.SQLException: Can not issue empty query.")) {P.print("");}
-				else e.printStackTrace();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
+			//Closes the connection.
+			connection.close();
 		}
+		catch (SQLException e) {
+			if (e.toString().startsWith("java.sql.SQLException: Can not issue empty query.")) {P.print("");}
+			else e.printStackTrace();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void newQuery(String userID, String message) {
+		//P.print("Adding new query to log.\nUserID: " +userID+ "\nQuery: " +message);
+		try {
+			update("insert into lazyjavie.cmdlog (userid, userquery, eventdate) values ('" +userID+ "', '" +message+ "', current_time())", false);
+		}
+		catch (LoginException e) {P.print("Error encountered: " + e.toString());}
+		catch (SQLException e) {P.print("Error encountered: " + e.toString());}
+	}
+	
+	public static void callError(String message, String error) {
+		//P.print("Calling error: " + error);
+		try {
+			update("update lazyjavie.cmdlog set errorid ='" +error+ "' where userquery ='" +message+ "' order by eventdate desc limit 1", false);
+		}
+		catch (LoginException e) {P.print("Error encountered: " + e.toString());}
+		catch (SQLException e) {P.print("Error encountered: " + e.toString());}
+	}
+		
 }

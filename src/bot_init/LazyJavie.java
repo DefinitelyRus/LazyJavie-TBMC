@@ -72,12 +72,12 @@ public class LazyJavie {
 			
 			P.print("[B-3] Opening to commands...");
 			//[IMPORTANT] Add new commands here.
+			jda.addEventListener(new GetPointEvent());
 			jda.addEventListener(new Returns());
 			jda.addEventListener(new Register());
 			jda.addEventListener(new Clear());
 			jda.addEventListener(new shop());
 			jda.addEventListener(new adminShop());
-			jda.addEventListener(new GetPointEvent());
 			jda.addEventListener(new toConsole());
 			jda.addEventListener(new shopInventory());
 			jda.addEventListener(new Quit());

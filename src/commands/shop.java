@@ -28,6 +28,7 @@ public class shop extends ListenerAdapter {
 	@SuppressWarnings("unlikely-arg-type")
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
+		String msg = event.getMessage().getContentRaw();
 		
 		//<BUY: NO NAME> For when a member attempts to buy a role but doesn't enter a name.
 		if(args.length == 2 && args[1].equalsIgnoreCase("buy")) {
@@ -52,8 +53,8 @@ public class shop extends ListenerAdapter {
 	    	List<String> blacklist = null;
 		    StringBuilder displayRoles = new StringBuilder();
 		    try {blacklist = SQLconnector.getList("select * from lazyjavie.roleblacklist", "rolename", false);}
-		    catch (LoginException e) {P.print("Error encountered: " + e.toString());}
-		    catch (SQLException e) {P.print("Error encountered: " + e.toString());}
+		    catch (LoginException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString());}
+		    catch (SQLException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString());}
 
 			//<SHOP: EMPTY LIST>Checks if there are no roles in the server.
 			if (roles.isEmpty()) {
@@ -106,13 +107,14 @@ public class shop extends ListenerAdapter {
 			    		P.print("Getting role price...");
 				    	rolePrice = Integer.parseInt(SQLconnector.get("SELECT * FROM lazyjavie.shop WHERE itemname='"+ r.getName() +"'", "price", false));
 		    		}
-		    		//Likely caused by NULL price from database.
+		    		//<BAD VALUE> Likely caused by NULL price from database.
 		    		catch (NumberFormatException e) {
 		    			P.print("Price of role '" +r+ "' cannot be parsed to integer; setting to max value.");
+		    			SQLconnector.callError(msg, "[SHOP] BAD VALUE");
 		    			rolePrice = 2147483647;
 	    			}
-		    		catch (LoginException e) {P.print("Error encountered: " + e.toString());}
-		    		catch (SQLException e) {P.print("Error encountered: " + e.toString());}
+		    		catch (LoginException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString());}
+		    		catch (SQLException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString());}
 		    		
 			    	//Adds the role to the displayed list.
 		    		displayRoles.append("• **" + r.getName() + ":** " + rolePrice + " points").append("\n");
@@ -127,8 +129,8 @@ public class shop extends ListenerAdapter {
 							P.print("Adding " + roleName + " to the database...");
 							SQLconnector.update("INSERT INTO lazyjavie.shop (itemname, price) VALUES ('" + roleName + "', 0);", false);
 						} else {P.print(roleName + " already exists in database; skipping...");}
-					} catch (SQLException e) {}
-					catch (Exception e) {e.printStackTrace();}
+					} catch (SQLException e) {P.print(e.toString()); SQLconnector.callError(msg, e.toString());}
+					catch (Exception e) {e.printStackTrace(); SQLconnector.callError(msg, e.toString());}
 		    	}	
 		    }	//-------------------------Blacklist block ends here.-------------------------
 		    P.print("Blacklist check done.");
@@ -168,6 +170,7 @@ public class shop extends ListenerAdapter {
 							catch (NumberFormatException e) {
 								//TODO Turn this to embed.
 								event.getChannel().sendMessage("Type `" +LazyJavie.prefix+ "register <password>` to use the shop.").queue();
+								SQLconnector.callError(msg, "[BUY] NOT REGISTERED");
 								P.print("Request cancelled: Member not registered.");
 								return;
 							}
@@ -175,10 +178,12 @@ public class shop extends ListenerAdapter {
 							catch (NumberFormatException e) {
 								price = 2147483647;
 								P.print("Price of role '" +r+ "' cannot be parsed to integer; setting to max value.");
+								SQLconnector.callError(msg, "[BUY] BAD VALUE");
 								event.getChannel().sendMessage("Error ecountered: `" + e.toString() + "`\nPlease contact an admin to set a price.");
 								return;
 							}
 							catch (Exception e) {
+								SQLconnector.callError(msg, e.toString());
 								P.print("Error encountered: " + e.toString());
 								return;
 							}
@@ -243,10 +248,13 @@ public class shop extends ListenerAdapter {
 		        	roleApplied.setDescription("You already have " +args[2]+ "!");
 		        	roleApplied.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 					event.getChannel().sendMessage(roleApplied.build()).queue();
+					SQLconnector.callError(msg, "[BUY] ALREADY APPLIED");
 					return;
 				}
 				catch (Exception e) {
-			    	P.print("Error encountered: " + e); e.printStackTrace();
+			    	P.print("Error encountered: " + e);
+			    	e.printStackTrace();
+			    	SQLconnector.callError(msg, e.toString());
 			    	return;
 			    }
 				
@@ -262,7 +270,6 @@ public class shop extends ListenerAdapter {
 			    }
 				
 			} 
-
 			//This will print out if any part of the function isn't properly closed with a RETURN statement.
 			P.print("\nUNRETURNED FUNTION: " + event.getMessage().getContentRaw());
 		}

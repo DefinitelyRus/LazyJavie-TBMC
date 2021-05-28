@@ -3,6 +3,7 @@ package commands;
 import java.util.concurrent.TimeUnit;
 
 import bot_init.LazyJavie;
+import bot_init.SQLconnector;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -10,6 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class Quit extends ListenerAdapter{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
+		String msg = event.getMessage().getContentRaw();
 		
 		try {
 			boolean isAdmin = event.getMember().hasPermission(Permission.ADMINISTRATOR);
@@ -36,6 +38,7 @@ public class Quit extends ListenerAdapter{
 		} catch (ArrayIndexOutOfBoundsException e) {
 			P.print("Error ignored: Missing args.");
 			event.getChannel().sendMessage(":warning: Are you sure you want to disconnect the bot?\nEnter `" +LazyJavie.prefix+ "quit confirm` to confirm.").queue();
+			SQLconnector.callError(msg, "[QUIT] MISSING ARGS");
 			return;
 		} catch (Exception e) {P.print(e.toString()); return;}
 	}

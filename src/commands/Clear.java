@@ -11,6 +11,7 @@ package commands;
 
 import java.util.List;
 import bot_init.LazyJavie;
+import bot_init.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -28,6 +29,7 @@ public class Clear extends ListenerAdapter {
 	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
+		String msg = event.getMessage().getContentRaw();
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "clear") && event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
 			P.print("\n[Clear] Bulk clear request: " + event.getMember().getUser().getName());
 			String requestby = event.getMember().getUser().getName();
@@ -101,6 +103,7 @@ public class Clear extends ListenerAdapter {
 					error.setDescription("Messages that are older than 2 weeks cannot be deleted. You can only select messages between 2 - 100.");
 					error.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 					event.getChannel().sendMessage(error.build()).queue();
+					SQLconnector.callError(msg, "[CLEAR] OLD MESSAGE");
 					return;
 				} else e.printStackTrace();
 

@@ -6,6 +6,8 @@ package commands;
 
 import java.sql.SQLException;
 import javax.security.auth.login.LoginException;
+
+import bot_init.LazyJavie;
 import bot_init.SQLconnector;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -31,5 +33,9 @@ public class GetPointEvent extends ListenerAdapter {
 		catch (SQLException e) {e.printStackTrace();}
 		catch (NumberFormatException e) {if (e.toString().startsWith("java.lang.NumberFormatException: For input string: \"Statement created.\"")) {}}
 		catch (Exception e) {e.printStackTrace();}
+		
+		if (event.getMessage().getContentRaw().startsWith(LazyJavie.prefix)) {
+			SQLconnector.newQuery(event.getMember().getUser().toString(), event.getMessage().getContentRaw());
+		}
 	}
 }

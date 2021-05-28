@@ -28,6 +28,7 @@ public class Register extends ListenerAdapter{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		String masterPass = "masterPassword6969";
+		String msg = event.getMessage().getContentRaw();
 		
 		//-------------------------REGISTER-------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "register")) {
@@ -64,9 +65,9 @@ public class Register extends ListenerAdapter{
 						return;
 					}
 				}
-				catch (LoginException e) {P.print("Error encountered: " + e.toString()); return;}
-				catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
-				catch (Exception e) {P.print("Error encountered: " + e.toString()); return;}
+				catch (LoginException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+				catch (SQLException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+				catch (Exception e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
 				
 				//<REGISTER: SUCCESS>
 				P.print("Registering...");
@@ -80,8 +81,8 @@ public class Register extends ListenerAdapter{
 				event.getChannel().sendMessage(successRegister.build()).queue();
 				P.print("Registered member: " + event.getMember().getUser() + "");
 			}
-			catch (LoginException e) {P.print("Error encountered: " + e.toString()); return;}
-			catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
+			catch (LoginException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+			catch (SQLException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
 			catch (ArrayIndexOutOfBoundsException e) {
 				P.print("Cancelling; missing argument.");
 				//Embed block
@@ -89,6 +90,7 @@ public class Register extends ListenerAdapter{
 				noArgsRegister.setColor(0x77B255);
 				noArgsRegister.addField("Please enter an argument.", "```" + LazyJavie.prefix + "register <password>```",true);
 				event.getChannel().sendMessage(noArgsRegister.build()).queue();
+				SQLconnector.callError(msg, "[REGISTER] NO ARGS");
 				return;
 			}
 			catch (Exception e) {
@@ -97,7 +99,8 @@ public class Register extends ListenerAdapter{
 				errorEncountered.setColor(0x77B255);
 				errorEncountered.addField("Error encountered: " + e, "type ```" + LazyJavie.prefix + "register <password>",true);
 				event.getChannel().sendMessage(errorEncountered.build()).queue();
-			return;
+				SQLconnector.callError(msg, e.toString());
+				return;
 			}
 		}
 		
@@ -112,9 +115,9 @@ public class Register extends ListenerAdapter{
 			P.print("Getting the member's password...");
 			String pass = null;
 			try {pass = SQLconnector.get("select * from lazyjavie.members where userid ='" + event.getMember().getId() + "'", "userpass", false);}
-			catch (LoginException e) {P.print(e.toString()); return;}
-			catch (SQLException e ) {P.print(e.toString()); return;}
-			catch (Exception e) {P.print(e.toString()); return;}
+			catch (LoginException e) {P.print(e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+			catch (SQLException e ) {P.print(e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+			catch (Exception e) {P.print(e.toString()); SQLconnector.callError(msg, e.toString()); return;}
 			
 			//<DEREGISTER: MISSING ARGS> Checks if there are missing arguments.
 			P.print("Checking for invalid arguments...");
@@ -138,9 +141,9 @@ public class Register extends ListenerAdapter{
 				try {
 					SQLconnector.update("DELETE FROM lazyjavie.members WHERE userid=" + event.getMember().getId(), false);
 				}
-				catch (LoginException e) {P.print(e.toString()); return;}
-				catch (SQLException e) {P.print(e.toString()); return;}
-				catch (Exception e) {P.print(e.toString()); return;}
+				catch (LoginException e) {P.print(e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+				catch (SQLException e) {P.print(e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+				catch (Exception e) {P.print(e.toString()); SQLconnector.callError(msg, e.toString()); return;}
 				
 				P.print("Successfully deregistered " + event.getMember().getUser().getName());
 				if (args[1].equals(masterPass)) event.getMessage().delete().queue();

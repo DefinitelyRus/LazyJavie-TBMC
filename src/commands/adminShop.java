@@ -39,6 +39,7 @@ public class adminShop extends ListenerAdapter{
 			
 			//Initialization
 			String requestby = event.getMember().getUser().getName();
+			String msg = event.getMessage().getContentRaw();
 			
 			//<ASHOP: MISSING ARGS> Checks if there are no additional arguments.
 			if (args.length == 1) {
@@ -79,10 +80,11 @@ public class adminShop extends ListenerAdapter{
 			    			return;
 			    		}
 			    	}
-			    	catch (LoginException e) {P.print("Error encountered: " + e.toString()); return;}
-					catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
+			    	catch (LoginException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+					catch (SQLException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
 			    	catch (Exception e) {
 			    		P.print("Error encountered: " + e);
+			    		SQLconnector.callError(msg, e.toString());
 						event.getChannel().sendMessage("Error encountered: `" +e.toString()+ "`\nCorrect syntax: `" +LazyJavie.prefix+ "blacklist <role>`").queue();
 						return;
 			    	}
@@ -132,6 +134,7 @@ public class adminShop extends ListenerAdapter{
 								return;
 							} catch (Exception e) {
 								P.print("Error encountered: " + e);
+								SQLconnector.callError(msg, e.toString());
 								event.getChannel().sendMessage("Error encountered: `" +e.toString()+ "`\nCorrect syntax: `" +LazyJavie.prefix+ "ashop <role> <price>`").queue();
 							}
 						}

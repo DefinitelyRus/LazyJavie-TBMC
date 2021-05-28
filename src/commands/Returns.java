@@ -37,6 +37,7 @@ public class Returns extends ListenerAdapter{
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		String requestby = null;
 		if (args[0].startsWith(LazyJavie.prefix)) {requestby = event.getMember().getUser().getName();}
+		String msg = event.getMessage().getContentRaw();
 		
 		//[BOT TOKEN] Returns the bot's token... not really.----------------------------------------------------
 		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "bottoken")) {
@@ -67,7 +68,7 @@ public class Returns extends ListenerAdapter{
 			test.setTitle(":white_check_mark: Test success!");
 			test.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 			event.getChannel().sendMessage(test.build()).queue();
-			P.print("\n[Returns] Pong! Sender: " + event.getMember().getUser().getName());
+			P.print("\n[Returns] TEST! Sender: " + event.getMember().getUser().getName());
 		}
 		
 		//[POINTS] Displays the points of the current user.-----------------------------------------------------
@@ -91,7 +92,7 @@ public class Returns extends ListenerAdapter{
 					return;
 				} else {pts = Integer.parseInt(x);}
 			}
-			catch (Exception e) {P.print(e.toString());}
+			catch (Exception e) {P.print(e.toString()); SQLconnector.callError(msg, e.toString());}
 			
 			P.print("Displaying points...");
 			//Embed block
@@ -127,10 +128,11 @@ public class Returns extends ListenerAdapter{
 				cmdlist.toArray(cmdarray);
 				dsclist.toArray(dscarray);
 				foradminlist.toArray(foradminarray);
+				
 			}
-	    	catch (LoginException e) {P.print("Error encountered: " + e.toString()); return;}
-			catch (SQLException e) {P.print("Error encountered: " + e.toString()); return;}
-			catch (Exception e) {P.print("Error encountered: " + e.toString()); e.printStackTrace(); return;}
+	    	catch (LoginException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+			catch (SQLException e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
+			catch (Exception e) {P.print("Error encountered: " + e.toString()); SQLconnector.callError(msg, e.toString()); return;}
 			
 			//<HELP: MISSING INFO>
 			P.print("Checking for missing info...");
