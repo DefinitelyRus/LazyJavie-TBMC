@@ -1,3 +1,7 @@
+/*
+ * This thing does stuff.
+ */
+
 package sql_queries;
 
 public class noDB_autofix {

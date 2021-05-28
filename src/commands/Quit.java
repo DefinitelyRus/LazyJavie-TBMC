@@ -1,3 +1,6 @@
+/*
+ * Lmao
+ */
 package commands;
 
 import java.util.concurrent.TimeUnit;
