@@ -44,15 +44,12 @@ Sends a message directly to the console.
 ### Quit
 	$quit <required argument>
    - Turns the bot offline.
-    
-## How it works
-[Ask Rus for an explanation]
- 
+
 ## Installation
 See the [LazyJavie releases page](https://github.com/DefinitelyRus/LazyJavie/releases) for detailed instructions fit for the version you're interested in using.
  
 ## How to invite
-[Leave this empty for now]
+[Watch the **How to invite** portion of this video.](https://youtu.be/Dq40V9BhbwU?t=202)
  
 ## Plans
 ### Future updates
@@ -77,6 +74,3 @@ We want to release the bot as a server-hosted bot similar to [Mee6](https://mee6
 
 ## License
 This project uses GNU General Public License v3.0. See LICENSE for more information.
- 
-## Trivia
-[Leave this empty for now]
