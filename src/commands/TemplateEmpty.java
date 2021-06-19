@@ -1,6 +1,6 @@
 package commands;
 
-import bot_init.LazyJavie;
+import home.LazyJavie;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
