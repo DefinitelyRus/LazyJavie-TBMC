@@ -60,7 +60,7 @@ public class Quit extends ListenerAdapter{
 	
 	//For use in UI.
 	public static void softExit() {
-		P.print("Shutting down LazyJavie 2.0 ALPHA.");
+		P.print("Shutting down " + Bot.VERSION);
 		try {TimeUnit.SECONDS.sleep(5);}
 		catch (InterruptedException e) {P.print(e.toString());}
 		Bot.jda.shutdown();

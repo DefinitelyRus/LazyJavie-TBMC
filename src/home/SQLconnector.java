@@ -334,10 +334,23 @@ public class SQLconnector {
 	public static void callError(String message, String error) {
 		//P.print("Calling error: " + error);
 		try {
-			update("update lazyjavie.cmdlog set errorid ='" +error+ "' where userquery ='" +message+ "' order by eventdate desc limit 1", false);
+			update("update cmdlog set errorid ='" +error+ "' where userquery ='" +message+ "' order by eventdate desc limit 1", false);
 		}
 		catch (LoginException e) {P.print("Error encountered: " + e.toString());}
 		catch (SQLException e) {P.print("Error encountered: " + e.toString());}
 	}
-		
+	
+	/**
+	 * Keeps log of all uncaught errors, assuming they're within a try-catch block.
+	 * @param errorType This is the shortened error message which includes the error type.
+	 * @param errorStackTrace The message that appears when an exception isn't caught. This includes the origin of the error.
+	 * @param version The version the app is running when the error happened.
+	 */
+	public static void errorLog(String errorType, String errorStackTrace, String version) {
+		try {
+			update("insert into errorlog (err_type, err_stacktrace, eventdate, appver) values ('" +errorType+ "', '" +errorStackTrace+ "', current_timestamp, '" +version+ "');", false);
+		}
+		catch (LoginException e) {P.print("Error encountered: " + e.toString());}
+		catch (SQLException e) {P.print("Error encountered: " + e.toString());}
+	}
 }

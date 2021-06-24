@@ -4,11 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Choice;
 import java.awt.EventQueue;
 import java.awt.SystemColor;
+import java.awt.desktop.PrintFilesEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+
 import javax.security.auth.login.LoginException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -29,9 +35,21 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import commands.MessageReceivedEvent;
 import commands.P;
 import commands.Quit;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDA.Status;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.internal.requests.Route.Guilds;
+
 import javax.swing.JToggleButton;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 /*
  * itemnamewith32chars_________00000
@@ -59,6 +77,10 @@ public class LazyJavieUI extends JFrame {
 	
 	//Developer-written instantiations
 	static boolean hideUI = false;
+	private Choice textChannelsList;
+	private JButton sendButton;
+	public List<TextChannel> channelsList = new ArrayList<TextChannel>();
+	public Dictionary<String, TextChannel> channelDict = new Hashtable<String, TextChannel>();
 	
 	public static void main(String[] args) throws LoginException, SQLException{
 		
@@ -78,12 +100,13 @@ public class LazyJavieUI extends JFrame {
 				}
 			}
 		});
+		//SQLconnector.update("drop table errorlog;", true);
 		
 		//All startup settings goes here.
 		P.print("UI Ready!");
 		//dbTable.getTableGridContents(10, 8);
 		
-		
+		//SQLconnector.update("create table errorlog (id int primary key, err_type varchar(1024), err_stacktrace varchar(65535), eventdate datetime, appver varchar(32));", true);
 	}
 	
 	public static int willHideOnClose(boolean toHide) {
@@ -92,7 +115,6 @@ public class LazyJavieUI extends JFrame {
 	}
 
 	public LazyJavieUI() {
-		//setLookAndFeel();
 		setDefaultCloseOperation(willHideOnClose(hideUI));
 		setTitle("LazyJavie Host Control Panel");
 		setResizable(false);
@@ -102,11 +124,12 @@ public class LazyJavieUI extends JFrame {
 		contentPane.setBackground(SystemColor.menu);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
-			P.print(e1.toString());
-			e1.printStackTrace();
+		
+		//Sets the look & feel of the UI. This is set to be the same as the system it's running on.
+		try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			P.print(e.toString());
+			e.printStackTrace();
 		}
 		setContentPane(contentPane);
 		
@@ -141,31 +164,93 @@ public class LazyJavieUI extends JFrame {
 		consoleInput.setColumns(82);
 		consolePanel.add(consoleInput);
 		
-		Choice textChannelsList = new Choice();
+		textChannelsList = new Choice();
 		textChannelsList.setBounds(18, 347, 373, 20);
 		textChannelsList.setForeground(SystemColor.textText);
 		textChannelsList.setBackground(SystemColor.text);
 		consolePanel.add(textChannelsList);
 		
-		JButton sendButton = new JButton("Send");
+		sendButton = new JButton("Send");
+		sendButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selChannel = getTextChannelsList().getSelectedItem();
+				String inputMsg = getConsoleInput().getText();
+				
+				//Directs all commands to the selected channel.
+				filterChannelName(selChannel);
+				Bot.currentChannel = channelDict.get(selChannel);
+				
+				//Sends as normal messages
+				if (!inputMsg.startsWith(Bot.prefix)) {
+					Bot.jda.getTextChannelById(channelDict.get(selChannel).getId()).sendMessage(inputMsg).queue();
+					getConsoleInput().setText("");
+				}
+				//Sends as commands
+				else {
+					String prf = Bot.prefix;
+					
+					MessageReceivedEvent.call(inputMsg);
+				}
+			}
+		});
 		sendButton.setBounds(397, 344, 283, 23);
 		consolePanel.add(sendButton);
 		
 		startBotToggle = new JButton("Start Bot");
 		startBotToggle.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (startBotToggle.getText().equals("Start Bot")) {
-					startBotToggle.setText("Stop");
-					Bot.start();
-				} else if (startBotToggle.getText().equals("Stop")) {
-					startBotToggle.setText("Start Bot");
-					Quit.softExit();
+			public void mouseClicked(MouseEvent mouseObj) {
+				if (mouseObj.getButton() == MouseEvent.BUTTON1) {
+					if (startBotToggle.getText().equals("Start Bot")) {
+						startBotToggle.setText("Stop");
+						
+						//Determines whether the token should be grabbed from the UI or from system.
+						String bottoken = String.valueOf(getBotTokenField().getPassword());
+						P.print(bottoken);
+						if (bottoken.equals("")) {Bot.tokenOverride = false;}
+						else {Bot.tokenOverride = true; Bot.token = bottoken;}
+						
+						Bot.start();
+						//Guild g = Bot.jda.getGuildById("262784778690887680");
+						//P.print(g.getName());
+						//List<TextChannel> txtChannels = g.getTextChannels();
+						
+						try {Bot.jda.awaitReady();}
+						catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+						
+						List<Guild> guilds = Bot.jda.getGuilds();
+						P.print("List length: " + guilds.size());
+						getTextChannelsList().add("- Select text channel -");
+						int i = 1;
+						
+						for (Guild g : guilds) {
+							for (TextChannel txtCh : g.getTextChannels()) {
+								i++;
+								String label = "[" +i+ "] " + g.getName() + " | " + txtCh.getName();
+								getTextChannelsList().add(label);
+								channelsList.add(txtCh);
+								channelDict.put(label, txtCh);
+							}
+						}
+						P.print("Done!");
+						
+					} else if (startBotToggle.getText().equals("Stop")) {
+						Quit.softExit();
+						try {Bot.jda.awaitStatus(Status.SHUTDOWN);}
+						catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+						startBotToggle.setText("Start Bot");
+						getTextChannelsList().removeAll();
+						getTextChannelsList().add("- Select text channel -");
+					}
 				}
 			}
 		});
 		startBotToggle.setBounds(600, 439, 89, 23);
 		consolePanel.add(startBotToggle);
+		
+		JLabel lblNewLabel_1 = new JLabel("When changing channels, press send to focus on the selected channel.");
+		lblNewLabel_1.setBounds(18, 373, 341, 14);
+		consolePanel.add(lblNewLabel_1);
 		
 		JTabbedPane botSettingsPanel = new JTabbedPane(JTabbedPane.LEFT);
 		tabbedPane.addTab("Bot Settings", null, botSettingsPanel, "All modifiable bot settings are included in here.");
@@ -181,7 +266,7 @@ public class LazyJavieUI extends JFrame {
 		
 		botTokenField = new JPasswordField();
 		botTokenField.setToolTipText("If you want to use your own bot, put your bot's token here. Otherwise, leave it empty.");
-		botTokenField.setColumns(20);
+		botTokenField.setColumns(256);
 		botTokenField.setBounds(100, 8, 470, 20);
 		authenticationPanel.add(botTokenField);
 		
@@ -287,6 +372,12 @@ public class LazyJavieUI extends JFrame {
 		helpPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		tabbedPane.addTab("Help", null, helpPanel, "Includes shortened documentation and a list of functions.");
 	}
+	
+	private static int filterChannelName(String name) {
+		return 0;
+	}
+	
+	
 	public static JTable getTableGrid() {
 		return tableGrid;
 	}
@@ -303,5 +394,17 @@ public class LazyJavieUI extends JFrame {
 	}
 	public static JTextArea getConsoleOutput() {
 		return consoleOutput;
+	}
+	public JPasswordField getBotTokenField() {
+		return botTokenField;
+	}
+	public Choice getTextChannelsList() {
+		return textChannelsList;
+	}
+	public JButton getSendButton() {
+		return sendButton;
+	}
+	public JTextField getConsoleInput() {
+		return consoleInput;
 	}
 }

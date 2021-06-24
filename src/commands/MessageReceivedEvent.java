@@ -1,15 +1,31 @@
 package commands;
 
-import home.LazyJavie;
+import home.Bot;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class MessageReceivedEvent extends ListenerAdapter{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+		call(event);
+	}
+
+	public static void call(GuildMessageReceivedEvent event) {
+		boolean muted = false;
+		String msg = event.getMessage().getContentRaw();
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		
-		if (args[0].equalsIgnoreCase(LazyJavie.prefix + "")) {
+		//Prints every message to the console.
+		if (muted == false && event.getChannel().equals(Bot.currentChannel)) {P.print(event.getMember().getAsMention() + ": " + msg);}
+		
+		if (args[0].equalsIgnoreCase(Bot.prefix + "")) {
 			
 		}
+		
 	}
+	
+	public static void call (String inputMsg) {
+		
+	}
+	
+	// TODO Let a number of commands be runnable from console without having to rewrite code.
 }
