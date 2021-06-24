@@ -1,50 +1,37 @@
 package home;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.FlowLayout;
-import javax.swing.border.TitledBorder;
-import javax.swing.JTextPane;
-import javax.swing.JMenu;
-import javax.swing.JTextArea;
-import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.ListSelectionModel;
-import javax.swing.AbstractListModel;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JTabbedPane;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerListModel;
 import java.awt.Choice;
+import java.awt.EventQueue;
 import java.awt.SystemColor;
-import javax.swing.JPasswordField;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.SpringLayout;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-
-import commands.P;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
+import javax.security.auth.login.LoginException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import commands.P;
+import commands.Quit;
+import javax.swing.JToggleButton;
 
 /*
  * itemnamewith32chars_________00000
@@ -65,10 +52,21 @@ public class LazyJavieUI extends JFrame {
 	private JTextField consoleInput;
 	private JPasswordField botTokenField;
 	private static JTable tableGrid;
-	private JTextField textField;
+	private JTextField startFromField;
 	private final Action action = new SwingAction();
-
-	public static void main(String[] args) {
+	public static JTextArea consoleOutput;
+	public static JButton startBotToggle;
+	
+	//Developer-written instantiations
+	static boolean hideUI = false;
+	
+	public static void main(String[] args) throws LoginException, SQLException{
+		
+		//Developer code intended to run before the instantiation of the UI.
+		//Temporarily disabled; database not yet created.
+		//String hideUI_asString = SQLconnector.get("select * from botSettings where id = 'hide_ui_on_close'", "value", true);
+		//hideUI = Boolean.parseBoolean(hideUI_asString);
+		
 		//Pre-generated code
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -81,10 +79,21 @@ public class LazyJavieUI extends JFrame {
 			}
 		});
 		
-		//User code goes here.
+		//All startup settings goes here.
+		P.print("UI Ready!");
+		//dbTable.getTableGridContents(10, 8);
+		
+		
+	}
+	
+	public static int willHideOnClose(boolean toHide) {
+		if (toHide == true) {return JFrame.HIDE_ON_CLOSE;}
+		else {return JFrame.EXIT_ON_CLOSE;}
 	}
 
 	public LazyJavieUI() {
+		//setLookAndFeel();
+		setDefaultCloseOperation(willHideOnClose(hideUI));
 		setTitle("LazyJavie Host Control Panel");
 		setResizable(false);
 		setBackground(SystemColor.text);
@@ -93,6 +102,12 @@ public class LazyJavieUI extends JFrame {
 		contentPane.setBackground(SystemColor.menu);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
+			P.print(e1.toString());
+			e1.printStackTrace();
+		}
 		setContentPane(contentPane);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -111,14 +126,15 @@ public class LazyJavieUI extends JFrame {
 		consoleScrollPane.setBounds(18, 21, 662, 294);
 		consolePanel.add(consoleScrollPane);
 		
-		JTextArea consoleOutput = new JTextArea();
+		consoleOutput = new JTextArea();
 		consoleOutput.setLineWrap(true);
 		consoleOutput.setWrapStyleWord(true);
 		consoleOutput.setBackground(SystemColor.text);
 		consoleOutput.setEditable(false);
 		consoleOutput.setColumns(82);
 		consoleOutput.setRows(16);
-		consoleScrollPane.setColumnHeaderView(consoleOutput);
+		consoleOutput.setText("");
+		consoleScrollPane.setViewportView(consoleOutput);
 		
 		consoleInput = new JTextField();
 		consoleInput.setBounds(18, 320, 662, 20);
@@ -134,6 +150,22 @@ public class LazyJavieUI extends JFrame {
 		JButton sendButton = new JButton("Send");
 		sendButton.setBounds(397, 344, 283, 23);
 		consolePanel.add(sendButton);
+		
+		startBotToggle = new JButton("Start Bot");
+		startBotToggle.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (startBotToggle.getText().equals("Start Bot")) {
+					startBotToggle.setText("Stop");
+					Bot.start();
+				} else if (startBotToggle.getText().equals("Stop")) {
+					startBotToggle.setText("Start Bot");
+					Quit.softExit();
+				}
+			}
+		});
+		startBotToggle.setBounds(600, 439, 89, 23);
+		consolePanel.add(startBotToggle);
 		
 		JTabbedPane botSettingsPanel = new JTabbedPane(JTabbedPane.LEFT);
 		tabbedPane.addTab("Bot Settings", null, botSettingsPanel, "All modifiable bot settings are included in here.");
@@ -152,6 +184,10 @@ public class LazyJavieUI extends JFrame {
 		botTokenField.setColumns(20);
 		botTokenField.setBounds(100, 8, 470, 20);
 		authenticationPanel.add(botTokenField);
+		
+		JLabel lblNewLabel = new JLabel("If you want to use your own bot, put your bot's token here. Otherwise, leave it empty.");
+		lblNewLabel.setBounds(46, 36, 420, 14);
+		authenticationPanel.add(lblNewLabel);
 		
 		JPanel databasePanel = new JPanel();
 		tabbedPane.addTab("Database", null, databasePanel, "A place for all locally-stored tables.");
@@ -211,81 +247,6 @@ public class LazyJavieUI extends JFrame {
 				{null, null, null, null, null, null, null, null},
 				{null, null, null, null, null, null, null, null},
 				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
 			},
 			new String[] {
 				"New column", "New column", "New column", "New column", "New column", "New column", "New column", "New column"
@@ -298,23 +259,15 @@ public class LazyJavieUI extends JFrame {
 				return columnEditables[column];
 			}
 		});
-		tableGrid.getColumnModel().getColumn(0).setResizable(false);
-		tableGrid.getColumnModel().getColumn(1).setResizable(false);
-		tableGrid.getColumnModel().getColumn(2).setResizable(false);
-		tableGrid.getColumnModel().getColumn(3).setResizable(false);
-		tableGrid.getColumnModel().getColumn(4).setResizable(false);
-		tableGrid.getColumnModel().getColumn(5).setResizable(false);
-		tableGrid.getColumnModel().getColumn(6).setResizable(false);
-		tableGrid.getColumnModel().getColumn(7).setResizable(false);
 		tableGrid.setCellSelectionEnabled(true);
 		tableGrid.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		
-		textField = new JTextField();
-		textField.setToolTipText("Indicates from which point the scanner should start from. (Default: 0)\r\n\r\nThis part is important for viewing tables with more than 100 entries.\r\nIf your table has more than 100 items, the 101st item onwards will not be displayed by default.\r\n\r\nThis value will revert back to 0 if the entered value is below 0, not a number, or if the value is too high.");
-		textField.setText("0");
-		textField.setBounds(433, 6, 86, 20);
-		databasePanel.add(textField);
-		textField.setColumns(10);
+		startFromField = new JTextField();
+		startFromField.setToolTipText("Indicates from which point the scanner should start from. (Default: 0)\r\n\r\nThis part is important for viewing tables with more than 100 entries.\r\nIf your table has more than 100 items, the 101st item onwards will not be displayed by default.\r\n\r\nThis value will revert back to 0 if the entered value is below 0, not a number, or if the value is too high.");
+		startFromField.setText("0");
+		startFromField.setBounds(433, 6, 86, 20);
+		databasePanel.add(startFromField);
+		startFromField.setColumns(10);
 		
 		JLabel startFromLabel = new JLabel("Start from");
 		startFromLabel.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -345,122 +298,10 @@ public class LazyJavieUI extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 		}
 	}
-	
-	public static DefaultTableModel updateTableModel(/*Object[][] tableGrid, String[] columnHeaders*/) {
-		DefaultTableModel updatedTableModel = new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"New column", "New column", "New column", "New column", "New column", "New column", "New column", "New column"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		};
-		return updatedTableModel;
+	public static JButton getStartBotToggle() {
+		return startBotToggle;
+	}
+	public static JTextArea getConsoleOutput() {
+		return consoleOutput;
 	}
 }
