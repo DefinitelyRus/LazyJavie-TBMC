@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class Bot {
@@ -69,8 +70,9 @@ public class Bot {
 			//[B] Logging in the bot----------------------------------------
 			P.print("[B-1] Logging in...");
 			try {jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_MEMBERS).build();}
-			catch (LoginException loginExc) {P.print("'" +token+ "' is not a valid token."); return;}
-			catch (Exception otherExc) {P.print(otherExc.toString());}
+			catch (LoginException e) {P.print("'" +token+ "' is not a valid token."); return;}
+			catch (ErrorResponseException e) {P.print(e.toString() + " - likely caused by bad connection."); return;}
+			catch (Exception e) {P.print(e.toString());}
 			
 			P.print("[B-2] Setting status...");
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
@@ -93,7 +95,7 @@ public class Bot {
 		}
 		catch (NullPointerException e) {
 			//[B] Bot likely not initialized
-			P.print(e.toString() + " - Likely caused by an invalid token.");
+			P.print(e.toString() + " - Likely caused by a bad or no connection or an invalid token.");
 			SQLconnector.errorLog(e.toString(), ExceptionUtils.getStackTrace(e), Bot.VERSION);
 			return;
 		}

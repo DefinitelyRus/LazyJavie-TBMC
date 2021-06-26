@@ -15,16 +15,11 @@ public class MessageReceivedEvent extends ListenerAdapter{
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		
 		//Prints every message to the console.
-		if (muted == false && event.getChannel().equals(Bot.currentChannel)) {P.print(event.getMember().getAsMention() + ": " + msg);}
+		if (muted == false && event.getChannel().equals(Bot.currentChannel)) {P.print(event.getMember().getUser().getAsTag() + ": " + msg);}
 		
 		if (args[0].equalsIgnoreCase(Bot.prefix + "")) {
 			
 		}
-		
-	}
-	
-	public static void call (String inputMsg) {
-		
 	}
 	
 	// TODO Let a number of commands be runnable from console without having to rewrite code.
