@@ -9,6 +9,8 @@ import java.text.DecimalFormat;
 
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import commands.P;
 import net.dv8tion.jda.api.JDA;
 
@@ -83,8 +85,6 @@ public class LazyJavie {
 			if (toPrint == true) P.print("LazyJavie v" +version+ " build " +intBuild);
 			return "v" +version+ " build " + intBuild;
 		}
-		catch (LoginException e) {P.print("Error encountered: " + e.toString()); return e.toString();}
-		catch (SQLException e) {P.print("Error encountered: " + e.toString()); return e.toString();}
-		catch (Exception e) {P.print("Error encountered: " + e.toString()); e.printStackTrace(); return e.toString();}
+		catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print("Error encountered: " + e.toString()); return e.toString();}
 	}
 }

@@ -1,10 +1,15 @@
 package home.UI_Functions;
 
 import java.awt.Choice;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import commands.ConsoleCmd;
 import commands.MessageReceivedEvent;
 import commands.P;
 import commands.Quit;
@@ -12,6 +17,7 @@ import home.Bot;
 import home.LazyJavieUI;
 import home.SQLconnector;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class ConsoleCallables {
@@ -25,6 +31,7 @@ public class ConsoleCallables {
 			LazyJavieUI.getConsoleInput().setEnabled(true);
 			LazyJavieUI.getSendButton().setEnabled(true);
 			LazyJavieUI.getConsoleOutput().setEnabled(true);
+			List<Member> members = new LinkedList<Member>();
 			
 			//Determines whether the token should be grabbed from the UI or from system.
 			String bottoken = String.valueOf(LazyJavieUI.getBotTokenField().getPassword());
@@ -45,7 +52,7 @@ public class ConsoleCallables {
 			List<Guild> guilds = Bot.jda.getGuilds();
 			list.add("- Select text channel -");
 			
-			//Gets a list of all the channels.
+			//Lists all the channels and members from each server.
 			for (Guild g : guilds) {
 				for (TextChannel txtCh : g.getTextChannels()) {
 					String label = g.getName() + " | " + txtCh.getName();
@@ -53,8 +60,23 @@ public class ConsoleCallables {
 					LazyJavieUI.channelsList.add(txtCh);
 					LazyJavieUI.channelDict.put(label, txtCh);
 				}
+				for (Member m : g.getMembers()) {members.add(m);}
 			}
+			Bot.members = members;
+			
+			for (Member m : Bot.members) {
+				boolean toSkip = false;
+				for (Member m2 : Bot.members) {
+					if (m.equals(m2)) {toSkip = true; break;}
+				}
+				if (toSkip == true) continue;
+				String id = m.getUser().getId();
+				String usertag = m.getUser().getAsTag();
+				SQLconnector.update("insert into members (userid, usertag) values ('" +id+ "', '" + usertag + "');", false);
+			}
+			
 			P.print("Console ready!");
+			return;
 		
 		} else if (mode.equals("Stop")) {
 			String ch = list.getSelectedItem();
@@ -71,6 +93,7 @@ public class ConsoleCallables {
 			list.setEnabled(false);
 			list.removeAll();
 			list.add("- Select text channel -");
+			return;
 		}
 	}
 
@@ -88,6 +111,8 @@ public class ConsoleCallables {
 		if (!inputMsg.startsWith(Bot.prefix) && !inputMsg.equals("")) {
 			Bot.jda.getTextChannelById(LazyJavieUI.channelDict.get(selChannel).getId()).sendMessage(inputMsg).queue();
 			input.setText("");
+		} else if (inputMsg.startsWith(Bot.prefix) && !inputMsg.equals("")) {
+			ConsoleCmd.call(input.getText());
 		}
 		
 		//Sends as commands

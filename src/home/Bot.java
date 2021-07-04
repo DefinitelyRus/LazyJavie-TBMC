@@ -2,8 +2,10 @@ package home;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import javax.security.auth.login.LoginException;
 
@@ -18,21 +20,29 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class Bot {
 	
 	//Initialization of user-coded objects and variables
 	public static final String VERSION = "LazyJavie v2.0 ALPHA";
 	public static JDA jda;
+	public static List<Member> members = new LinkedList<Member>();
 	
 	//Variables changeable in UI.
 	public static boolean tokenOverride = false;
 	public static String token = "";
 	public static String prefix = "$";
 	public static Object currentChannel;
+	public static boolean muted = false;
 	
+	/**
+	 * Starts the bot with default settings.
+	 */
 	public static void start() {
 		try {
 			//SQLconnector.NoDBfixer();
@@ -69,7 +79,7 @@ public class Bot {
 		      
 			//[B] Logging in the bot----------------------------------------
 			P.print("[B-1] Logging in...");
-			try {jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_MEMBERS).build();}
+			try {jda = JDABuilder.createDefault(token).setChunkingFilter(ChunkingFilter.ALL).setMemberCachePolicy(MemberCachePolicy.ALL).enableIntents(GatewayIntent.GUILD_MEMBERS).build();}
 			catch (LoginException e) {P.print("'" +token+ "' is not a valid token."); return;}
 			catch (ErrorResponseException e) {P.print(e.toString() + " - likely caused by bad connection."); return;}
 			catch (Exception e) {P.print(e.toString());}
@@ -82,33 +92,39 @@ public class Bot {
 			//[IMPORTANT] Add new commands here.
 			jda.addEventListener(new MessageReceivedEvent());
 			jda.addEventListener(new Quit());
-			jda.addEventListener(new Returns());
-
+			jda.addEventListener(new Returns());			
+			
 			P.print("[B-4] Ready!");
 			return;
 		}
 		catch (FileNotFoundException e) {
 			//[A] File not found.
 			P.print("Missing file error: " + e.toString());
-			SQLconnector.errorLog(e.toString(), ExceptionUtils.getStackTrace(e), Bot.VERSION);
+			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
 			return;
 		}
 		catch (NullPointerException e) {
 			//[B] Bot likely not initialized
 			P.print(e.toString() + " - Likely caused by a bad or no connection or an invalid token.");
-			SQLconnector.errorLog(e.toString(), ExceptionUtils.getStackTrace(e), Bot.VERSION);
+			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
 			return;
 		}
 		catch (Exception e) {
 			//[A-B] Every other exception.
-			P.print(e.toString());
 			e.printStackTrace();
-			SQLconnector.errorLog(e.toString(), ExceptionUtils.getStackTrace(e), Bot.VERSION);
+			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
 			return;
 		}
 	}
 
 	public static List<Guild> getGuilds() {
 		return jda.getGuilds();
+	}
+	
+	public static List<Member> getMembers(boolean removeDupes) {
+		List<Member> members = new LinkedList<Member>();
+		for (Guild g : jda.getGuilds()) {members.addAll(g.getMembers());}
+		if (removeDupes == true) members = members.stream().distinct().collect(Collectors.toList());
+		return members;
 	}
 }

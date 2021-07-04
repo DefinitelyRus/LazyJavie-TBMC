@@ -110,7 +110,7 @@ public class LazyJavieUI extends JFrame {
 		P.print("UI Ready!");
 		
 
-//		SQLconnector.NoDBfixer();
+		//SQLconnector.NoDBfixer();
 //		for (int i = 0; i < 5; i++) {
 //			try {SQLconnector.update("insert into testtable (col1, col2, col3, col4, col5, col6, col7) values ('a', 'b', 'c', 'd', 'e', 'f', 'g');", true);}
 //			catch (LoginException | SQLException e) {e.printStackTrace();}
@@ -146,6 +146,8 @@ public class LazyJavieUI extends JFrame {
 		tabbedPane.setBorder(null);
 		tabbedPane.setBackground(SystemColor.menu);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
+		
+		//-----------------------------------CONSOLE PANEL-----------------------------------
 		
 		JPanel consolePanel = new JPanel();
 		consolePanel.setBackground(SystemColor.menu);
@@ -203,7 +205,7 @@ public class LazyJavieUI extends JFrame {
 		consolePanel.add(sendButton);
 		sendButton.setEnabled(false);
 		
-		//------------------------------START BUTTON------------------------------
+		//-------------------------START BUTTON-------------------------
 		startBotToggle = new JButton("Start Bot");
 		startBotToggle.addMouseListener(new MouseAdapter() {
 			@Override
@@ -219,6 +221,8 @@ public class LazyJavieUI extends JFrame {
 		JLabel lblNewLabel_1 = new JLabel("When changing channels, press send to focus on the selected channel.");
 		lblNewLabel_1.setBounds(18, 373, 341, 14);
 		consolePanel.add(lblNewLabel_1);
+		
+		//-----------------------------------SETTINGS PANEL-----------------------------------
 		
 		JTabbedPane botSettingsPanel = new JTabbedPane(JTabbedPane.LEFT);
 		tabbedPane.addTab("Bot Settings", null, botSettingsPanel, "All modifiable bot settings are included in here.");
@@ -242,6 +246,8 @@ public class LazyJavieUI extends JFrame {
 		lblNewLabel.setBounds(46, 36, 420, 14);
 		authenticationPanel.add(lblNewLabel);
 		
+		//-----------------------------------DATABASE TAB-----------------------------------
+		
 		JPanel databasePanel = new JPanel();
 		tabbedPane.addTab("Database", null, databasePanel, "A place for all locally-stored tables.");
 		databasePanel.setLayout(null);
@@ -255,7 +261,7 @@ public class LazyJavieUI extends JFrame {
 		updateTableButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				dbTable.updateTableGridContents(getTableList(), getTableGrid());
+				dbTable.updateTableDisplay(getTableList(), getTableGrid());
 			}
 		});
 		updateTableButton.setToolTipText("Update the table.");
@@ -271,18 +277,10 @@ public class LazyJavieUI extends JFrame {
 		tableGrid.setFillsViewportHeight(true);
 		dbTableScrollPane.setViewportView(tableGrid);
 		tableGrid.setModel(new DefaultTableModel(
-//			dbTable.getTableGridContents(getTableList(), getTableGrid()),
 			new Object[][] {{}, {}, {}, {}, {}, {}, {}, {}},
-			new String[] {
-				"", "", "", "", "", "", "", ""
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
+			new String[] {"", "", "", "", "", "", "", ""}) {
+			boolean[] columnEditables = new boolean[] {false, false, false, false, false, false, false, false};
+			public boolean isCellEditable(int row, int column) {return columnEditables[column];}
 		});
 		tableGrid.setCellSelectionEnabled(true);
 		tableGrid.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
