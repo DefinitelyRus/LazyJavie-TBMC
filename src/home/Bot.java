@@ -32,6 +32,7 @@ public class Bot {
 	public static final String VERSION = "LazyJavie v2.0 ALPHA";
 	public static JDA jda;
 	public static List<Member> members = new LinkedList<Member>();
+	public static boolean isAwake = false;
 	
 	//Variables changeable in UI.
 	public static boolean tokenOverride = false;

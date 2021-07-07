@@ -24,6 +24,7 @@ public class ConsoleCallables {
 
 	public static void startBot(JButton button, String mode, Choice list) {
 		if (mode.equals("Start Bot")) {
+			Bot.isAwake = true;
 			button.setEnabled(false);
 			button.setText("Stop");
 			list.setEnabled(true);
@@ -79,6 +80,7 @@ public class ConsoleCallables {
 			return;
 		
 		} else if (mode.equals("Stop")) {
+			Bot.isAwake = false;
 			String ch = list.getSelectedItem();
 			Quit.softExit();
 			

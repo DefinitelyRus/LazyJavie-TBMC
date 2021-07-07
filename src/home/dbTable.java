@@ -1,6 +1,7 @@
 package home;
 
 import java.awt.Choice;
+import java.awt.desktop.PrintFilesEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,6 +14,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import commands.P;
+import net.dv8tion.jda.api.entities.Member;
 
 public class dbTable {
 	
@@ -23,11 +25,12 @@ public class dbTable {
 	 * @return A 2D array containing the contents of the table.
 	 */
 	@SuppressWarnings("serial")
-	public static Object[][] updateTableDisplay(Choice tableList, JTable tableGrid) {
+	public static void updateTableDisplay(Choice tableList, JTable tableGrid) {
 
 		//Initialization
 		String table = tableList.getSelectedItem();
-		if (table.equals("- Select table -")) {LazyJavieUI.getEntryCounterLabel().setText("No table selected."); return null;} //Checks if there are no items selected.
+		if (table.equals("- Select table -")) {LazyJavieUI.getEntryCounterLabel().setText("No table selected."); return;} //Checks if there are no items selected.
+		else if (table.equals("members")) getMembers(table);
 		int xCount = 0, yCount = 0;
 		int xy[] = SQLconnector.getXY(table);
 		xCount = xy[0];
@@ -39,7 +42,8 @@ public class dbTable {
 			//This table is display-only so its contents are all false.
 			List<Boolean> columnEditablesList = new LinkedList<>();
 			for (int c = 1; c <= yCount; c++) {columnEditablesList.add(false);}
-
+			
+			
 			//Creates a connection to the database, then gets a result set for an entire table.
 			Connection con = DriverManager.getConnection(SQLconnector.DB_ADDRESS, SQLconnector.DB_LOGIN_ID, SQLconnector.getPass());
 			ResultSet results = con.createStatement().executeQuery("select * from "+table);
@@ -59,12 +63,11 @@ public class dbTable {
 			if (xCount == 1) str = " entry found."; else str = " entries found.";
 			LazyJavieUI.getEntryCounterLabel().setText(xCount + str);
 			
-			//updateTableList(tableList);
-			return getTableContentsByRow(table);
+			return;
 			
 		} catch (SQLException e) {
 			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());
-			return null;
+			return;
 		}
 	}
 	
@@ -95,7 +98,8 @@ public class dbTable {
 			//Gets all the contents of an entire row, then adds it to tg_2d.
 			//It will do this for every record in the table.
 			while (results.next()) {
-				for (int c = 1; c <= yCount; c++) tg_row.add(results.getString(c));
+				
+				for (int c = 1; c <= yCount; c++) {tg_row.add(results.getString(c));}
 				tg_2d.add(tg_row.toArray());
 			}
 			
@@ -104,6 +108,7 @@ public class dbTable {
 		catch (SQLException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 
 		//Converts tg_2d into an object array then assigns it to a variable.
+		//Suspected cause of bug. TODO Fix bug
 		Object[][] tableGridContents = tg_2d.toArray(new Object[0][0]);
 		
 		return tableGridContents;
@@ -142,5 +147,50 @@ public class dbTable {
 		}
 		String[] columnHeaders = P.toStringArray(headersList);
 		return columnHeaders;
+	}
+	
+	//-------------------------GET MEMBERS-------------------------
+	/**
+	 * 
+	 * @param table
+	 */
+	private static void getMembers(String table) {
+		try {
+			List<Member> membersNew = Bot.getMembers(true);
+			List<String> membersOld = SQLconnector.getList("select * from members", "userid", false);
+			String userid, usertag;
+			P.print("Getting list.");
+			for (Member m : membersNew) {
+				userid = m.getId();
+				usertag = m.getUser().getAsTag();
+				if (membersOld.contains(userid)) continue;
+				else {
+					P.print("New member added to database: " +usertag);
+					SQLconnector.update("insert into members (userid, usertag) values ('" +userid+ "', '" +usertag+ "');", false);
+				}
+			}
+			P.print("Done!");
+		} catch (NullPointerException e) {
+			P.print(e.toString());
+			if (Bot.isAwake == false) {
+				int memberCount = SQLconnector.getList("select * from members", "userid", false).size();
+				P.print(String.valueOf(memberCount));
+				
+				//Grammar.
+				String str;
+				if (memberCount == 1) str = " entry found."; else str = " entries found.";
+				str = memberCount + str;
+				LazyJavieUI.getEntryCounterLabel().setText("Bot has to be online to get an updated list. " + str);
+			} else {
+				int memberCount = SQLconnector.getList("select * from members", "userid", false).size();
+				
+				//Grammar.
+				String str;
+				if (memberCount == 1) str = " entry found."; else str = " entries found.";
+				str = memberCount + str;
+				SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print("Unknown error caught: " + e.toString());
+				LazyJavieUI.getEntryCounterLabel().setText("Error encountered; showing offline database. " + str);
+			}
+		}
 	}
 }

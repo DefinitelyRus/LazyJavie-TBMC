@@ -4,9 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Choice;
 import java.awt.EventQueue;
 import java.awt.SystemColor;
-import java.awt.desktop.PrintFilesEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
-
 import javax.security.auth.login.LoginException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -35,24 +35,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
-import commands.MessageReceivedEvent;
 import commands.P;
-import commands.Quit;
 import home.UI_Functions.ConsoleCallables;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDA.Status;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.internal.requests.Route.Guilds;
-
-import javax.swing.JToggleButton;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 /*
  * itemnamewith32chars_________00000
@@ -207,12 +192,9 @@ public class LazyJavieUI extends JFrame {
 		
 		//-------------------------START BUTTON-------------------------
 		startBotToggle = new JButton("Start Bot");
-		startBotToggle.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent mouseObj) {
-				if (mouseObj.getButton() == MouseEvent.BUTTON1) {
-					ConsoleCallables.startBot(getStartBotToggle(), LazyJavieUI.startBotToggle.getText(), getTextChannelsList());
-				}
+		startBotToggle.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ConsoleCallables.startBot(getStartBotToggle(), LazyJavieUI.startBotToggle.getText(), getTextChannelsList());
 			}
 		});
 		startBotToggle.setBounds(600, 439, 89, 23);
