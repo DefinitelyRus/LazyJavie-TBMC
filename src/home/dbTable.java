@@ -1,7 +1,6 @@
 package home;
 
 import java.awt.Choice;
-import java.awt.desktop.PrintFilesEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -28,9 +27,10 @@ public class dbTable {
 	public static void updateTableDisplay(Choice tableList, JTable tableGrid) {
 
 		//Initialization
+		boolean gotMembers = false;
 		String table = tableList.getSelectedItem();
 		if (table.equals("- Select table -")) {LazyJavieUI.getEntryCounterLabel().setText("No table selected."); return;} //Checks if there are no items selected.
-		else if (table.equals("members")) getMembers(table);
+		else if (table.equals("members")) gotMembers = getMembers(table);
 		int xCount = 0, yCount = 0;
 		int xy[] = SQLconnector.getXY(table);
 		xCount = xy[0];
@@ -59,9 +59,11 @@ public class dbTable {
 			con.close();
 			
 			//Grammar.
-			String str;
-			if (xCount == 1) str = " entry found."; else str = " entries found.";
-			LazyJavieUI.getEntryCounterLabel().setText(xCount + str);
+			if (gotMembers == false) {
+				String str;
+				if (xCount == 1) str = " entry found."; else str = " entries found.";
+				LazyJavieUI.getEntryCounterLabel().setText(xCount + str);
+			}
 			
 			return;
 			
@@ -97,10 +99,14 @@ public class dbTable {
 			
 			//Gets all the contents of an entire row, then adds it to tg_2d.
 			//It will do this for every record in the table.
+			//Suspected cause of bug. TODO Fix bug
 			while (results.next()) {
-				
+				P.print(results.getString(2));
 				for (int c = 1; c <= yCount; c++) {tg_row.add(results.getString(c));}
-				tg_2d.add(tg_row.toArray());
+				
+				if (!tg_2d.contains(tg_row.toArray())) tg_2d.add(tg_row.toArray());
+				else P.print("DUPLICATE");
+				tg_row.clear();
 			}
 			
 			connection.close();	
@@ -108,8 +114,18 @@ public class dbTable {
 		catch (SQLException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 
 		//Converts tg_2d into an object array then assigns it to a variable.
-		//Suspected cause of bug. TODO Fix bug
 		Object[][] tableGridContents = tg_2d.toArray(new Object[0][0]);
+		
+//		//temp
+//		int i= 0;
+//		int s = Bot.jda.getGuilds().size();
+//		for (Object[] a : tableGridContents) {
+//			for (Object b : a) {
+//				P.print(i + " " + b.toString());
+//			}
+//			i++;
+//			//if (i >= s) break;
+//		}
 		
 		return tableGridContents;
 	}
@@ -154,7 +170,7 @@ public class dbTable {
 	 * 
 	 * @param table
 	 */
-	private static void getMembers(String table) {
+	private static boolean getMembers(String table) {
 		try {
 			List<Member> membersNew = Bot.getMembers(true);
 			List<String> membersOld = SQLconnector.getList("select * from members", "userid", false);
@@ -170,8 +186,8 @@ public class dbTable {
 				}
 			}
 			P.print("Done!");
+			return true;
 		} catch (NullPointerException e) {
-			P.print(e.toString());
 			if (Bot.isAwake == false) {
 				int memberCount = SQLconnector.getList("select * from members", "userid", false).size();
 				P.print(String.valueOf(memberCount));
@@ -191,6 +207,6 @@ public class dbTable {
 				SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print("Unknown error caught: " + e.toString());
 				LazyJavieUI.getEntryCounterLabel().setText("Error encountered; showing offline database. " + str);
 			}
-		}
+		} return true;
 	}
 }
