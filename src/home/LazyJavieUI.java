@@ -8,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -39,17 +37,6 @@ import commands.P;
 import home.UI_Functions.ConsoleCallables;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-/*
- * itemnamewith32chars_________00000
-itemnamewith32chars_________00001
-itemnamewith32chars_________00002
-itemnamewith32chars_________00003
-itemnamewith32chars_________00004
-itemnamewith32chars_________00005
-itemnamewith32chars_________00006
-itemnamewith32chars_________00007
-itemnamewith32chars_________00008
- */
 
 @SuppressWarnings("serial")
 public class LazyJavieUI extends JFrame {
@@ -59,7 +46,6 @@ public class LazyJavieUI extends JFrame {
 	private static JPasswordField botTokenField;
 	private static JTable tableGrid;
 	private JTextField startFromField;
-	private final Action action = new SwingAction();
 	public static JTextArea consoleOutput;
 	public static JButton startBotToggle;
 	
@@ -95,11 +81,7 @@ public class LazyJavieUI extends JFrame {
 		P.print("UI Ready!");
 		
 
-		//SQLconnector.NoDBfixer();
-//		for (int i = 0; i < 5; i++) {
-//			try {SQLconnector.update("insert into testtable (col1, col2, col3, col4, col5, col6, col7) values ('a', 'b', 'c', 'd', 'e', 'f', 'g');", true);}
-//			catch (LoginException | SQLException e) {e.printStackTrace();}
-//		}
+		SQLconnector.NoDBfixer();
 		
 	}
 	
@@ -259,7 +241,7 @@ public class LazyJavieUI extends JFrame {
 		tableGrid.setFillsViewportHeight(true);
 		dbTableScrollPane.setViewportView(tableGrid);
 		tableGrid.setModel(new DefaultTableModel(
-			new Object[][] {{}, {}, {}, {}, {}, {}, {}, {}},
+			new Object[][] {{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}},
 			new String[] {"", "", "", "", "", "", "", ""}) {
 			boolean[] columnEditables = new boolean[] {false, false, false, false, false, false, false, false};
 			public boolean isCellEditable(int row, int column) {return columnEditables[column];}
@@ -280,7 +262,7 @@ public class LazyJavieUI extends JFrame {
 		databasePanel.add(startFromLabel);
 		
 		entryCounterLabel = new JLabel("0 entries found.");
-		entryCounterLabel.setBounds(10, 448, 100, 14);
+		entryCounterLabel.setBounds(10, 448, 679, 14);
 		databasePanel.add(entryCounterLabel);
 		
 		JLabel errorMessageLabel = new JLabel("");
