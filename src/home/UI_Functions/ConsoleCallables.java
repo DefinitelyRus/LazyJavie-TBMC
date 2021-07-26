@@ -110,13 +110,15 @@ public class ConsoleCallables {
 		Bot.currentChannel = LazyJavieUI.channelDict.get(selChannel);
 		
 		//Sends as normal messages
-		if (!inputMsg.startsWith(Bot.prefix) && !inputMsg.equals("")) {
-			Bot.jda.getTextChannelById(LazyJavieUI.channelDict.get(selChannel).getId()).sendMessage(inputMsg).queue();
-			input.setText("");
-		} else if (inputMsg.startsWith(Bot.prefix) && !inputMsg.equals("")) {
-			ConsoleCmd.call(input.getText());
+		try {
+			if (!inputMsg.startsWith(Bot.prefix) && !inputMsg.equals("")) {
+				Bot.jda.getTextChannelById(LazyJavieUI.channelDict.get(selChannel).getId()).sendMessage(inputMsg).queue();
+				input.setText("");
+			} else if (inputMsg.startsWith(Bot.prefix) && !inputMsg.equals("")) {
+				ConsoleCmd.call(input.getText());
+			}
 		}
-		
+		catch (NullPointerException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print("NullPointerException: Text channel likely not found.");}
 		//Sends as commands
 		//else {MessageReceivedEvent.call(inputMsg);}
 	}
