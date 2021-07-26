@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import javax.security.auth.login.LoginException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -36,6 +38,7 @@ import javax.swing.table.DefaultTableModel;
 import commands.P;
 import home.UI_Functions.ConsoleCallables;
 import net.dv8tion.jda.api.entities.TextChannel;
+import javax.swing.JCheckBox;
 
 
 @SuppressWarnings("serial")
@@ -83,6 +86,14 @@ public class LazyJavieUI extends JFrame {
 
 		SQLconnector.NoDBfixer();
 		
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ConsoleCallables.startBot(getStartBotToggle(), LazyJavieUI.startBotToggle.getText(), getTextChannelsList());
 	}
 	
 	public static int willHideOnClose(boolean toHide) {
@@ -188,11 +199,19 @@ public class LazyJavieUI extends JFrame {
 		
 		//-----------------------------------SETTINGS PANEL-----------------------------------
 		
-		JTabbedPane botSettingsPanel = new JTabbedPane(JTabbedPane.LEFT);
-		tabbedPane.addTab("Bot Settings", null, botSettingsPanel, "All modifiable bot settings are included in here.");
+		JTabbedPane optionsPanel = new JTabbedPane(JTabbedPane.LEFT);
+		tabbedPane.addTab("Options", null, optionsPanel, "All modifiable bot settings are included in here.");
+		
+		JPanel startupPanel = new JPanel();
+		optionsPanel.addTab("Startup", null, startupPanel, null);
+		startupPanel.setLayout(null);
+		
+		JCheckBox hideUIcheckbox = new JCheckBox("Hide UI on close.");
+		hideUIcheckbox.setBounds(6, 7, 107, 23);
+		startupPanel.add(hideUIcheckbox);
 		
 		JPanel authenticationPanel = new JPanel();
-		botSettingsPanel.addTab("Authentication", null, authenticationPanel, "All required values needed to give you access to Console and other bot settings.");
+		optionsPanel.addTab("Authentication", null, authenticationPanel, "All required values needed to give you access to Console and other bot settings.");
 		authenticationPanel.setLayout(null);
 		
 		JLabel botTokenLabel = new JLabel("Bot Token");
@@ -275,6 +294,8 @@ public class LazyJavieUI extends JFrame {
 		tabbedPane.addTab("Help", null, helpPanel, "Includes shortened documentation and a list of functions.");
 	}
 	
+	
+	
 	public static int filterChannelName(String name) {
 		return 0;
 	}
@@ -316,3 +337,4 @@ public class LazyJavieUI extends JFrame {
 		return entryCounterLabel;
 	}
 }
+
