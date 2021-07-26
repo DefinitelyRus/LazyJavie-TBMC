@@ -2,6 +2,7 @@ package home;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,9 +13,12 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import commands.MessageReceivedEvent;
+import commands.NewChannel;
 import commands.P;
 import commands.Quit;
 import commands.Returns;
+import commands.TextChannelCreated;
+import commands.TicketEmoteListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -80,10 +84,17 @@ public class Bot {
 		      
 			//[B] Logging in the bot----------------------------------------
 			P.print("[B-1] Logging in...");
-			try {jda = JDABuilder.createDefault(token).setChunkingFilter(ChunkingFilter.ALL).setMemberCachePolicy(MemberCachePolicy.ALL).enableIntents(GatewayIntent.GUILD_MEMBERS).build();}
+			try {
+				jda = JDABuilder.createDefault(token)
+						.setChunkingFilter(ChunkingFilter.ALL)
+						.setMemberCachePolicy(MemberCachePolicy.ALL)
+						.setEnabledIntents(EnumSet.allOf(GatewayIntent.class))
+						.build();
+				}
 			catch (LoginException e) {P.print("'" +token+ "' is not a valid token."); return;}
 			catch (ErrorResponseException e) {P.print(e.toString() + " - likely caused by bad connection."); return;}
 			catch (Exception e) {P.print(e.toString());}
+			
 			
 			P.print("[B-2] Setting status...");
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
@@ -93,7 +104,10 @@ public class Bot {
 			//[IMPORTANT] Add new commands here.
 			jda.addEventListener(new MessageReceivedEvent());
 			jda.addEventListener(new Quit());
-			jda.addEventListener(new Returns());			
+			jda.addEventListener(new Returns());	
+			jda.addEventListener(new TextChannelCreated());
+			jda.addEventListener(new NewChannel());
+			jda.addEventListener(new TicketEmoteListener());
 			
 			P.print("[B-4] Ready!");
 			return;
