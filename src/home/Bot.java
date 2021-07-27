@@ -13,7 +13,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import commands.MessageReceivedEvent;
-import commands.NewChannel;
+import commands.TicketHostBuilder;
 import commands.P;
 import commands.Quit;
 import commands.Returns;
@@ -25,6 +25,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -37,6 +38,9 @@ public class Bot {
 	public static JDA jda;
 	public static List<Member> members = new LinkedList<Member>();
 	public static boolean isAwake = false;
+	public static String ticketMessage = "Need help? Click the emote below!";
+	public static MessageEmbed ticketEmbed = null;
+	public static List<Integer> activeTickets = new LinkedList<Integer>();
 	
 	//Variables changeable in UI.
 	public static boolean tokenOverride = false;
@@ -106,7 +110,7 @@ public class Bot {
 			jda.addEventListener(new Quit());
 			jda.addEventListener(new Returns());	
 			jda.addEventListener(new TextChannelCreated());
-			jda.addEventListener(new NewChannel());
+			jda.addEventListener(new TicketHostBuilder());
 			jda.addEventListener(new TicketEmoteListener());
 			
 			P.print("[B-4] Ready!");

@@ -83,8 +83,8 @@ public class LazyJavieUI extends JFrame {
 		//All startup settings goes here.
 		P.print("UI Ready!");
 		
-
-		SQLconnector.NoDBfixer();
+		//Database reset - debugging purposes only. -----------------------------------------------------------------------------------------------------------------
+		//SQLconnector.NoDBfixer();
 		
 		try {
 			TimeUnit.SECONDS.sleep(1);
