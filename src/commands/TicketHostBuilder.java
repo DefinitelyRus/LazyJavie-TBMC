@@ -128,7 +128,7 @@ public class TicketHostBuilder extends ListenerAdapter{
 					ch.sendMessage(Bot.ticketMessage).queue();
 					
 					P.print("Prompt sent. Adding emote...");
-					try {TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
+					try {TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 					
 					List<Message> msgs = Bot.jda.getTextChannelById(ch.getId()).getHistory().retrievePast(1).complete();
 					for (Message m : msgs) {

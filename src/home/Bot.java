@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import commands.MessageReceivedEvent;
@@ -78,7 +79,7 @@ public class Bot {
 			    Scanner reader = new Scanner(file);
 			    P.print("[A-3] Scanning...");
 			    while (reader.hasNextLine()) {token = reader.nextLine(); break;}
-			    P.print("[A-4] Token assigned: " + token);
+			    P.print("[A-4] Token assigned: " + StringUtils.substring(token, 0, 10) + "*".repeat(token.length()-10));
 			    
 			    //Closes the scanner.
 			    reader.close();
