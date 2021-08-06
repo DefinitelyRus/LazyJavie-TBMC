@@ -305,13 +305,15 @@ public class SQLconnector {
 		    }
 		catch (FileNotFoundException e) {
 			P.print("404: lazyjavie_token.txt is missing from target directory.");
-			return null;
+			String dbpass = "";
+			return dbpass;
 			
 			//TODO Autofix
 			}
 		catch (Exception e) {
 			P.print(ExceptionUtils.getStackTrace(e));
-			return null;
+			String dbpass = "";
+			return dbpass;
 			}
 	}
 	
