@@ -29,9 +29,9 @@ public class TicketHostBuilder extends ListenerAdapter{
 		
 		//Presets the ticket message to a custom-made embed.
 		if (args[0].equalsIgnoreCase(Bot.prefix + "setTicketEmbed") && event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-			P.print("Set ticket embed request by " + event.getMember().getUser().getAsTag() + ".");
+			P.print("\n[TicketHostBuilder] Set ticket embed request by " + event.getMember().getUser().getAsTag() + ".");
 			
-			String[] argsRawArray = argsRaw.split("<break>");
+			String[] argsRawArray = argsRaw.split("<b>");
 			String header, body, footer = null;
 			Bot.ticketMessage = null;
 			EmbedBuilder embed = new EmbedBuilder();
@@ -45,7 +45,7 @@ public class TicketHostBuilder extends ListenerAdapter{
 			}
 			catch (ArrayIndexOutOfBoundsException e) {
 				P.print("Missing arguments. Cancelling...");
-				event.getChannel().sendMessage("Missing header and/or body. Use `<break>` to separate them.").queue();
+				event.getChannel().sendMessage("Missing header and/or body. Use `<b>` to separate them.").queue();
 				return;
 				}
 			catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString()); return;}
@@ -55,18 +55,19 @@ public class TicketHostBuilder extends ListenerAdapter{
 				footer = argsRawArray[2];
 				embed.setFooter(footer);
 			}
-			catch (ArrayIndexOutOfBoundsException e) {P.print("Optional footer not included; skipping...");}
+			catch (ArrayIndexOutOfBoundsException e) {P.print("|Optional footer missing; skipping...");}
 			catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 			
+			//Finalizes the embed.
 			Bot.ticketEmbed = embed.build();
-			event.getChannel().sendMessage("Set ticket prompt embed to display the following message. Waiting for '" + Bot.prefix + "setTicketChannel <args...>'...");
+			event.getChannel().sendMessage("Set ticket prompt embed to display the following message. Waiting for '" + Bot.prefix + "setTicketChannel <args...>'...").queue();
 			event.getChannel().sendMessage(Bot.ticketEmbed).queue();
 			return;
 		}
 		
 		//Creates a channel where members can create tickets by clicking on an emote on a premade bot message.
 		if (args[0].equalsIgnoreCase(Bot.prefix + "setTicketChannel") && event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-			P.print("Set ticket channel request by " + event.getMember().getUser().getAsTag() + ".");
+			P.print("\n[TicketHostBuilder] Set ticket channel request by " + event.getMember().getUser().getAsTag() + ".");
 			
 			//Initialization
 			String channelName = null;
@@ -75,8 +76,8 @@ public class TicketHostBuilder extends ListenerAdapter{
 			String emote = ":incoming_envelope:868713407749173248";
 			long id = event.getGuild().getIdLong();
 			String cat_id = null;
-			List<Category> categoryList = Bot.jda.getGuildById(id).getCategories();
-			List<TextChannel> channelList = Bot.jda.getGuildById(id).getTextChannels();
+			String arc_id = null;
+			String archiveName = null;
 
 			try {role_id = args[1].toLowerCase();}
 			catch (ArrayIndexOutOfBoundsException e) {P.print("Channel name argument missing. Cancelling..."); return;}
@@ -94,61 +95,105 @@ public class TicketHostBuilder extends ListenerAdapter{
 			catch (ArrayIndexOutOfBoundsException e) {P.print("Optional custom emote not specified. Setting to default...");}
 			catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 			
+			try {archiveName = args[5];}
+			catch (ArrayIndexOutOfBoundsException e) {P.print("Optional archive category not specified. Setting to default..."); archiveName = categoryName;}
+			catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+			
 			//Filters the inputs.
 			categoryName = categoryName.replace('_', ' ');
 			emote = emote.replace("<", "");
 			emote = emote.replace(">", "");
 			role_id = role_id.replace("<@&", "");
 			role_id = role_id.replace(">", "");
+			if (emote.equalsIgnoreCase("null")) emote = ":incoming_envelope:868713407749173248";
 			
 			//Outputs
-			P.print("|Setting `" + channelName + "` as dedicated ticket prompt...");
-			P.print("|Setting `" + categoryName + "` as dedicated ticket category...");
-			event.getChannel().sendMessage("Setting `" + channelName + "` as dedicated ticket prompt...").queue();;
-			event.getChannel().sendMessage("Setting `" + categoryName + "` as dedicated ticket category...").queue();;
+			P.print("|Setting '" + channelName + "' as dedicated ticket prompt...");
+			P.print("|Setting '" + categoryName + "' as dedicated ticket category...");
+			P.print("|Setting '" + archiveName + "' as dedicated archive category...");
+			event.getChannel().sendMessage("Setting `" + channelName + "` as dedicated ticket prompt...").queue();
+			event.getChannel().sendMessage("Setting `" + categoryName + "` as dedicated ticket category...").queue();
+			event.getChannel().sendMessage("Setting `" + archiveName + "` as dedicated archive category...").queue();
 			
 			//Finds the specified category.
 			P.print("|Finding category '" + categoryName + "'...");
-			for (Category c : categoryList) {
-				if (c.getName().equalsIgnoreCase(categoryName)) {
-					P.print("|Found category '" + categoryName + "'.");
-					cat_id = c.getId();
+			for (Category c : Bot.jda.getGuildById(id).getCategoriesByName(categoryName, true)) {
+				P.print("|Found category '" + categoryName + "'.");
+				cat_id = c.getId();
+				break;
+			}
+			
+			//Finds the specified archive category.
+			if (archiveName.equalsIgnoreCase(categoryName)) arc_id = cat_id;
+			else {
+				for (Category c : Bot.jda.getGuildById(id).getCategoriesByName(archiveName, true)) {
+					P.print("|Found category '" + archiveName + "'.");
+					arc_id = c.getId();
 					break;
 				}
 			}
 			
 			//Finds the specified channel.
 			P.print("|Finding channel '" + channelName + "'...");
-			for (TextChannel ch : channelList) {
-				if (ch.getName().equalsIgnoreCase(channelName)) {
-					P.print("|Found channel '" + channelName + "'."); 
-					P.print("Sending prompt message...");
+			for (TextChannel ch : Bot.jda.getTextChannelsByName(channelName, true)) {
+				P.print("|Found channel '" + channelName + "'."); 
+				P.print("|Sending prompt message...");
+				
+				//Checks if there is a preset ticket message or embed, then uses it.
+				if (Bot.ticketEmbed.equals(null)) ch.sendMessage(Bot.ticketMessage).queue();
+				else if (Bot.ticketMessage.equals(null)) ch.sendMessage(Bot.ticketEmbed).queue();
+				else ch.sendMessage("Need help? Click the emote below!").queue();
+				
+				//1 second delay for cache refresh.
+				P.print("|Prompt sent. Adding emote...");
+				try {TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+				
+				//Gets the most recent message sent from the target channel.
+				List<Message> msgs = Bot.jda.getTextChannelById(ch.getId()).getHistory().retrievePast(1).complete();
+				for (Message m : msgs) {
+					//Adds the reaction emote to the message.
+					m.addReaction(emote).queue();
+					P.print("|Emote added to message.");
 					
-					//TODO Add check for embed use
-					ch.sendMessage(Bot.ticketMessage).queue();
+					//Saves all IDs to database.
+					P.print("|Storing relevant IDs to database...");
+					String msg_id = m.getId();
+					String ch_id = m.getChannel().getId();
+					SQLconnector.update("update botsettings set value = '" + role_id + "' where name = 'ticket_responder_role_id'", false);
+					SQLconnector.update("update botsettings set value = '" + msg_id  + "' where name = 'ticket_message_id'", false);
+					SQLconnector.update("update botsettings set value = '" + ch_id   + "' where name = 'ticket_channel_id'", false);
+					SQLconnector.update("update botsettings set value = '" + cat_id  + "' where name = 'ticket_category_id'", false);
+					SQLconnector.update("update botsettings set value = '" + arc_id + "' where name = 'ticket_archive_cat_id'", false);
 					
-					P.print("Prompt sent. Adding emote...");
-					try {TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
-					
-					List<Message> msgs = Bot.jda.getTextChannelById(ch.getId()).getHistory().retrievePast(1).complete();
-					for (Message m : msgs) {
-						m.addReaction(emote).queue();
-						P.print("|Emote added to message.");
-						
-						P.print("|Storing relevant IDs to database...");
-						String msg_id = m.getId();
-						P.print(msg_id);
-						String ch_id = m.getChannel().getId();
-						SQLconnector.update("update botsettings set value = '" + role_id + "' where name = 'ticket_responder_role_id'", false);
-						SQLconnector.update("update botsettings set value = '" + msg_id  + "' where name = 'ticket_message_id'", false);
-						SQLconnector.update("update botsettings set value = '" + ch_id   + "' where name = 'ticket_channel_id'", false);
-						SQLconnector.update("update botsettings set value = '" + cat_id  + "' where name = 'ticket_category_id'", false);
-						
-						P.print("Ticket prompt fully created.");
-						return;
-					}
+					P.print("Ticket prompt fully created.");
+					return;
 				}
 			}
+		}
+		
+		//Sets archive category. A category where closed tickets are moved to.
+		if (args[0].equalsIgnoreCase(Bot.prefix + "setArchiveCategory") && event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+			P.print("\n[TicketHostBuilder] Set archive category request by " + event.getMember().getUser().getAsTag() + ".");
+			String categoryName = args[1].replace('_', ' ');
+			String arc_id = null;
+			
+			//Searches for a specified category.
+			P.print("|Searching for a category named '" + categoryName + "' from guild '" + event.getGuild().getName() + "'.");
+			List<Category> catList = event.getGuild().getCategoriesByName(categoryName, true);
+			for (Category c : catList) {
+				arc_id = c.getId();
+				P.print("|Category '" + c.getName() + "' found.");
+			}
+			
+			//Checks if arc_id is still null after the search.
+			if (arc_id.equals(null)) {P.print("No category named '" + categoryName + "' found."); return;}
+			
+			//Updates the database.
+			P.print("|Updating 'ticket_archive_cat_id' from database...");
+			SQLconnector.update("update botsettings set value = '" + arc_id + "' where name = 'ticket_archive_cat_id'", false);
+			
+			P.print("Done!");
+			return;
 		}
 	}
 }

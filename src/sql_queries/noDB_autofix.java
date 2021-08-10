@@ -25,6 +25,7 @@ public class noDB_autofix {
 		"insert into botsettings values ('ticket_message_id', null, datetime()), " +
 				"('ticket_channel_id', null, datetime()), " +
 				"('ticket_category_id', null, datetime())," +
+				"('ticket_archive_cat_id', null, datetime())," +
 				"('ticket_responder_role_id', null, datetime());"
 		/*
 		,"drop table testtable;",
