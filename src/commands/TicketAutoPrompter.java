@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.channel.text.TextChannelCreateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class TextChannelCreated extends ListenerAdapter {
+public class TicketAutoPrompter extends ListenerAdapter {
 	public void onTextChannelCreate (TextChannelCreateEvent event) {
 		String chName = event.getChannel().getName();
 		TextChannel channel = event.getChannel();
