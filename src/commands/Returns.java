@@ -20,8 +20,18 @@
  */
 package commands;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import home.Bot;
+import home.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -31,18 +41,18 @@ public class Returns extends ListenerAdapter{
 		//Initialization
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		String requestby = null;
-		if (args[0].startsWith(Bot.prefix)) {requestby = event.getMember().getUser().getName();}
+		if (args[0].startsWith(Bot.prefix)) {requestby = event.getMember().getUser().getAsTag();}
 		//String msg = event.getMessage().getContentRaw();
 		
 		//[BOT TOKEN] Returns the bot's token... not really.----------------------------------------------------
 		if (args[0].equalsIgnoreCase(Bot.prefix + "bottoken")) {
-			P.print("\n[Returns] Requesting bot token: " + event.getMember().getUser().getName());
+			P.print("\n[Returns] Requesting bot token: " + requestby);
 			event.getChannel().sendMessage("Bot token: ||Never gonna give you up~ Never gonna let you down~||").queue();
 		}
 		
 		//[PING] Returns the latency.---------------------------------------------------------------------------
 		else if (args[0].equalsIgnoreCase(Bot.prefix + "ping")) {
-			P.print("\n[Returns] Requesting ping: " + event.getMember().getUser().getName());
+			P.print("\n[Returns] Requesting ping: " + requestby);
 			long ping = event.getJDA().getGatewayPing();
 			P.print("Latency gathered.");
 			
@@ -51,7 +61,7 @@ public class Returns extends ListenerAdapter{
 			EmbedBuilder pingEmbed = new EmbedBuilder();
 			pingEmbed.setColor(0x77B255);
 			pingEmbed.setDescription("Pong: **" +ping+ "ms**");
-			pingEmbed.setFooter("Requested by " + requestby , event.getMember(	).getUser().getAvatarUrl());
+			pingEmbed.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 			event.getChannel().sendMessage(pingEmbed.build()).queue();
 		}
 		
@@ -74,6 +84,47 @@ public class Returns extends ListenerAdapter{
 				P.print("SPAM!");
 			}
 		}
+		
+		//[HIDDENPING] Pings someone without message residue.
+		else if (args[0].equalsIgnoreCase(Bot.prefix + "hiddenping") && event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+			P.print("\n[Returns] Hidden ping request by " + requestby);
+			Member member = null;
+			TextChannel channel = null;
+			try {
+				String userId = args[1];
+				String channelId = args[2];
+				
+				//Removes the symbols included in the formatting when mentioning text channels.
+				P.print("|Filtering user input...");
+				userId = userId.replace("<", "");
+				userId = userId.replace(">", "");
+				userId = userId.replace("@", "");
+				channelId = channelId.replace("<", "");
+				channelId = channelId.replace(">", "");
+				channelId = channelId.replace("#", "");
+				
+				member = event.getGuild().getMemberByTag(args[1]);
+				channel = event.getGuild().getTextChannelById(channelId);
+			} catch (Exception e) {
+				P.print("|Missing arguments.");
+				event.getChannel().sendMessage("Format: `" + Bot.prefix + "hiddenping <@user> <#text-channel>`. If you're sure you formatted this correctly, check console for an error code.").queue();
+				P.print(ExceptionUtils.getStackTrace(e));
+				SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
+			}
+			
+			P.print("|Sending message...");
+			channel.sendMessage("Pssst! " + member.getAsMention()).queue();
+			
+			P.print("|Waiting for local cache to refresh...");
+			try {TimeUnit.MILLISECONDS.sleep(400);} catch (InterruptedException e) {e.printStackTrace();}
+			
+			P.print("|Deleting message...");
+			List<Message> msgs = channel.getHistory().retrievePast(1).complete();
+			msgs.forEach((m) -> m.delete().queue());
+			P.print("Message deleted. " + member.getUser().getAsTag() + " was spooked successfully.");
+		}
+		
+		
 //		//[POINTS] Displays the points of the current user.-----------------------------------------------------
 //		if (args[0].equalsIgnoreCase(Bot.prefix + "points") || args[0].equalsIgnoreCase(Bot.prefix + "point")) {
 //			P.print("\n[Returns] Requesting point query: " + event.getMember().getUser().getName());
