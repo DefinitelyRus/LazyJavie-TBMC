@@ -13,11 +13,12 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import commands.NewMemberPrompter;
 import commands.MessageReceivedEvent;
 import commands.P;
 import commands.Quit;
 import commands.Returns;
-import commands.TextChannelCreated;
+import commands.TicketAutoPrompter;
 import commands.TicketEmoteListener;
 import commands.TicketHostBuilder;
 import commands.TicketMessageExchange;
@@ -111,10 +112,11 @@ public class Bot {
 			jda.addEventListener(new MessageReceivedEvent());
 			jda.addEventListener(new Quit());
 			jda.addEventListener(new Returns());	
-			jda.addEventListener(new TextChannelCreated());
+			jda.addEventListener(new TicketAutoPrompter());
 			jda.addEventListener(new TicketHostBuilder());
 			jda.addEventListener(new TicketEmoteListener());
 			jda.addEventListener(new TicketMessageExchange());
+			jda.addEventListener(new NewMemberPrompter());
 			
 			P.print("[B-4] Ready!");
 			return;
