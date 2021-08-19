@@ -3,6 +3,7 @@ package home;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.EnumSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,8 +14,8 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import commands.NewMemberPrompter;
 import commands.MessageReceivedEvent;
+import commands.NewMemberPrompter;
 import commands.P;
 import commands.Quit;
 import commands.Returns;
@@ -44,6 +45,7 @@ public class Bot {
 	public static String ticketMessage = "Need help? Click the emote below!";
 	public static MessageEmbed ticketEmbed = null;
 	public static List<Integer> activeTickets = new LinkedList<Integer>();
+	public static Hashtable<String, String> ticketDictionary = new Hashtable<String, String>();
 	
 	//Variables changeable in UI.
 	public static boolean tokenOverride = false;
