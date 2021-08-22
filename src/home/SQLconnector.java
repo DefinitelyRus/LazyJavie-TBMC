@@ -41,8 +41,6 @@ public class SQLconnector {
 	 * 
 	 * @param query An SQL query like UPDATE-WHERE-SET. Note that you can only use this for one statement at a time.
 	 * @param tp Boolean whether running this function should print what it's currently doing.
-	 * @throws LoginException
-	 * @throws SQLException
 	 */
 	public static void update(String query, boolean tp) {
 		//Initialization
@@ -71,7 +69,7 @@ public class SQLconnector {
 	/**Returns a record from the database.
 	 * 
 	 * <p>Usage:
-	 * <br>SQLconnector.get("select * from database.table where username is not null", "username")
+	 * <br>SQLconnector.get("SELECT * FROM database.table WHERE username IS NOT NULL", "username")
 	 * <br>This will return the last item in the table that fits the condition.<p>
 	 * 
 	 * @param query An SQL query like SELECT-WHERE. Note that you can only use this for one statement at a time.
@@ -124,8 +122,6 @@ public class SQLconnector {
 	 * @param toReturn A column or value you want returned.
 	 * @param tp Boolean whether running this function should print what it's currently doing.
 	 * @return A list (LinkedList) of results according to the SQL query and toReturn (column) parameters.
-	 * @throws LoginException
-	 * @throws SQLException
 	 * @see get(String query, String toReturn, boolean tp) - for getting single values.
 	 */
 	public static LinkedList<String> getList(String query, String toReturn, boolean tp) {
