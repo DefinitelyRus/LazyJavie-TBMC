@@ -14,15 +14,12 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import commands.MessageReceivedEvent;
 import commands.NewMemberPrompter;
 import commands.P;
 import commands.Quit;
 import commands.Returns;
 import commands.TicketAutoPrompter;
 import commands.TicketEmoteListener;
-import commands.TicketHostBuilder;
-import commands.TicketMessageExchange;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -90,7 +87,7 @@ public class Bot {
 			    
 			} else {P.print("[A-1] Getting token from control panel"); P.print("[A-2] Token assigned: " + token);}
 		    
-		      
+		    
 			//[B] Logging in the bot----------------------------------------
 			P.print("[B-1] Logging in...");
 			try {
@@ -111,13 +108,10 @@ public class Bot {
 			
 			P.print("[B-3] Opening to commands...");
 			//[IMPORTANT] Add new commands here.
-			jda.addEventListener(new MessageReceivedEvent());
 			jda.addEventListener(new Quit());
 			jda.addEventListener(new Returns());	
 			jda.addEventListener(new TicketAutoPrompter());
-			jda.addEventListener(new TicketHostBuilder());
 			jda.addEventListener(new TicketEmoteListener());
-			jda.addEventListener(new TicketMessageExchange());
 			jda.addEventListener(new NewMemberPrompter());
 			
 			P.print("[B-4] Ready!");

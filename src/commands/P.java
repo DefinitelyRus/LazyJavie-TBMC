@@ -2,11 +2,6 @@ package commands;
 
 import java.util.List;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import home.Bot;
-import home.LazyJavieUI;
-import home.SQLconnector;
-
 /**
  * This is a general-purpose class made to ease the process of doing seemingly menial tasks but somehow isn't.
  * This includes the unnecessarily long System.out.println() function, which can get tedious to type.
@@ -28,7 +23,7 @@ public class P {
 		System.out.println(args);
 		
 		//Additional code for custom-made systems (optional).
-		consoleOut(args);
+		//code code code code code code
 	}
 	
 	//-------------------------PRINTRAW-------------------------
@@ -37,37 +32,7 @@ public class P {
 	 * @param args - A string value to be printed to the console.
 	 */
 	public static void printraw (String args) {System.out.println(args);}
- 	
-	//-------------------------CONSOLE OUTPUT [PROPRIETARY]-------------------------
-	/**
-	 * Takes the current console contents, appends the string argument, then applies the changes.
-	 * @param args
-	 */
-	private static void consoleOut(String args) {
-		String newString = null;
-		try {
-			currentConsoleContents = LazyJavieUI.consoleOutput.getText();
-			
-			try {
-				/* Checks if the console UI is empty.
-				 * If it is, this will set the console to display only the new text.
-				 * If not, this will set the console to display the old text then appends the new text at the end.
-				 */
-				if (currentConsoleContents.equals(null) || currentConsoleContents.equals("")) {newString = args;}
-				else {newString = currentConsoleContents + "\n" + args;}
-			}
-			catch (Exception e) {print(e.toString() + "\n" + args); e.printStackTrace();}
-			
-		} catch (NullPointerException e) {newString = args;}
-		
-		//Applies the changes
-		try {LazyJavieUI.getConsoleOutput().setText(newString);}
-		catch (Exception e) {
-			try {
-				if (!e.toString().equals(expectedNullPointerError)) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); printraw(e.toString());}
-			} catch (Exception e1) {SQLconnector.callError(e1.toString(), ExceptionUtils.getStackTrace(e1)); P.printraw(e1.toString());}
-		}
-	}
+ 
 	
 	//-------------------------PRIMITIVE BOOLEAN ARRAY-------------------------
 	/**Converts a boolean list into primitive boolean array.
