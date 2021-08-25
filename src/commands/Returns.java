@@ -94,22 +94,33 @@ public class Returns extends ListenerAdapter{
 				String userId = args[1];
 				String channelId = args[2];
 				
+				//TODO Allow option between @user and usertag:user#0000.
+				if (args[1].startsWith("usertag:")) {
+					userId = args[1].replace("usertag:", "");
+				}
+				
+				P.print(userId + "\n" + channelId);
+				
 				//Removes the symbols included in the formatting when mentioning text channels.
 				P.print("|Filtering user input...");
 				userId = userId.replace("<", "");
 				userId = userId.replace(">", "");
+				userId = userId.replace("!", "");
 				userId = userId.replace("@", "");
 				channelId = channelId.replace("<", "");
 				channelId = channelId.replace(">", "");
 				channelId = channelId.replace("#", "");
 				
-				member = event.getGuild().getMemberByTag(args[1]);
+				P.print(userId + "\n" + channelId);
+				
+				member = event.getGuild().getMemberById(userId);
 				channel = event.getGuild().getTextChannelById(channelId);
 			} catch (Exception e) {
 				P.print("|Missing arguments.");
 				event.getChannel().sendMessage("Format: `" + Bot.prefix + "hiddenping <@user> <#text-channel>`. If you're sure you formatted this correctly, check console for an error code.").queue();
 				P.print(ExceptionUtils.getStackTrace(e));
 				SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
+				return;
 			}
 			
 			P.print("|Sending message...");
