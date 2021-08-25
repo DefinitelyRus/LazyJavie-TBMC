@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,7 @@ public class Bot {
 	/**
 	 * Starts the bot with default settings.
 	 */
-	public static void start() {
+	public static boolean start() {
 		try {
 			//SQLconnector.NoDBfixer();
 			
@@ -76,13 +77,13 @@ public class Bot {
 				P.print("[A-2] File found.");
 				
 				//Scans the file.
-			    Scanner reader = new Scanner(file);
+			    Scanner scanner = new Scanner(file);
 			    P.print("[A-3] Scanning...");
-			    while (reader.hasNextLine()) {token = reader.nextLine(); break;}
+			    token = scanner.nextLine();
 			    P.print("[A-4] Token assigned: " + StringUtils.substring(token, 0, 10) + "*".repeat(token.length()-10));
 			    
 			    //Closes the scanner.
-			    reader.close();
+			    scanner.close();
 			    P.print("[A-5] Scanner closed.");
 			    
 			} else {P.print("[A-1] Getting token from control panel"); P.print("[A-2] Token assigned: " + token);}
@@ -97,8 +98,8 @@ public class Bot {
 						.setEnabledIntents(EnumSet.allOf(GatewayIntent.class))
 						.build();
 				}
-			catch (LoginException e) {P.print("'" +token+ "' is not a valid token."); return;}
-			catch (ErrorResponseException e) {P.print(e.toString() + " - likely caused by bad connection."); return;}
+			catch (LoginException e) {P.print("'" +token+ "' is not a valid token."); return false;}
+			catch (ErrorResponseException e) {P.print(e.toString() + " - likely caused by bad connection."); return false;}
 			catch (Exception e) {P.print(e.toString());}
 			
 			
@@ -115,25 +116,31 @@ public class Bot {
 			jda.addEventListener(new NewMemberPrompter());
 			
 			P.print("[B-4] Ready!");
-			return;
+			return true;
 		}
 		catch (FileNotFoundException e) {
 			//[A] File not found.
-			P.print("Missing file error: " + e.toString());
+			P.print("Missing file error:\n" + e.toString());
 			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
-			return;
+			return false;
+		}
+		catch (NoSuchElementException e) {
+			//[A] File empty.
+			P.print("Empty file error:\n" + e.toString());
+			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
+			return false;
 		}
 		catch (NullPointerException e) {
 			//[B] Bot likely not initialized
 			P.print(e.toString() + " - Likely caused by a bad or no connection or an invalid token.");
 			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
-			return;
+			return false;
 		}
 		catch (Exception e) {
 			//[A-B] Every other exception.
-			e.printStackTrace();
+			P.print(ExceptionUtils.getStackTrace(e));
 			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
-			return;
+			return false;
 		}
 	}
 
