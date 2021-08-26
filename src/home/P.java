@@ -1,6 +1,9 @@
-package commands;
+package home;
 
 import java.util.List;
+
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 
 /**
  * This is a general-purpose class made to ease the process of doing seemingly menial tasks but somehow isn't.
@@ -8,12 +11,6 @@ import java.util.List;
  * @author DefinitelyRus
  */
 public class P {
-	//This string holds the contents of the entire console.
-	private static String currentConsoleContents = "";
-	
-	private static final String expectedNullPointerError =
-			"java.lang.NullPointerException: Cannot invoke \"javax.swing.JTextArea.setText(String)\" because the return value of \"home.LazyJavieUI.getConsoleOutput()\" is null";
-	
 	//-------------------------PRINT-------------------------
 	/**
 	 * Similar in function to System.out.println().
@@ -61,5 +58,14 @@ public class P {
 	        primitives[index++] = object;
 	    }
 	    return primitives;
+	}
+	
+	//-------------------------[PROPRIETARY] DISCORD SEND MESSAGE-------------------------
+	public static void send(GenericGuildMessageEvent event, Object message) {
+		if (message instanceof String) {
+			event.getChannel().sendMessage((String) message).queue();
+		} else if (message instanceof MessageEmbed) {
+			event.getChannel().sendMessage((MessageEmbed) message).queue();
+		}
 	}
 }
