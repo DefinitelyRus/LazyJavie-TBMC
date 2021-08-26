@@ -7,8 +7,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import home.Bot;
+import home.P;
 import home.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -85,8 +87,11 @@ public class TicketAutoPrompter extends ListenerAdapter {
 	}
 	
 	//TODO Implement a non-binary tree to allow for modular and easily traversable data structure.
+	@SuppressWarnings("unused")
 	public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
 		if (event.getUserId().equals(Bot.jda.getSelfUser().getId())) {P.print("[TicketAutoPrompter] Self-report! Cancelling..."); return;}
+		if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
+		
 		String channelName = event.getChannel().getName();
 		String channelId = event.getChannel().getId();
 		String optionId = null;
