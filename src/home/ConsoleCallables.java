@@ -1,33 +1,48 @@
 package home;
 
+import java.sql.SQLException;
+
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import commands.P;
 import commands.Quit;
 
 public class ConsoleCallables {
 	
 	public static void main(String args[]) {
-		String tokenOverride = null;
 		P.print("[LazyJavie] Pre-startup sequence...");
 		P.print("|Looking for LazyJavie.db...");
+		String tokenOverride = null;
+		
+		//Checks if the database exists and is functional. If the checker returns false,
+		//this will attempt to create a new empty database ready for use.
 		if (SQLconnector.dbCheck() == false) {
 			P.print("|Attempting to create a new database...");
-			SQLconnector.NoDBfixer();
+			SQLconnector.NoDBfixer("sqlite");
+		}
+		
+		//Tries to access a pre-made table "errorlog". This is for cases where the database check
+		//doesn't detect a blank database with no tables.
+		//This will attempt to create new tables without first trying to delete them.
+		try {
+			P.print("|Attempting to access table 'errorlog'...");
+			SQLconnector.getConn().createStatement().executeQuery("select * from errorlog");
+		} catch (SQLException e) {
+			P.print(e.toString());
+			P.print("|Attempting to create a new database...");
+			SQLconnector.NoDBfixer("sqlite-nodrop");
 		}
 		
 		//Attempts to get a replacement token saved from database.
 		tokenOverride = SQLconnector.get("select * from botsettings where name = 'discord_bot_token_override'", "value", false);
-		P.print(tokenOverride);
 		
 		//Prompts the bot for startup with the assigned token.
 		P.print("|Attempting to start LazyJavie...");
-		//startBot("Start", tokenOverride);
+		botLauncher("Start", tokenOverride);
 	}
 	
-	public static void startBot(String task, @Nullable String botTokenOverride) {
+	public static void botLauncher(String task, @Nullable String botTokenOverride) {
 		if (task.equalsIgnoreCase("Start")) {
 			Bot.isAwake = true;
 			
