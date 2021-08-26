@@ -12,10 +12,10 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 import javax.security.auth.login.LoginException;
+import javax.swing.filechooser.FileSystemView;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import commands.P;
 import sql_queries.noDB_autofix;
 
 /**
@@ -29,26 +29,27 @@ import sql_queries.noDB_autofix;
 public class SQLconnector {
 	//Initializing variables
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_ADDRESS = "jdbc:sqlite:lazyjavie.db";
-	static final String DEFAULT_ADDRESS = "jdbc:sqlite:lazyjavie.db";
+	static final String USER_DOCS_FOLDER_PATH = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
+	static final String DB_ADDRESS = "jdbc:sqlite:" + USER_DOCS_FOLDER_PATH + "\\lazyjavie.db";
+	static final String DEFAULT_ADDRESS = "jdbc:sqlite:" + USER_DOCS_FOLDER_PATH + "\\lazyjavie.db";
 	static final String DB_LOGIN_ID = "root";
 	static String dbPass = "password"; //Placeholder. I'm not that dumb.
-	static String ps_dir = "C:\\lazyjavie_token.txt";
+	static String ps_dir = USER_DOCS_FOLDER_PATH + "\\lazyjavie_token.txt";
 	
 
-	private static Connection c = null;
+	private static Connection conn = null;
 	public static Connection getConn() throws SQLException {
-	    if (c == null) {
+	    if (conn == null) {
 	    	try {Class.forName("org.sqlite.JDBC");}
 	    	catch (ClassNotFoundException e) {P.print(ExceptionUtils.getStackTrace(e));}
-	    	c = DriverManager.getConnection(DB_ADDRESS, DB_LOGIN_ID, dbPass);
+	    	conn = DriverManager.getConnection(DB_ADDRESS, DB_LOGIN_ID, dbPass);
 	    } 
-	    else if (c.isClosed()) {
+	    else if (conn.isClosed()) {
 	    	try {Class.forName("org.sqlite.JDBC");}
 	    	catch (ClassNotFoundException e) {P.print(ExceptionUtils.getStackTrace(e));}
-	    	c = DriverManager.getConnection(DB_ADDRESS, DB_LOGIN_ID, dbPass);
+	    	conn = DriverManager.getConnection(DB_ADDRESS, DB_LOGIN_ID, dbPass);
 	    }
-	    return c;
+	    return conn;
     }
 	
 	//-------------------------UPDATE-------------------------
@@ -184,13 +185,15 @@ public class SQLconnector {
 	 * As a substitute, the entire SQL sequence has been stored as a string in Java.
 	 * This is subject to change.</p>
 	 */
-	public static void NoDBfixer() {
+	public static void NoDBfixer(String sqlType) {
 		try {
 			P.print("\nStarting automatic database setup...");
 			P.print("|[SQLcD-1] Running fixer script...");
-			for (String line : noDB_autofix.get("sqlite")) {
-				P.print("|MySQL Statement: " + line);
-				updateExternal(line, DEFAULT_ADDRESS, true);
+			Statement statement = getConn().createStatement();
+			for (String line : noDB_autofix.get(sqlType)) {
+				P.print("|SQL Statement: " + line);
+				try {statement.execute(line);}
+				catch (SQLException e2) {P.print("Error encountered (skipping): " + e2.toString());}
 			}
 			P.print("|[SQLcD-4] New database created.\n");
 		}
@@ -376,7 +379,7 @@ public class SQLconnector {
 			//Read test
 			P.print("|[SQLc-3b] Executing SQL read test...");
 			try {@SuppressWarnings("unused")
-			String s = statement.executeQuery(query2).getString("count(id)"); statement.execute(query3);}
+			String s = statement.executeQuery(query2).getString("count(id)");}
 			catch (SQLException e2) {P.print("Read test failed: " + e2); return false;}
 			
 			//Returns the requested record.
