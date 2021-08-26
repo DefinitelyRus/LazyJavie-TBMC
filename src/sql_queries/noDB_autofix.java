@@ -4,6 +4,9 @@
 
 package sql_queries;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class noDB_autofix {
 	public static String[] get(String mode) {
 		
@@ -31,15 +34,19 @@ public class noDB_autofix {
 				"('ticket_archive_cat_id', null, datetime())," +
 				"('ticket_responder_role_id', null, datetime())," +
 				"('automention_on_join_channel_id', null, datetime());"
-		/*
-		,"drop table testtable;",
-		"create table testtable (id integer primary key autoincrement not null, col1 varchar(24), col2 varchar(24), col3 varchar(24), col4 varchar(24), col5 varchar(24), col6 varchar(24), col7 varchar(24));"
-		*/
 		};
+		
+		List<String> sqlite_nodrop = new LinkedList<String>();
+		for (String s : sqlite) {
+			if (s.startsWith("drop")) continue;
+			sqlite_nodrop.add(s);
+		}
 		
 		switch (mode) {
 			case "sqlite":
 				return sqlite;
+			case "sqlite-nodrop":
+				return sqlite_nodrop.toArray(new String[0]);
 			default:
 				return sqlite; //Temp
 		}
