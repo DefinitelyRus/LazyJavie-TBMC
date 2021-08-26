@@ -16,11 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import commands.NewMemberPrompter;
-import commands.P;
 import commands.Quit;
 import commands.Returns;
 import commands.TicketAutoPrompter;
-import commands.TicketEmoteListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -45,7 +43,7 @@ public class Bot {
 	public static List<Integer> activeTickets = new LinkedList<Integer>();
 	public static Hashtable<String, String> ticketDictionary = new Hashtable<String, String>();
 	
-	//Variables changeable in UI.
+	//Variables changeable via commands.
 	public static boolean tokenOverride = false;
 	public static String token = "";
 	public static String prefix = "$";
@@ -57,8 +55,6 @@ public class Bot {
 	 */
 	public static boolean start() {
 		try {
-			//SQLconnector.NoDBfixer();
-			
 			P.print("Starting " + VERSION + "...");
 			//[A] Getting the Token----------------------------------------
 			
@@ -112,7 +108,6 @@ public class Bot {
 			jda.addEventListener(new Quit());
 			jda.addEventListener(new Returns());	
 			jda.addEventListener(new TicketAutoPrompter());
-			jda.addEventListener(new TicketEmoteListener());
 			jda.addEventListener(new NewMemberPrompter());
 			
 			P.print("[B-4] Ready!");
