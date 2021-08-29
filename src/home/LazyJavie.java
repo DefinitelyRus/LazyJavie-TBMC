@@ -8,7 +8,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import commands.Quit;
 
-public class ConsoleCallables {
+public class LazyJavie {
 	
 	public static void main(String args[]) {
 		P.print("[LazyJavie] Pre-startup sequence...");
