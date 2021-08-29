@@ -2,6 +2,8 @@ package commands;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import home.Bot;
 import home.P;
 import home.SQLconnector;
@@ -16,6 +18,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  */
 public class Quit extends ListenerAdapter{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+		if (!event.getMessage().getContentRaw().startsWith(Bot.prefix)) return;
+		
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		String msg = event.getMessage().getContentRaw();
 		
@@ -59,14 +63,14 @@ public class Quit extends ListenerAdapter{
 			P.send(event, ":warning: Are you sure you want to disconnect the bot?\nEnter `" +Bot.prefix+ "quit confirm` to confirm.");
 			SQLconnector.callError(msg, "[QUIT] MISSING ARGS");
 			return;
-		} catch (Exception e) {P.print(e.toString()); return;}
+		} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString()); return;}
 	}
 	
 	//For use in UI.
 	public static void softExit() {
 		P.print("Shutting down " + Bot.VERSION);
 		try {TimeUnit.SECONDS.sleep(5);}
-		catch (InterruptedException e) {P.print(e.toString());}
+		catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 		Bot.jda.shutdown();
 	}
 	
