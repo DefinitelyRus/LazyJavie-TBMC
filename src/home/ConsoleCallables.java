@@ -18,7 +18,7 @@ public class ConsoleCallables {
 		//Checks if the database exists and is functional. If the checker returns false,
 		//this will attempt to create a new empty database ready for use.
 		if (SQLconnector.dbCheck() == false) {
-			P.print("|Attempting to create a new database...");
+			P.print("\n[LazyJavie] Attempting to create a new database...");
 			SQLconnector.NoDBfixer("sqlite");
 		}
 		
@@ -26,7 +26,7 @@ public class ConsoleCallables {
 		//doesn't detect a blank database with no tables.
 		//This will attempt to create new tables without first trying to delete them.
 		try {
-			P.print("|Attempting to access table 'errorlog'...");
+			P.print("\n[LazyJavie] Attempting to access table 'errorlog'...");
 			SQLconnector.getConn().createStatement().executeQuery("select * from errorlog");
 		} catch (SQLException e) {
 			P.print(e.toString());
@@ -44,7 +44,6 @@ public class ConsoleCallables {
 	
 	public static void botLauncher(String task, @Nullable String botTokenOverride) {
 		if (task.equalsIgnoreCase("Start")) {
-			Bot.isAwake = true;
 			
 			//Determines whether the token should be grabbed from the UI or from system.
 			if (botTokenOverride == null) {Bot.tokenOverride = false;}
@@ -56,7 +55,7 @@ public class ConsoleCallables {
 			 * it was successful in starting up. Whenever it returns false,
 			 * the following line will close the program automatically.
 			 */
-			P.print("Awaiting startup...");
+			P.print("|Awaiting startup...");
 			boolean status = Bot.start();
 			if (status == false) return;
 			
@@ -67,8 +66,7 @@ public class ConsoleCallables {
 			
 			return;
 		
-		} else if (task.equalsIgnoreCase("Stop")) {
-			Bot.isAwake = false;
+		} else {
 			Quit.softExit();
 			return;
 		}

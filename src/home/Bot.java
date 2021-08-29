@@ -3,14 +3,11 @@ package home;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.EnumSet;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import javax.security.auth.login.LoginException;
+import javax.swing.filechooser.FileSystemView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -18,14 +15,10 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import commands.NewMemberPrompter;
 import commands.Quit;
 import commands.Returns;
-import commands.TicketAutoPrompter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -36,12 +29,6 @@ public class Bot {
 	//Initialization of user-coded objects and variables
 	public static final String VERSION = "LazyJavie v2.0 ALPHA";
 	public static JDA jda;
-	public static List<Member> members = new LinkedList<Member>();
-	public static boolean isAwake = false;
-	public static String ticketMessage = "Need help? Click the emote below!";
-	public static MessageEmbed ticketEmbed = null;
-	public static List<Integer> activeTickets = new LinkedList<Integer>();
-	public static Hashtable<String, String> ticketDictionary = new Hashtable<String, String>();
 	
 	//Variables changeable via commands.
 	public static boolean tokenOverride = false;
@@ -50,12 +37,9 @@ public class Bot {
 	public static Object currentChannel;
 	public static boolean muted = false;
 	
-	/**
-	 * Starts the bot with default settings.
-	 */
 	public static boolean start() {
 		try {
-			P.print("Starting " + VERSION + "...");
+			P.print("[Bot] Starting " + VERSION + "...");
 			//[A] Getting the Token----------------------------------------
 			
 			/*
@@ -68,25 +52,25 @@ public class Bot {
 			
 			if (tokenOverride == false) {
 				//Looks for the text file "lazyjavie_token.txt".
-				P.print("[A-1] Getting token from file");
-				File file = new File("C:\\lazyjavie_token.txt");
-				P.print("[A-2] File found.");
+				P.print("|Getting token from file");
+				File file = new File(FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "\\lazyjavie_token.txt");
+				P.print("|File found.");
 				
 				//Scans the file.
 			    Scanner scanner = new Scanner(file);
-			    P.print("[A-3] Scanning...");
+			    P.print("|Scanning...");
 			    token = scanner.nextLine();
-			    P.print("[A-4] Token assigned: " + StringUtils.substring(token, 0, 10) + "*".repeat(token.length()-10));
+			    P.print("|Token assigned: " + StringUtils.substring(token, 0, 10) + "*".repeat(token.length()-10));
 			    
 			    //Closes the scanner.
 			    scanner.close();
-			    P.print("[A-5] Scanner closed.");
+			    P.print("|Scanner closed.");
 			    
-			} else {P.print("[A-1] Getting token from control panel"); P.print("[A-2] Token assigned: " + token);}
+			} else {P.print("|Getting token from control panel"); P.print("[A-2] Token assigned: " + token);}
 		    
 		    
 			//[B] Logging in the bot----------------------------------------
-			P.print("[B-1] Logging in...");
+			P.print("|Logging in...");
 			try {
 				jda = JDABuilder.createDefault(token)
 						.setChunkingFilter(ChunkingFilter.ALL)
@@ -99,54 +83,43 @@ public class Bot {
 			catch (Exception e) {P.print(e.toString());}
 			
 			
-			P.print("[B-2] Setting status...");
+			P.print("|Setting status...");
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 			jda.getPresence().setActivity(Activity.listening("to Rick Astley - Never Gonna Give You Up"));
 			
-			P.print("[B-3] Opening to commands...");
+			P.print("|Opening to commands...");
 			//[IMPORTANT] Add new commands here.
 			jda.addEventListener(new Quit());
 			jda.addEventListener(new Returns());	
-			jda.addEventListener(new TicketAutoPrompter());
+			//jda.addEventListener(new TicketAutoPrompter()); //Removed temporarily.
 			jda.addEventListener(new NewMemberPrompter());
 			
-			P.print("[B-4] Ready!");
+			P.print("Ready!");
 			return true;
 		}
+		//[A] Case: File not found.
 		catch (FileNotFoundException e) {
-			//[A] File not found.
 			P.print("Missing file error:\n" + e.toString());
 			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
 			return false;
 		}
+		//[A] Case: File empty.
 		catch (NoSuchElementException e) {
-			//[A] File empty.
 			P.print("Empty file error:\n" + e.toString());
 			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
 			return false;
 		}
+		//[B] Case: Bot likely not initialized
 		catch (NullPointerException e) {
-			//[B] Bot likely not initialized
 			P.print(e.toString() + " - Likely caused by a bad or no connection or an invalid token.");
 			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
 			return false;
 		}
+		//[A-B] Case: Every other exception.
 		catch (Exception e) {
-			//[A-B] Every other exception.
 			P.print(ExceptionUtils.getStackTrace(e));
 			SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e));
 			return false;
 		}
-	}
-
-	public static List<Guild> getGuilds() {
-		return jda.getGuilds();
-	}
-	
-	public static List<Member> getMembers(boolean removeDupes) {
-		List<Member> members = new LinkedList<Member>();
-		for (Guild g : jda.getGuilds()) {members.addAll(g.getMembers());}
-		if (removeDupes == true) members = members.stream().distinct().collect(Collectors.toList());
-		return members;
 	}
 }

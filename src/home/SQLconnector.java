@@ -214,15 +214,15 @@ public class SQLconnector {
 		
 		try {
 			//Starts a connection to the database using the JDBC driver.
-			if (tp == true) {P.print("|[SQLcB-1] Starting connection with the database...");}
+			if (tp == true) {P.print("[SQLcB] Starting connection with the database...");}
 			Connection connection = DriverManager.getConnection(dbAddress, DB_LOGIN_ID, dbPass);
 			
 			//Creates a statement
-			if (tp == true) {P.print("|[SQLcB-2] Creating statement...");}
+			if (tp == true) {P.print("|Creating statement...");}
 			Statement statement = connection.createStatement();
 			
 			//Starts the SQL query.
-			if (tp == true) {P.print("|[SQLcB-3] Executing SQL script...");}
+			if (tp == true) {P.print("|Executing SQL script...");}
 			statement.execute(query);
 			
 			//Closes the connection to the database.
@@ -333,7 +333,8 @@ public class SQLconnector {
 				writer.write("[REPLACE THIS LINE WITH YOUR BOT'S TOKEN. ALSO REMOVE THE BRACKETS.]\n[REPLACE THIS LINE WITH YOUR SQL SERVER'S PASSWORD (IF ANY). ALSO REMOVE THE BRACKETS.]");
 				writer.close();
 				
-				P.print("|lazyjavie_token.txt was created automatically. Please enter your bot token and password here: " + ps_dir);
+				P.print("lazyjavie_token.txt was created automatically. Please enter your bot token and password here: " + ps_dir);
+				System.exit(0);
 			} catch (Exception e2) {}
 			
 			return dbpass;
@@ -359,11 +360,11 @@ public class SQLconnector {
 		String query3 = "drop table existence_check";
 		try {
 			//Starts a connection to the database using the JDBC driver.
-			P.print("|[SQLc-1] Starting connection with the database...");
+			P.print("[SQLc - dbCheck] Starting connection with the database...");
 			Connection connection = getConn();
 			
 			//Creates a statement
-			P.print("|[SQLc-2] Creating statement...");
+			P.print("|Creating statement...");
 			Statement statement = connection.createStatement();
 			
 			//Pre-drops potentially already-existing table. This happens when write test fails.
@@ -372,18 +373,18 @@ public class SQLconnector {
 			catch (SQLException e2) {}
 
 			//Write test
-			P.print("|[SQLc-3a] Executing SQL write test...");
+			P.print("|Executing SQL write test...");
 			try {statement.execute(query1);}
 			catch (SQLException e2) {P.print("Write test failed: " + e2.toString()); return false;}
 			
 			//Read test
-			P.print("|[SQLc-3b] Executing SQL read test...");
+			P.print("|Executing SQL read test...");
 			try {@SuppressWarnings("unused")
 			String s = statement.executeQuery(query2).getString("count(id)");}
 			catch (SQLException e2) {P.print("Read test failed: " + e2); return false;}
 			
 			//Returns the requested record.
-			P.print("|[SQLc-4] lazyjavie.db exists, fully readable and writable.");
+			P.print("lazyjavie.db exists, fully readable and writable.");
 			
 			//Closes the connection then returns the result.
 			return true;
