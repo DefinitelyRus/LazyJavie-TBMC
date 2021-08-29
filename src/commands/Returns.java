@@ -38,6 +38,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class Returns extends ListenerAdapter{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+		if (!event.getMessage().getContentRaw().startsWith(Bot.prefix)) return;
 		
 		//Initialization
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
@@ -45,9 +46,6 @@ public class Returns extends ListenerAdapter{
 		boolean isAdmin = event.getMember().hasPermission(Permission.ADMINISTRATOR);
 		
 		if (args[0].startsWith(Bot.prefix)) {requestby = event.getMember().getUser().getAsTag();}
-		
-		
-		//String msg = event.getMessage().getContentRaw();
 		
 		//[BOT TOKEN] Returns the bot's token... not really.----------------------------------------------------
 		if (args[0].equalsIgnoreCase(Bot.prefix + "bottoken")) {
@@ -143,6 +141,7 @@ public class Returns extends ListenerAdapter{
 			P.print("Message deleted. " + member.getUser().getAsTag() + " was spooked successfully.");
 		}
 		
+		//TODO Create a help class which contains proper functions for command-specific instructions.
 //		//[HELP] Displays a list of available commands and their usage.-----------------------------------------
 //		if(args[0].equalsIgnoreCase(Bot.prefix + "help")) {
 //			P.print("\n[Returns] Requesting help list: " + event.getMember().getUser().getName());

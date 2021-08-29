@@ -61,6 +61,7 @@ public class NewMemberPrompter extends ListenerAdapter{
 	
 	//Commands related to the feature above.
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+		if (!event.getMessage().getContentRaw().startsWith(Bot.prefix)) return;
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		
 		//-------------------------SET AUTOMENTION CHANNEL-------------------------
