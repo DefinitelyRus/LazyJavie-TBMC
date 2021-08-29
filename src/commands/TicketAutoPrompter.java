@@ -1,6 +1,5 @@
 package commands;
 
-import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +26,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			TextChannel channel = event.getChannel();
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.setColor(0xFF8822);
-			embed.setTitle("Need help? ");
+			embed.setTitle("Need help?");
 			embed.setDescription("\nPress :one: if you're having trouble **joining for the first time**." +
 								"\n\nPress :two: if you **lost items** due to a **crash or glitch**." +
 								"\n\nPress :three: if you've been **griefed or stolen from**." +
@@ -35,11 +34,11 @@ public class TicketAutoPrompter extends ListenerAdapter {
 								"\n\nPress :five: if it's **NONE** of the above.");
 			embed.setFooter("DO NOT SKIP THIS PROMPT. This will help us gather information to fix your issue.\n" +
 								"If the emotes don't appear automatically, you can still add them yourself or skip this process entirely.");
-			embed.setAuthor("TetrabearMC");
+			embed.setAuthor("TetrabearMC <@0>");
 			MessageEmbed msgEmbed = embed.build();
 			
 			P.print("Detected new ticket!");
-			
+			//P.print(msgEmbed.);]
 			channel.sendMessage(msgEmbed).queue();
 			
 			try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
@@ -48,8 +47,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			Message promptMsg = null;
 			
 			for (Message m : msgs) {
-				P.print(String.valueOf(m.getEmbeds().size()));
-				
+				m.getEmbeds().forEach((x) -> P.print(x.getAuthor().getName()));
 				try {
 					//Application queries
 					m.addReaction("\u0031\u20E3").queue();
@@ -89,76 +87,80 @@ public class TicketAutoPrompter extends ListenerAdapter {
 	//TODO Implement a non-binary tree to allow for modular and easily traversable data structure.
 	@SuppressWarnings("unused")
 	public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
-		if (event.getUserId().equals(Bot.jda.getSelfUser().getId())) {P.print("[TicketAutoPrompter] Self-report! Cancelling..."); return;}
+		if (event.getUserId().equals(Bot.jda.getSelfUser().getId())) {return;}
 		if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
 		
 		String channelName = event.getChannel().getName();
 		String channelId = event.getChannel().getId();
-		String optionId = null;
+		String userId = event.getMember().getId();
 		int count = 0;
 
-		final String opt0 = "0";
-		final String opt1 = "1";
-		final String opt2 = "2";
-		final String opt3 = "3";
-		final String opt4 = "4";
-		final String opt5 = "5";
-		final String opt6 = "6";
-		final String opt7 = "7";
-		final String opt8 = "8";
-		final String opt9 = "9";
+		final int opt0 = 0;
+		final int opt1 = 1;
+		final int opt2 = 2;
+		final int opt3 = 3;
+		final int opt4 = 4;
+		final int opt5 = 5;
+		final int opt6 = 6;
+		final int opt7 = 7;
+		final int opt8 = 8;
+		final int opt9 = 9;
 		final String optX = "XXXXXXXXXX";
+		final String zero = "U+30U+20e3";
+		final String one = "U+31U+20e3";
+		final String two = "U+32U+20e3";
+		final String three = "U+33U+20e3";
+		final String four = "U+34U+20e3";
+		final String five = "U+35U+20e3";
+		final String six = "U+36U+20e3";
+		final String seven = "U+37U+20e3";
+		final String eight = "U+38U+20e3";
+		final String nine = "U+39U+20e3";
 		
-		boolean isSelf = false;
-		Bot.jda.getTextChannelById(event.getChannel().getId()).getHistory().retrievePast(100).complete();
-		
-		Hashtable<String,String> ticketProgress = new Hashtable<String,String>();
-		
-		Hashtable<String,String> ticketInfo = Bot.ticketDictionary;
-		if (channelName.matches("ticket-[0-9]{4}")) {
-			P.print("Codepoint: " + event.getReactionEmote().getAsCodepoints());
+		List<Message> msgHistory = Bot.jda.getTextChannelById(channelId).getHistory().retrievePast(100).complete();
+		for (Message m : msgHistory) {
+			boolean isSelf = m.getMember().getId().equals(Bot.jda.getSelfUser().getId());
+			boolean isTargetEmbed = false;
+			List<MessageEmbed> embeds = m.getEmbeds();
+			for (MessageEmbed MeEm : embeds) {isTargetEmbed = MeEm.getAuthor().getName().equals("TetrabearMC <@0>");}
+			//Yes I went with that name (MeEm) just because it's funny.
 			
-			switch (event.getReactionEmote().getAsCodepoints()) {
-				case "U+30U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt0);
+			if (isSelf && isTargetEmbed) {
+				switch (event.getReactionEmote().getAsCodepoints()) {
+				case one:
 					break;
-					
-				case "U+31U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt1);
+				case two:
 					break;
-	
-				case "U+32U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt2);
+				case three:
 					break;
-					
-				case "U+33U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt3);
+				case four:
 					break;
-					
-				case "U+34U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt4);
+				case five:
+					unspecificQuery(event);
 					break;
-					
-				case "U+35U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt5);
-					break;
-
-				case "U+36U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt6);
-					break;
-	
-				case "U+37U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt7);
-					break;
-					
-				case "U+38U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt8);
-					break;
-					
-				case "U+39U+20e3":
-					ticketInfo.put("layer" + count + "-" + channelId, opt9);
-					break;
+				}
 			}
 		}
+		
+		
+		
+		if (channelName.matches("ticket-[0-9]{4}")) {
+			P.print("[TicketAutoPrompter] Deploying ticket auto-responder to " + channelName + "...");
+			
+		}
+	}
+	
+	private static void unspecificQuery(GuildMessageReactionAddEvent event) {
+		String desc = "Tell us about your issue and we'll talk about it as soon as we can.\n" +
+				"Provide detailed information such as... \n\nWHAT: \nWHEN: \nWHO: \nWHERE: \nWHY: \nHOW: \n\n(Put \"N/A\" if you're unsure or if it's unapplicable.)\n";
+		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
+		
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setColor(0xFF8822);
+		embed.setTitle("What's up?");
+		embed.setDescription(desc);
+		embed.setFooter(footer);
+		embed.setAuthor("TetrabearMC <@5>");
+		P.send(event, embed.build());
 	}
 }

@@ -14,12 +14,14 @@ public class noDB_autofix {
 		//TODO Update newDB.
 		final String[] sqlite = {
 		"drop table members;",
+		"drop table autotickets;",
 		"drop table botsettings;",
 		"drop table cmdlog;",
 		"drop table errorlog;",
 		"drop table ticketlog;",
 		
 		"create table members (userid varchar(128) not null, usertag varchar(128) default null);",
+		"create table autotickets (userid varchar(128) null, path_id int, info1 varchar(512), info2 varchar(512), info3 varchar(512), info4 varchar(512);",
 		"create table botsettings (name varchar(128) not null, value varchar(256) default null, last_modified datetime, primary key(name));",
 		"create table cmdlog (id int not null, userid varchar(256), userquery varchar(1024), errorid varchar(128), eventdate datetime, primary key(id));",
 		"create table errorlog (err_type varchar(1024), err_stacktrace varchar(65535), eventdate datetime, appver varchar(32));",
