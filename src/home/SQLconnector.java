@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.filechooser.FileSystemView;
@@ -334,6 +335,8 @@ public class SQLconnector {
 				writer.close();
 				
 				P.print("lazyjavie_token.txt was created automatically. Please enter your bot token and password here: " + ps_dir);
+				P.print("[!] This console will automatically close in 30 seconds... [!]");
+				TimeUnit.SECONDS.sleep(30);
 				System.exit(0);
 			} catch (Exception e2) {}
 			
