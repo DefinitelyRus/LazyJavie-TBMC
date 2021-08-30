@@ -49,7 +49,7 @@ public class NewMemberPrompter extends ListenerAdapter{
 		 * 1 second may not be enough in case of sudden connection issues so
 		 * the above-mentioned issue may still occur.
 		 */
-		try {TimeUnit.MILLISECONDS.sleep(200);} catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		try {TimeUnit.MILLISECONDS.sleep(400);} catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 		
 		//Gets the most recent message (a list containing 1 item) then deletes it.
 		List<Message> msg = channel.getHistory().retrievePast(1).complete();
