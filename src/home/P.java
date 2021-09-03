@@ -2,6 +2,7 @@ package home;
 
 import java.util.List;
 
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 
@@ -67,5 +68,9 @@ public class P {
 		} else if (message instanceof MessageEmbed) {
 			event.getChannel().sendMessage((MessageEmbed) message).queue();
 		}
+	}
+	
+	public static void delete(Message message) {
+		message.delete().queue();
 	}
 }
