@@ -42,6 +42,7 @@ public class Returns extends ListenerAdapter{
 		
 		//Initialization
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
+		String argsFull = event.getMessage().getContentRaw();
 		String requestby = null;
 		boolean isAdmin = event.getMember().hasPermission(Permission.ADMINISTRATOR);
 		
@@ -51,6 +52,7 @@ public class Returns extends ListenerAdapter{
 		if (args[0].equalsIgnoreCase(Bot.prefix + "bottoken")) {
 			P.print("\n[Returns] Requesting bot token: " + requestby);
 			event.getChannel().sendMessage("Bot token: ||Never gonna give you up~ Never gonna let you down~||").queue();
+			return;
 		}
 		
 		//[PING] Returns the latency.---------------------------------------------------------------------------
@@ -66,6 +68,7 @@ public class Returns extends ListenerAdapter{
 			embed.setDescription("Pong: **" +ping+ "ms**");
 			embed.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 			event.getChannel().sendMessage(embed.build()).queue();
+			return;
 		}
 		
 		//[TEST] Just returns a confirmation message to see if the bot works.-----------------------------------
@@ -79,6 +82,7 @@ public class Returns extends ListenerAdapter{
 			embed.setFooter("Requested by " + requestby , event.getMember().getUser().getAvatarUrl());
 			
 			P.send(event, embed.build());
+			return;
 		}
 		
 		//[SPAMCONSOLE] Continually sends "SPAM!" to the console 100 times.
@@ -87,6 +91,12 @@ public class Returns extends ListenerAdapter{
 			event.getChannel().sendMessage("Spamming console...").queue();
 			P.print("");
 			for (int i = 0; i < 100; i++) {P.print("SPAM!");}
+			return;
+		}
+		
+		else if (args[0].equalsIgnoreCase(Bot.prefix + "cmd") && isAdmin) {
+			P.print(requestby + ": " + argsFull.replace(Bot.prefix + "cmd ", ""));
+			return;
 		}
 		
 		//[HIDDENPING] Pings someone without message residue.
@@ -139,6 +149,7 @@ public class Returns extends ListenerAdapter{
 			List<Message> msgs = channel.getHistory().retrievePast(1).complete();
 			msgs.forEach((m) -> m.delete().queue());
 			P.print("Message deleted. " + member.getUser().getAsTag() + " was spooked successfully.");
+			return;
 		}
 		
 		//TODO Create a help class which contains proper functions for command-specific instructions.
