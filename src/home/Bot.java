@@ -5,16 +5,14 @@ import java.io.FileNotFoundException;
 import java.util.EnumSet;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-
 import javax.security.auth.login.LoginException;
 import javax.swing.filechooser.FileSystemView;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import commands.NewMemberPrompter;
 import commands.Quit;
 import commands.Returns;
+import commands.TicketAutoPrompter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -91,7 +89,7 @@ public class Bot {
 			//[IMPORTANT] Add new commands here.
 			jda.addEventListener(new Quit());
 			jda.addEventListener(new Returns());	
-			//jda.addEventListener(new TicketAutoPrompter()); //Removed temporarily.
+			jda.addEventListener(new TicketAutoPrompter()); //Removed temporarily.
 			jda.addEventListener(new NewMemberPrompter());
 			
 			P.print("Ready!");
