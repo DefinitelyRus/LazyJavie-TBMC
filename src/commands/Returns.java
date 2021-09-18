@@ -31,7 +31,6 @@ import home.SQLconnector;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -44,7 +43,7 @@ public class Returns extends ListenerAdapter{
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		String argsFull = event.getMessage().getContentRaw();
 		String requestby = null;
-		boolean isAdmin = event.getMember().hasPermission(Permission.ADMINISTRATOR);
+		boolean isAdmin = event.getMember().hasAccess(event.getGuild().getGuildChannelById(Bot.modRoomId));
 		
 		if (args[0].startsWith(Bot.prefix)) {requestby = event.getMember().getUser().getAsTag();}
 		
@@ -149,6 +148,41 @@ public class Returns extends ListenerAdapter{
 			List<Message> msgs = channel.getHistory().retrievePast(1).complete();
 			msgs.forEach((m) -> m.delete().queue());
 			P.print("Message deleted. " + member.getUser().getAsTag() + " was spooked successfully.");
+			return;
+		}
+		
+		//[TOGGLE TICKET RESPONSE] (Temporary)
+		else if (args[0].equalsIgnoreCase(Bot.prefix + "toggleTicketResponse")) {
+			P.print("\n[Returns] Toggle ticket response request by " + requestby);
+			if (Bot.ticketsEnabled) Bot.ticketsEnabled = false;
+			else Bot.ticketsEnabled = true;
+			return;
+		}
+		
+		//[CLEAN] Cleans the rules channel of any residue from failed deletions.
+		else if (args[0].equalsIgnoreCase(Bot.prefix + "clean")) {
+			P.print("\n[Returns] Clean request by " + requestby);
+			String targetChannelID = SQLconnector.get("select * from botsettings where name = 'automention_on_join_channel_id'", "value", false);
+			List<Message> history = event.getGuild().getTextChannelById(targetChannelID).getHistory().retrievePast(5).complete();
+			for (Message m : history) {if (m.getContentRaw().startsWith("<@NMP>")) m.delete().queue(); break;}
+			return;
+		}
+		
+		//[RICKROLL] hehe
+		else if (args[0].equalsIgnoreCase(Bot.prefix + "rickroll") && isAdmin) {
+			P.print("\n[Returns] Rickroll request by " + requestby);
+			String userId;
+			try {userId = args[1];}
+			catch (Exception e) {return;}
+			
+			userId = userId.replace("<", "");
+			userId = userId.replace(">", "");
+			userId = userId.replace("@", "");
+			userId = userId.replace("!", "");
+			
+			//P.print(userId);
+			
+			P.send(event, "||" + event.getGuild().getMemberById(userId).getUser().getAsMention() + "Never gonna give you up~ Never gonna let you down~ Never gonna run around and desert you~||");
 			return;
 		}
 		
