@@ -38,7 +38,7 @@ public class NewMemberPrompter extends ListenerAdapter{
 		
 		//Creates a message that includes instructions for everyone in case the deletion doesn't work out as planned.
 		P.print("\n[NewMemberPrompter] New member detected. Prompting " + member.getUser().getAsTag() + "...");
-		channel.sendMessage(member.getAsMention() + ", if you see this, please read the rules. If this message doesn't get deleted, tell a staff member.").queue();
+		channel.sendMessage("<@NMP> " + member.getAsMention() + ", if you see this, please read the rules. If this message doesn't get deleted, tell a staff member.").queue();
 		P.print("|Member mentioned in #" + channel.getName() + ". Deleting message...");
 		
 		/* 
@@ -49,7 +49,7 @@ public class NewMemberPrompter extends ListenerAdapter{
 		 * 1 second may not be enough in case of sudden connection issues so
 		 * the above-mentioned issue may still occur.
 		 */
-		try {TimeUnit.MILLISECONDS.sleep(400);} catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 		
 		//Gets the most recent message (a list containing 1 item) then deletes it.
 		List<Message> msg = channel.getHistory().retrievePast(1).complete();
