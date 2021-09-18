@@ -5,10 +5,13 @@ import java.io.FileNotFoundException;
 import java.util.EnumSet;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+
 import javax.security.auth.login.LoginException;
 import javax.swing.filechooser.FileSystemView;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import commands.NewMemberPrompter;
 import commands.Quit;
 import commands.Returns;
@@ -16,7 +19,6 @@ import commands.TicketAutoPrompter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -34,6 +36,8 @@ public class Bot {
 	public static String prefix = "$";
 	public static Object currentChannel;
 	public static boolean muted = false;
+	public static boolean ticketsEnabled = false;
+	public static String modRoomId = "821027416607555615";
 	
 	public static boolean start() {
 		try {
@@ -83,7 +87,7 @@ public class Bot {
 			
 			P.print("|Setting status...");
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
-			jda.getPresence().setActivity(Activity.listening("to Rick Astley - Never Gonna Give You Up"));
+			//jda.getPresence().setActivity(Activity.listening("to Rick Astley - Never Gonna Give You Up"));
 			
 			P.print("|Opening to commands...");
 			//[IMPORTANT] Add new commands here.
