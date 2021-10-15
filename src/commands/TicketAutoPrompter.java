@@ -128,7 +128,6 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			for (MessageEmbed MeEm : embeds) {coords = MeEm.getAuthor().getName().replace("TetrabearMC ", "");}
 			//Yes I went with that name (MeEm) just because it's funny.
 			
-			P.print(emoteCodePoint);
 			/*
 			 * INSTRUCTIONS:
 			 * For those reading through this mess of a workaround, good luck, but here's some instructions to help you.
@@ -143,27 +142,28 @@ public class TicketAutoPrompter extends ListenerAdapter {
 				P.delete(m);
 				switch (emoteCodePoint) {
 				
-				//[@1] Path newJoin
+				//To [@1] Path newJoin
 				case cp1:
 					newJoin(event);
 					break;
 					
-				//[@2] Path lostItem
+				//To [@2] Path lostItem
 				case cp2:
 					lostItem(event);
 					break;
 				
-				//[@3] Path griefTheft
+				//To [@3] Path griefTheft
 				case cp3:
 					griefTheft(event);
 					break;
 					
-				//[@4] Path cantConnect
+				//To [@4] Path cantConnect
 				case cp4:
 					cantConnect(event);
 					break;
 					
-				//[@5] Path unspecificQuery
+				//To [@5] Path unspecificQuery
+				//END
 				case cp5:
 					unspecificQuery(event);
 					break;
@@ -177,25 +177,26 @@ public class TicketAutoPrompter extends ListenerAdapter {
 				if (coords.equals("<@1>")) {
 					switch (emoteCodePoint) {
 					
-					//[@1-1] Path nonPremiun
+					//To [@1-1] Path nonPremiun
 					case cp1:
 						P.delete(m);
 						nonPremium(event);
 						break;
 						
-					//[@1-2] TODO Path badIp
+					//To [@1-2] TODO Path badIp
 					case cp2:
 						P.delete(m);
 						badIp(event);
 						break;
 					
-					//[@1-3] TODO Path discordNotLinked
+					//To [@1-3] TODO Path discordNotLinked
 					case cp3:
 						P.delete(m);
 						discordNotLinked(event);
 						break;
 						
-					//[@1-4] TODO Path otherBadConn
+					//To [@1-4] Path otherBadConn
+					//END
 					case cp4:
 						P.delete(m);
 						unspecificQuery(event);
@@ -203,39 +204,43 @@ public class TicketAutoPrompter extends ListenerAdapter {
 					}
 				}
 				
-				//TODO @1-1
+				//@1-1
 				else if (coords.startsWith("<@1-1")) {
 					
 					//[@1-1] Path nonPremium		--------------------------------------------------
 					if (coords.equals("<@1-1>")) {
 						switch (emoteCodePoint) {
 						
-						//[@1-1-1] Path needWhitelist		-------------------------
+						//To [@1-1-1] Path needWhitelist		-------------------------
 						case cp1:
 							P.delete(m);
 							needWhitelist(event);
+							return;
+						
+						//To [@1-1-2] Path allDone1				-------------------------
+						//END
+						case cp2:
+							P.delete(m);
+							P.send(event, "All good then! You may now close the ticket.");
+							return;
+						
+						//To [@1-1-3] Path otherCantJoin		-------------------------
+						//END
+						case cp3:
+							P.delete(m);
+							unspecificQuery(event);
 							return;
 						}
 					}
 					
 					//[@1-1-1] Path needWhitelist	-------------------------
-					//DONE
+					//END
 					else if (coords.equals("<@1-1-1>")) {
 						if (emoteCodePoint.equals(cpCheck)) {
 							P.delete(m);
-							P.send(event, "The <@&311398364237266945> will be assisting you as soon as possible. Please remain patient.");
+							P.send(event, "The " + Bot.modRoleAsTag + " will be assisting you as soon as possible. Please remain patient.");
 							return;
 						}
-					}
-
-					//[@1-1-2] Path allDone1		-------------------------
-					else if (coords.startsWith("<@1-1-2")) {
-						
-					}
-
-					//[@1-1-3] Path otherCantJoin	-------------------------
-					else if (coords.startsWith("<@1-1-3")) {
-						
 					}
 				}
 				
@@ -244,7 +249,27 @@ public class TicketAutoPrompter extends ListenerAdapter {
 
 					//[@1-2] Path badIp				--------------------------------------------------
 					if (coords.equals("<@1-2>")) {
+						switch (emoteCodePoint) {
 						
+						//To [@1-2-1] Path allDone2
+						//END
+						case cp1:
+							P.delete(m);
+							P.send(event, "All good then! You may now close the ticket.");
+							return;
+						
+						//To [@1-2-2] Path clientIssue
+						case cp2:
+							P.delete(m);
+							//TODO clientIssue(event);
+							return;
+							
+						//To [@1-2-3] Path otherError
+						case cp3:
+							P.delete(m);
+							//TODO otherError(event);
+							return;
+						}
 					}
 				}
 				
@@ -253,7 +278,32 @@ public class TicketAutoPrompter extends ListenerAdapter {
 
 					//[@1-3] Path discordNotLinked	--------------------------------------------------
 					if (coords.equals("<@1-3>")) {
+						switch (emoteCodePoint) {
 						
+						//To [@1-3-1] Path followedInstructions
+						case cp1:
+							P.delete(m);
+							//TODO followedInstructions(event);
+							return;
+						
+						//To [@1-3-2] Path clientIssue
+						case cp2:
+							P.delete(m);
+							//TODO
+							return;
+						
+						//To [@1-3-3] botNotWorking
+						case cp3:
+							P.delete(m);
+							//TODO
+							return;
+						
+						//To [@1-3-4] otherLinkFail
+						case cp4:
+							P.delete(m);
+							//TODO
+							return;
+						}
 					}
 				}
 				
@@ -582,7 +632,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 	private static void griefTheft(GuildMessageReactionAddEvent event) {
 		String desc = "\n" + 
 				"Press :one: if you were **killed without consent**.\n\n" +
-				"Press :two: if a **structure you built was damaged or altered** significantly without permission.\n\n" +
+				"Press :two: if a **structure you built was damaged or altered** significantly without your permission.\n\n" +
 				"Press :three: if you think **you've been stolen from.**\n\n" +
 				"Press :four: if it's **none of the above.**\n";
 		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
