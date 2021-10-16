@@ -36,7 +36,7 @@ public class Bot {
 	public static String prefix = "$";
 	public static Object currentChannel;
 	public static boolean muted = false;
-	public static boolean ticketsEnabled = false;
+	public static boolean ticketsEnabled = true;
 	public static String modRoomId = "744082635495702612";
 	public static String modRoleAsTag = "<@&311398364237266945>"; //Temp; retrieve from SQL.
 	
