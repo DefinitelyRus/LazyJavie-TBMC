@@ -136,8 +136,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			 * n is the path the member has taken, this is for every path resulting in different outputs.
 			 */
 			
-			//[@0]		----------------------------------------------------------------------------------------------------
-			//DONE
+			//From [@0]		----------------------------------------------------------------------------------------------------
 			if (coords.equals("<@0>")) {
 				P.delete(m);
 				switch (emoteCodePoint) {
@@ -170,10 +169,10 @@ public class TicketAutoPrompter extends ListenerAdapter {
 				}
 			}
 			
-			//[@1]		----------------------------------------------------------------------------------------------------
+			//From [@1...]		----------------------------------------------------------------------------------------------------
 			else if (coords.startsWith("<@1")) {
 				
-				//[@1] Path newJoin				--------------------------------------------------
+				//From [@1] Path newJoin				--------------------------------------------------
 				if (coords.equals("<@1>")) {
 					switch (emoteCodePoint) {
 					
@@ -204,10 +203,10 @@ public class TicketAutoPrompter extends ListenerAdapter {
 					}
 				}
 				
-				//@1-1
+				//From [@1-1...]
 				else if (coords.startsWith("<@1-1")) {
 					
-					//[@1-1] Path nonPremium		--------------------------------------------------
+					//From [@1-1] Path nonPremium		--------------------------------------------------
 					if (coords.equals("<@1-1>")) {
 						switch (emoteCodePoint) {
 						
@@ -233,7 +232,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 						}
 					}
 					
-					//[@1-1-1] Path needWhitelist	-------------------------
+					//To [@1-1-1] Path needWhitelist	-------------------------
 					//END
 					else if (coords.equals("<@1-1-1>")) {
 						if (emoteCodePoint.equals(cpCheck)) {
@@ -244,10 +243,10 @@ public class TicketAutoPrompter extends ListenerAdapter {
 					}
 				}
 				
-				//TODO @1-2
+				//From [@1-2...]
 				else if (coords.startsWith("<@1-2")) {
 
-					//[@1-2] Path badIp				--------------------------------------------------
+					//From [@1-2] Path badIp				--------------------------------------------------
 					if (coords.equals("<@1-2>")) {
 						switch (emoteCodePoint) {
 						
@@ -261,22 +260,22 @@ public class TicketAutoPrompter extends ListenerAdapter {
 						//To [@1-2-2] Path clientIssue
 						case cp2:
 							P.delete(m);
-							//TODO clientIssue(event);
+							clientIssue(event);
 							return;
 							
 						//To [@1-2-3] Path otherError
 						case cp3:
 							P.delete(m);
-							//TODO otherError(event);
+							otherError(event);
 							return;
 						}
 					}
 				}
 				
-				//TODO @1-3
+				//From [@1-3...] TODO
 				else if (coords.startsWith("<@1-3")) {
 
-					//[@1-3] Path discordNotLinked	--------------------------------------------------
+					//From [@1-3] Path discordNotLinked	--------------------------------------------------
 					if (coords.equals("<@1-3>")) {
 						switch (emoteCodePoint) {
 						
@@ -307,50 +306,53 @@ public class TicketAutoPrompter extends ListenerAdapter {
 					}
 				}
 				
-				//TODO @1-4
+				//From [@1-4...] TODO
 				else if (coords.startsWith("<@1-4")) {
 
-					//[@1-4] Path otherBadConn		--------------------------------------------------
+					//From [@1-4] Path otherBadConn		--------------------------------------------------
 					if (coords.equals("<@1-4>")) {
 						
 					}
 				}
 			}
 			
+			//From [@2...]
 			else if (coords.startsWith("<@2")) {
 				
-				//[@2] Path lostItem				--------------------------------------------------
+				//From [@2] Path lostItem				--------------------------------------------------
 				if (coords.equals("<@2>")) {
 					P.delete(m);
 				}
 
-				//[@2-1] Path deathLost				-------------------------
+				//From [@2-1] Path deathLost				-------------------------
 				else if (coords.startsWith("<@2-1")) {
 					
 				}
 
-				//[@2-2] Path deathLost				-------------------------
+				//From [@2-2] Path deathLost				-------------------------
 				else if (coords.startsWith("<@2-2")) {
 					
 				}
 
-				//[@2-3] Path deathLost				-------------------------
+				//From [@2-3] Path deathLost				-------------------------
 				else if (coords.startsWith("<@2-3")) {
 					
 				}
 			}
 			
+			//From [@3...]
 			else if (coords.startsWith("<@3")) {
 
-				//[@3] Path griefTheft				--------------------------------------------------
+				//From [@3] Path griefTheft				--------------------------------------------------
 				if (coords.equals("<@3>")) {
 					P.delete(m);
 				}
 			}
 			
+			//From [@4...]
 			else if (coords.startsWith("@<4")) {
 				
-				//[@4] cantConnect					--------------------------------------------------
+				//From [@4] cantConnect					--------------------------------------------------
 				if (coords.equals("<@4>")) {
 					P.delete(m);
 				}
@@ -381,7 +383,9 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1>")) {
 				try {
@@ -429,11 +433,13 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		
 		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 		
-		List<Message> history = event.getChannel().getHistory().retrievePast(100).complete();
+		List<Message> history = event.getChannel().getHistory().retrievePast(50).complete();
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
 				try {
@@ -475,7 +481,9 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1-1>")) {
 				try {
@@ -486,8 +494,95 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			}
 		}
 	}
+
 	//[@1-2] badIp
 	private static void badIp(GuildMessageReactionAddEvent event) {
+		String desc = "`tetrabear.leanghosting.com` or `play.tetrabear.xyz:32115`\n\n" + 
+				"Press :one: if you are now **able to join**.\n\n" +
+				"Press :two: if you are **still unable to join**.\n\n" +
+				"Press :three: if it **shows a different error code**.\n";
+		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
+		
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setColor(color);
+		embed.setTitle("Try these IP addresses!");
+		embed.setDescription(desc);
+		embed.setFooter(footer);
+		embed.setAuthor("TetrabearMC <@1-2>");
+		P.send(event, embed.build());
+		
+		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		
+		List<Message> history = event.getChannel().getHistory().retrievePast(100).complete();
+		
+		for (Message m : history) {
+			String coords = null;
+			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
+				try {
+					//[@1-2-1] allDone1-2
+					m.addReaction(utf1).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+					
+					//[@1-2-2] clientIssue
+					m.addReaction(utf2).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+
+					//[@1-2-3] otherError
+					m.addReaction(utf3).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+			}
+		}
+	}
+	
+	//[@1-2-2] clientIssue
+	//TODO Collect a list of potential paths then add them here.
+	private static void clientIssue(GuildMessageReactionAddEvent event) {
+		String desc = "`tetrabear.leanghosting.com` or `play.tetrabear.xyz:32115`\n\n" + 
+				"Press :one: if you are now **able to join**.\n\n" +
+				"Press :two: if you are **still unable to join**.\n\n" +
+				"Press :three: if it **shows a different error code**.\n";
+		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
+		
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setColor(color);
+		embed.setTitle("Try these IP addresses!");
+		embed.setDescription(desc);
+		embed.setFooter(footer);
+		embed.setAuthor("TetrabearMC <@1-2>");
+		P.send(event, embed.build());
+		
+		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		
+		List<Message> history = event.getChannel().getHistory().retrievePast(100).complete();
+		
+		for (Message m : history) {
+			String coords = null;
+			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
+				try {
+					//[@1-2-1] allDone1-2
+					m.addReaction(utf1).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+					
+					//[@1-2-2] clientIssue
+					m.addReaction(utf2).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+
+					//[@1-2-3] otherError
+					m.addReaction(utf3).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+			}
+		}
+	}
+	
+	//[@1-2-3] otherError
+	//TODO A modified unspecificQuery() to ask for more technical details.
+	private static void otherError(GuildMessageReactionAddEvent event) {
 		String desc = "`tetrabear.leanghosting.com` or `play.tetrabear.xyz:32115`\n\n" + 
 				"Press :one: if you are now **able to join**.\n\n" +
 				"Press :two: if you are **still unable to join**.\n\n" +
@@ -557,7 +652,9 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
 				try {
@@ -700,7 +797,9 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
 				try {
