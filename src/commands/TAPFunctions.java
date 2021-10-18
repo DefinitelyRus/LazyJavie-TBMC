@@ -184,7 +184,7 @@ public class TAPFunctions {
 			String coords = null;
 			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
-			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2>")) {
 				try {
 					//[@1-2-1] allDone1-2
 					m.addReaction(utf1).queue();
@@ -205,10 +205,7 @@ public class TAPFunctions {
 	//[@1-2-2] clientIssue
 	//TODO Collect a list of potential paths then add them here.
 	protected static void clientIssue(GenericGuildMessageEvent event) {
-		String desc = "`tetrabear.leanghosting.com` or `play.tetrabear.xyz:32115`\n\n" + 
-				"Press :one: if you are now **able to join**.\n\n" +
-				"Press :two: if you are **still unable to join**.\n\n" +
-				"Press :three: if it **shows a different error code**.\n";
+		String desc = "";
 		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
 		
 		EmbedBuilder embed = new EmbedBuilder();
@@ -216,7 +213,7 @@ public class TAPFunctions {
 		embed.setTitle("Try these IP addresses!");
 		embed.setDescription(desc);
 		embed.setFooter(footer);
-		embed.setAuthor("TetrabearMC <@1-2>");
+		embed.setAuthor("TetrabearMC <@1-2-2>");
 		P.send(event, embed.build());
 		
 		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
@@ -227,7 +224,7 @@ public class TAPFunctions {
 			String coords = null;
 			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
-			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2-2>")) {
 				try {
 					//[@1-2-1] allDone1-2
 					m.addReaction(utf1).queue();
@@ -259,7 +256,7 @@ public class TAPFunctions {
 		embed.setTitle("Try these IP addresses!");
 		embed.setDescription(desc);
 		embed.setFooter(footer);
-		embed.setAuthor("TetrabearMC <@1-2>");
+		embed.setAuthor("TetrabearMC <@1-2-3>");
 		P.send(event, embed.build());
 		
 		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
@@ -270,7 +267,7 @@ public class TAPFunctions {
 			String coords = null;
 			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
-			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2-3>")) {
 				try {
 					//[@1-2-1] allDone1-2
 					m.addReaction(utf1).queue();
@@ -308,7 +305,7 @@ public class TAPFunctions {
 		embed.setTitle("Are you playing on a cracked account?");
 		embed.setDescription(desc);
 		embed.setFooter(footer);
-		embed.setAuthor("TetrabearMC <@1-1>");
+		embed.setAuthor("TetrabearMC <@1-3>");
 		P.send(event, embed.build());
 		
 		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
@@ -321,7 +318,7 @@ public class TAPFunctions {
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
-			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-3>")) {
 				try {
 					//[@1-3-1] followedInstructions
 					m.addReaction(utf1).queue();
@@ -338,6 +335,170 @@ public class TAPFunctions {
 					//[@1-3-4] otherLinkFail
 					m.addReaction(utf4).queue();
 					TimeUnit.MILLISECONDS.sleep(100);
+				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+			}
+		}
+	}
+
+	//[1-3-1] followedInstructions
+	//TODO A shows a checklist of instructions that passed.
+	//Give the user instructions how to accomplish that task.
+	//If the user is unable to do this task, call the staff.
+	protected static void followedInstructions(GenericGuildMessageEvent event) {
+		
+		String desc = "**Do the steps in #how-to-join first!**\n\n" + 
+				"Press :one: if you've **already followed the instructions** in #rules.\n\n" +
+				"Press :two: if `/discord link` **command isn't working**.\n\n" +
+				"Press :three: if you **sent @TetrabearMC** the 4-digit code, but **nothing happened**.\n\n" +
+				"Press :four: if it's **NONE of the above**.";
+		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
+		
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setColor(color);
+		embed.setTitle("Are you playing on a cracked account?");
+		embed.setDescription(desc);
+		embed.setFooter(footer);
+		embed.setAuthor("TetrabearMC <@1-3-1>");
+		P.send(event, embed.build());
+		
+		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		
+		List<Message> history = event.getChannel().getHistory().retrievePast(100).complete();
+		
+		for (Message m : history) {
+			String coords = null;
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-3-1>")) {
+				try {
+					//[@1-3-1] followedInstructions
+					m.addReaction(utf1).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+					
+					//[@1-3-2] commandNotWorking
+					m.addReaction(utf2).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+
+					//[@1-3-3] botNotWorking
+					m.addReaction(utf3).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+					
+					//[@1-3-4] otherLinkFail
+					m.addReaction(utf4).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+			}
+		}
+	}
+	
+	//[1-3-3] discordNotLinked
+	//TODO Checks if the DiscordSRV instruction-set is working.
+	//If online, tag the staff. Otherwise, tell them to try again and give an option to ask for help anyway.
+	protected static void botNotWorking(GenericGuildMessageEvent event) {
+		String desc = "";
+		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
+		
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setColor(color);
+		embed.setTitle("Are you playing on a cracked account?");
+		embed.setDescription(desc);
+		embed.setFooter(footer);
+		embed.setAuthor("TetrabearMC <@1-3-3>");
+		P.send(event, embed.build());
+		
+		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		
+		List<Message> history = event.getChannel().getHistory().retrievePast(100).complete();
+		
+		for (Message m : history) {
+			String coords = null;
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-3-3>")) {
+				try {
+					//[@1-3-1] followedInstructions
+					m.addReaction(utf1).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+					
+					//[@1-3-2] commandNotWorking
+					m.addReaction(utf2).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+
+					//[@1-3-3] botNotWorking
+					m.addReaction(utf3).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+					
+					//[@1-3-4] otherLinkFail
+					m.addReaction(utf4).queue();
+					TimeUnit.MILLISECONDS.sleep(100);
+				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+			}
+		}
+	}
+	
+	//[1-3-4] otherLinkFail
+	//TODO Similar to unspecifiedQuery, but tackles discord linking issues only.
+	protected static void otherLinkFail(GenericGuildMessageEvent event) {
+		String desc = "";
+		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
+		
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setColor(color);
+		embed.setTitle("Are you playing on a cracked account?");
+		embed.setDescription(desc);
+		embed.setFooter(footer);
+		embed.setAuthor("TetrabearMC <@1-3-4>");
+		P.send(event, embed.build());
+		
+		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		
+		List<Message> history = event.getChannel().getHistory().retrievePast(100).complete();
+		
+		for (Message m : history) {
+			String coords = null;
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-3-4>")) {
+				try {
+					m.addReaction(utfCheck).queue();
+				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+			}
+		}
+	}
+	
+	//[1-4] otherBadConn
+	//TODO Similar to unspecifiedQuery, but tackles connection issues only.
+	protected static void otherBadConn(GenericGuildMessageEvent event) {
+		String desc = "";
+		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
+		
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setColor(color);
+		embed.setTitle("Are you playing on a cracked account?");
+		embed.setDescription(desc);
+		embed.setFooter(footer);
+		embed.setAuthor("TetrabearMC <@1-4>");
+		P.send(event, embed.build());
+		
+		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		
+		List<Message> history = event.getChannel().getHistory().retrievePast(100).complete();
+		
+		for (Message m : history) {
+			String coords = null;
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-4>")) {
+				try {
+					m.addReaction(utfCheck).queue();
 				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 			}
 		}
@@ -382,7 +543,7 @@ public class TAPFunctions {
 					m.addReaction(utf3).queue();
 					TimeUnit.MILLISECONDS.sleep(100);
 					
-					//[@2-3] otherLost
+					//[@2-4] otherLost
 					m.addReaction(utf4).queue();
 					TimeUnit.MILLISECONDS.sleep(100);
 				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
@@ -453,7 +614,7 @@ public class TAPFunctions {
 		embed.setTitle("Can't join?");
 		embed.setDescription(desc);
 		embed.setFooter(footer);
-		embed.setAuthor("TetrabearMC <@1-1>");
+		embed.setAuthor("TetrabearMC <@4>");
 		P.send(event, embed.build());
 		
 		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
@@ -466,7 +627,7 @@ public class TAPFunctions {
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
-			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@4>")) {
 				try {
 					//[@1-1] nonPremium
 					m.addReaction(utf1).queue();
@@ -490,14 +651,15 @@ public class TAPFunctions {
 				} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
 			}
 		}
-				
 	}
 	
 	//[@5] unspecifiedQuery						---------------------------------------------------------------------------
 	protected static void unspecificQuery(GenericGuildMessageEvent event) {
 		String desc = "Tell us about your issue and we'll talk about it as soon as we can.\n" +
 				"Provide detailed information such as... \n" +
-				"\nWHAT: \nWHEN: \nWHO: \nWHERE: \nWHY: \nHOW: \n\n(Put \"N/A\" if you're unsure or if it's unapplicable.)\n";
+				"\nWHAT: \nWHEN: \nWHO: \nWHERE: \nWHY: \nHOW: \n" +
+				"\n(Put \"N/A\" if you're unsure or if it's unapplicable.)\n" +
+				"Press :white_check_mark: when you're done!\n";
 		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
 		
 		EmbedBuilder embed = new EmbedBuilder();
@@ -507,5 +669,21 @@ public class TAPFunctions {
 		embed.setFooter(footer);
 		embed.setAuthor("TetrabearMC <@5>");
 		P.send(event, embed.build());
+		
+		try {TimeUnit.MILLISECONDS.sleep(400);} catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+		
+		List<Message> history = event.getChannel().getHistory().retrievePast(100).complete();
+		
+		for (Message m : history) {
+			String coords = null;
+			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			
+			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@5>")) {
+				try {m.addReaction(utfCheck).queue();}
+				catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
+			}
+		}
 	}
 }

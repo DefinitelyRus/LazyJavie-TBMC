@@ -49,7 +49,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			embed.setAuthor("TetrabearMC <@0>");
 			MessageEmbed msgEmbed = embed.build();
 			
-			P.print("[\n[TicketAutoPrompter] Detected new ticket!");
+			P.print("\n[TicketAutoPrompter] Detected new ticket!");
 			P.print("|Sending root prompt...");
 			channel.sendMessage(msgEmbed).queue();
 			
@@ -110,10 +110,10 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		String channelId = event.getChannel().getId();
 		
 		//Console print if name matches, cancel if not.
-		if (channelName.matches("ticket-[0-9]{4}")) {P.print("[TicketAutoPrompter] Deploying ticket auto-responder to " + channelName + "...");}
+		if (channelName.matches("ticket-[0-9]{4}")) {P.print("\n[TicketAutoPrompter] Deploying ticket auto-responder to " + channelName + "...");}
 		else return;
 
-		
+		P.print("|Retrieving history...");
 		List<Message> msgHistory = Bot.jda.getTextChannelById(channelId).getHistory().retrievePast(100).complete();
 		for (Message m : msgHistory) {
 			
@@ -122,6 +122,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			if (!isSelf) continue;
 			
 			//Initialization
+			P.print("|Looking for coordinates...");
 			emoteCodePoint = event.getReactionEmote().getAsCodepoints();
 			List<MessageEmbed> embeds = m.getEmbeds();
 			for (MessageEmbed MeEm : embeds) {coords = MeEm.getAuthor().getName().replace("TetrabearMC ", "");}
@@ -141,6 +142,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			else if (coords.startsWith("<@2")) {pathLostItem(event, m);}
 			else if (coords.startsWith("<@3")) {pathGriefTheft(event, m);}
 			else if (coords.startsWith("<@4")) {pathCantConnect(event, m);}
+			else if (coords.startsWith("<@5")) {pathUnspecificQuery(event, m);}
 		}
 	}
 	
@@ -238,7 +240,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 				}
 			}
 			
-			//To [@1-1-1] Path needWhitelist	-------------------------
+			//From [@1-1-1] Path needWhitelist	-------------------------
 			//END
 			else if (coords.equals("<@1-1-1>")) {
 				if (emoteCodePoint.equals(cpCheck)) {
@@ -253,6 +255,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		else if (coords.startsWith("<@1-2")) {
 
 			//From [@1-2] Path badIp				--------------------------------------------------
+			//TODO Finish [@1-2-2]
 			if (coords.equals("<@1-2>")) {
 				switch (emoteCodePoint) {
 				
@@ -264,9 +267,12 @@ public class TicketAutoPrompter extends ListenerAdapter {
 					return;
 				
 				//To [@1-2-2] Path clientIssue
+				//TODO
 				case cp2:
 					P.delete(m);
-					TAPFunctions.clientIssue(event);
+					P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
+					TAPFunctions.unspecificQuery(event);
+					//TAPFunctions.clientIssue(event);
 					return;
 					
 				//To [@1-2-3] Path otherError
@@ -278,37 +284,44 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			}
 		}
 		
-		//From [@1-3...] TODO
+		//From [@1-3...]
 		else if (coords.startsWith("<@1-3")) {
 
 			//From [@1-3] Path discordNotLinked	--------------------------------------------------
+			//TODO Finish all [@1-3...] paths.
 			if (coords.equals("<@1-3>")) {
+				P.delete(m);
+				P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
+				TAPFunctions.unspecificQuery(event); return;
+				/*
 				switch (emoteCodePoint) {
 				
+				//!!!! Everything below this line in this block is unreachable for now. !!!!
 				//To [@1-3-1] Path followedInstructions
 				case cp1:
 					P.delete(m);
-					//TODO followedInstructions(event);
+					TAPFunctions.followedInstructions(event);
 					return;
 				
-				//To [@1-3-2] Path clientIssue
+				//To [@1-3-2] Path clientIssue (alias: [@1-2-2])
 				case cp2:
 					P.delete(m);
-					//TODO
+					TAPFunctions.clientIssue(event);
 					return;
 				
 				//To [@1-3-3] botNotWorking
 				case cp3:
 					P.delete(m);
-					//TODO
+					TAPFunctions.botNotWorking(event);
 					return;
 				
 				//To [@1-3-4] otherLinkFail
 				case cp4:
 					P.delete(m);
-					//TODO
+					TAPFunctions.otherLinkFail(event);
 					return;
 				}
+				*/
 			}
 		}
 		
@@ -317,7 +330,8 @@ public class TicketAutoPrompter extends ListenerAdapter {
 
 			//From [@1-4] Path otherBadConn		--------------------------------------------------
 			if (coords.equals("<@1-4>")) {
-				
+				P.delete(m);
+				TAPFunctions.otherBadConn(event);
 			}
 		}
 	}
@@ -326,22 +340,38 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		
 		//From [@2] Path lostItem				--------------------------------------------------
 		if (coords.equals("<@2>")) {
+			P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
 			P.delete(m);
+			TAPFunctions.unspecificQuery(event);
 		}
-
+		
+		//!!!! Everything below this line in this block is unreachable for now. !!!!
 		//From [@2-1] Path deathLost				-------------------------
+		//TODO
 		else if (coords.startsWith("<@2-1")) {
-			
+			P.delete(m);
+			//TAPFunctions.deathLost(event);
 		}
 
-		//From [@2-2] Path deathLost				-------------------------
+		//From [@2-2] Path crashLost				-------------------------
+		//TODO
 		else if (coords.startsWith("<@2-2")) {
-			
+			P.delete(m);
+			//TAPFunctions.crashLost(event);
 		}
 
-		//From [@2-3] Path deathLost				-------------------------
+		//From [@2-3] Path theftLost				-------------------------
+		//TODO
 		else if (coords.startsWith("<@2-3")) {
-			
+			P.delete(m);
+			//TAPFunctions.theftLost(event);
+		}
+		
+		//From [@2-4] Path theftLost				-------------------------
+		//TODO
+		else if (coords.startsWith("<@2-4")) {
+			P.delete(m);
+			//TAPFunctions.unspecificQuery(event);
 		}
 	}
 
@@ -349,14 +379,25 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		//From [@3] Path griefTheft				--------------------------------------------------
 		if (coords.equals("<@3>")) {
 			P.delete(m);
+			P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
+			TAPFunctions.unspecificQuery(event);
 		}
-		
 	}
 
 	private static void pathCantConnect(GenericGuildMessageEvent event, Message m) {
 		//From [@4] cantConnect					--------------------------------------------------
 		if (coords.equals("<@4>")) {
 			P.delete(m);
+			P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
+			TAPFunctions.unspecificQuery(event);
+		}
+	}
+
+	private static void pathUnspecificQuery(GenericGuildMessageEvent event, Message m) {
+		if (coords.equals("<@5>") && emoteCodePoint.equals(cpCheck)) {
+			P.delete(m);
+			P.send(event, "The " + Bot.modRoleAsTag + " will respond to you soon! *Please remain patient, **__this may take a while__.***");
+			return;
 		}
 	}
 }
