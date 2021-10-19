@@ -50,8 +50,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1>")) {
 				try {
 					//[@1-1] nonPremium
@@ -104,8 +106,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1>")) {
 				try {
 					//[@1-1-1] needWhitelist
@@ -148,8 +152,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-1-1>")) {
 				try {
 					//[@1-1-1 Done]
@@ -182,8 +188,12 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2>")) {
 				try {
 					//[@1-2-1] allDone1-2
@@ -222,8 +232,12 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2-2>")) {
 				try {
 					//[@1-2-1] allDone1-2
@@ -265,8 +279,12 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2-3>")) {
 				try {
 					//[@1-2-1] allDone1-2
@@ -316,8 +334,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-3>")) {
 				try {
 					//[@1-3-1] followedInstructions
@@ -369,8 +389,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-3-1>")) {
 				try {
 					//[@1-3-1] followedInstructions
@@ -416,8 +438,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-3-3>")) {
 				try {
 					//[@1-3-1] followedInstructions
@@ -462,8 +486,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-3-4>")) {
 				try {
 					m.addReaction(utfCheck).queue();
@@ -494,8 +520,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-4>")) {
 				try {
 					m.addReaction(utfCheck).queue();
@@ -527,8 +555,12 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@2>")) {
 				try {
 					//[@2-1] deathLost
@@ -574,8 +606,12 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
+			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@3>")) {
 				try {
 					//[@3-1] deathGrief
@@ -625,8 +661,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@4>")) {
 				try {
 					//[@1-1] nonPremium
@@ -678,8 +716,10 @@ public class TAPFunctions {
 			String coords = null;
 			
 			//The NULL check is necessary because lists always contain 1 null value in addition to its other contents.
+			P.print("|Retrieving coordinates...");
 			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
-			
+
+			P.print("|Attempting to add emote buttons...");
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@5>")) {
 				try {m.addReaction(utfCheck).queue();}
 				catch (Exception e) {SQLconnector.callError(e.toString(), ExceptionUtils.getStackTrace(e)); P.print(e.toString());}
