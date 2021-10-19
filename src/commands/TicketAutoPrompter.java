@@ -137,6 +137,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			 * x-y is a path inside x. x-y-z is a path inside y, which is inside x.
 			 */
 			
+			P.print("|From coords: " + coords.replace("<", "").replace(">", ""));
 			if (coords.equals("<@0>")) {P.delete(m); rootPath(event);}
 			else if (coords.startsWith("<@1")) {pathNewJoin(event, m);}
 			else if (coords.startsWith("<@2")) {pathLostItem(event, m);}
@@ -148,31 +149,42 @@ public class TicketAutoPrompter extends ListenerAdapter {
 	
 	//TODO Add JavaDoc
 	private static void rootPath(GenericGuildMessageEvent event) {
+		P.print("|From root...");
 		switch (emoteCodePoint) {
 		
 		//To [@1] Path newJoin
 		case cp1:
+			P.print("|To newJoin...");
+			Bot.ticketContext = "User's first time joining.";
 			TAPFunctions.newJoin(event);
 			break;
 			
 		//To [@2] Path lostItem
 		case cp2:
+			P.print("|To lostItem...");
+			Bot.ticketContext = "User lost item(s).";
 			TAPFunctions.lostItem(event);
 			break;
 		
 		//To [@3] Path griefTheft
 		case cp3:
+			P.print("|To griefTheft...");
+			Bot.ticketContext = "User got griefed or stolen from.";
 			TAPFunctions.griefTheft(event);
 			break;
 			
 		//To [@4] Path cantConnect
 		case cp4:
+			P.print("|To cantConnect...");
+			Bot.ticketContext = "User can't join the server.";
 			TAPFunctions.cantConnect(event);
 			break;
 			
 		//To [@5] Path unspecificQuery
 		//END
 		case cp5:
+			P.print("|To unpecificQuery...");
+			Bot.ticketContext = "User has a different issue.";
 			TAPFunctions.unspecificQuery(event);
 			break;
 		}
@@ -182,30 +194,39 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		
 		//From [@1] Path newJoin				--------------------------------------------------
 		if (coords.equals("<@1>")) {
+			P.print("|From newJoin...");
 			switch (emoteCodePoint) {
 			
 			//To [@1-1] Path nonPremiun
 			case cp1:
+				P.print("|To nonPremium...");
 				P.delete(m);
+				Bot.ticketContext = "Server is preventing user from joining as cracked client.";
 				TAPFunctions.nonPremium(event);
 				break;
 				
 			//To [@1-2] TODO Path badIp
 			case cp2:
+				P.print("|To badIp...");
 				P.delete(m);
+				Bot.ticketContext = "User has an issue with the IP.";
 				TAPFunctions.badIp(event);
 				break;
 			
 			//To [@1-3] TODO Path discordNotLinked
 			case cp3:
+				P.print("|To discordNotLinked...");
 				P.delete(m);
+				Bot.ticketContext = "User's discord account is not linked to their Minecraft account.";
 				TAPFunctions.discordNotLinked(event);
 				break;
 				
 			//To [@1-4] Path otherBadConn
-			//END
 			case cp4:
+				P.print("|To otherBadConn...");
 				P.delete(m);
+				Bot.ticketContext = "User has other connection problems.";
+				P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
 				TAPFunctions.unspecificQuery(event);
 				break;
 			}
@@ -216,17 +237,21 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			
 			//From [@1-1] Path nonPremium		--------------------------------------------------
 			if (coords.equals("<@1-1>")) {
+				P.print("|From nonPremium...");
 				switch (emoteCodePoint) {
 				
 				//To [@1-1-1] Path needWhitelist		-------------------------
 				case cp1:
+					P.print("|To needWhitelist...");
 					P.delete(m);
+					Bot.ticketContext = "User is on a cracked client and needs whitelisting.";
 					TAPFunctions.needWhitelist(event);
 					return;
 				
 				//To [@1-1-2] Path allDone1				-------------------------
 				//END
 				case cp2:
+					P.print("|To allDone1...");
 					P.delete(m);
 					P.send(event, "All good then! You may now close the ticket.");
 					return;
@@ -234,7 +259,9 @@ public class TicketAutoPrompter extends ListenerAdapter {
 				//To [@1-1-3] Path otherCantJoin		-------------------------
 				//END
 				case cp3:
+					P.print("|To otherCantJoin...");
 					P.delete(m);
+					Bot.ticketContext = "User has other problems when joining the server.";
 					TAPFunctions.unspecificQuery(event);
 					return;
 				}
@@ -243,9 +270,11 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			//From [@1-1-1] Path needWhitelist	-------------------------
 			//END
 			else if (coords.equals("<@1-1-1>")) {
+				P.print("|From needWhiteList...");
 				if (emoteCodePoint.equals(cpCheck)) {
+					P.print("Done!");
 					P.delete(m);
-					P.send(event, "The " + Bot.modRoleAsTag + " will be assisting you as soon as possible. Please remain patient.");
+					P.send(event, "The " + Bot.modRoleAsTag + " will be assisting you as soon as possible. Please remain patient.\n\n*Context: " + Bot.ticketContext + "*");
 					return;
 				}
 			}
@@ -257,19 +286,24 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			//From [@1-2] Path badIp				--------------------------------------------------
 			//TODO Finish [@1-2-2]
 			if (coords.equals("<@1-2>")) {
+				P.print("|From badIp...");
 				switch (emoteCodePoint) {
 				
 				//To [@1-2-1] Path allDone2
 				//END
 				case cp1:
+					P.print("|To allDone2...");
 					P.delete(m);
+					Bot.ticketContext = null;
 					P.send(event, "All good then! You may now close the ticket.");
 					return;
 				
 				//To [@1-2-2] Path clientIssue
 				//TODO
 				case cp2:
+					P.print("|To clientIssue...");
 					P.delete(m);
+					Bot.ticketContext = "User likely has a client-side issue.";
 					P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
 					TAPFunctions.unspecificQuery(event);
 					//TAPFunctions.clientIssue(event);
@@ -277,6 +311,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 					
 				//To [@1-2-3] Path otherError
 				case cp3:
+					P.print("|To otherError...");
 					P.delete(m);
 					TAPFunctions.otherError(event);
 					return;
@@ -290,7 +325,9 @@ public class TicketAutoPrompter extends ListenerAdapter {
 			//From [@1-3] Path discordNotLinked	--------------------------------------------------
 			//TODO Finish all [@1-3...] paths.
 			if (coords.equals("<@1-3>")) {
+				P.print("|From discordNotLinked...");
 				P.delete(m);
+				Bot.ticketContext = "User's discord account is not linked to their Minecraft account.";
 				P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
 				TAPFunctions.unspecificQuery(event); return;
 				/*
@@ -326,11 +363,14 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		}
 		
 		//From [@1-4...] TODO
+		//!!!! Unreachable !!!!
 		else if (coords.startsWith("<@1-4")) {
 
 			//From [@1-4] Path otherBadConn		--------------------------------------------------
 			if (coords.equals("<@1-4>")) {
+				P.print("|From otherBadConn...");
 				P.delete(m);
+				Bot.ticketContext = "User has other connection problems.";
 				TAPFunctions.otherBadConn(event);
 			}
 		}
@@ -340,8 +380,9 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		
 		//From [@2] Path lostItem				--------------------------------------------------
 		if (coords.equals("<@2>")) {
-			P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
+			P.print("|From lostItem...");
 			P.delete(m);
+			P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
 			TAPFunctions.unspecificQuery(event);
 		}
 		
@@ -349,6 +390,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		//From [@2-1] Path deathLost				-------------------------
 		//TODO
 		else if (coords.startsWith("<@2-1")) {
+			P.print("|To deathLost...");
 			P.delete(m);
 			//TAPFunctions.deathLost(event);
 		}
@@ -356,6 +398,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		//From [@2-2] Path crashLost				-------------------------
 		//TODO
 		else if (coords.startsWith("<@2-2")) {
+			P.print("|To crashLost...");
 			P.delete(m);
 			//TAPFunctions.crashLost(event);
 		}
@@ -363,13 +406,15 @@ public class TicketAutoPrompter extends ListenerAdapter {
 		//From [@2-3] Path theftLost				-------------------------
 		//TODO
 		else if (coords.startsWith("<@2-3")) {
+			P.print("|To theftLost...");
 			P.delete(m);
 			//TAPFunctions.theftLost(event);
 		}
 		
-		//From [@2-4] Path theftLost				-------------------------
+		//From [@2-4] Path otherLost				-------------------------
 		//TODO
 		else if (coords.startsWith("<@2-4")) {
+			P.print("|To otherLost...");
 			P.delete(m);
 			//TAPFunctions.unspecificQuery(event);
 		}
@@ -378,6 +423,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 	private static void pathGriefTheft(GenericGuildMessageEvent event, Message m) {
 		//From [@3] Path griefTheft				--------------------------------------------------
 		if (coords.equals("<@3>")) {
+			P.print("|From griefTheft...");
 			P.delete(m);
 			P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
 			TAPFunctions.unspecificQuery(event);
@@ -387,6 +433,7 @@ public class TicketAutoPrompter extends ListenerAdapter {
 	private static void pathCantConnect(GenericGuildMessageEvent event, Message m) {
 		//From [@4] cantConnect					--------------------------------------------------
 		if (coords.equals("<@4>")) {
+			P.print("|From cantConnect...");
 			P.delete(m);
 			P.print("Developer Note: This is temporary. This should perform another function but this should serve as a temporary placeholder.");
 			TAPFunctions.unspecificQuery(event);
@@ -395,8 +442,11 @@ public class TicketAutoPrompter extends ListenerAdapter {
 
 	private static void pathUnspecificQuery(GenericGuildMessageEvent event, Message m) {
 		if (coords.equals("<@5>") && emoteCodePoint.equals(cpCheck)) {
+			P.print("|From unspecificQuery...");
 			P.delete(m);
-			P.send(event, "The " + Bot.modRoleAsTag + " will respond to you soon! *Please remain patient, **__this may take a while__.***");
+			P.send(event, "The " + Bot.modRoleAsTag + " will respond to you soon! *Please remain patient, **__this may take a while__.***" +
+			"\n\n*Context: " + Bot.ticketContext + "*");
+			P.print("Done!");
 			return;
 		}
 	}
