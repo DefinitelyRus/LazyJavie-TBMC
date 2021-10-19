@@ -39,6 +39,7 @@ public class Bot {
 	public static boolean ticketsEnabled = true;
 	public static String modRoomId = "744082635495702612";
 	public static String modRoleAsTag = "<@&311398364237266945>"; //Temp; retrieve from SQL.
+	public static String ticketContext = null;
 	
 	public static boolean start() {
 		try {
