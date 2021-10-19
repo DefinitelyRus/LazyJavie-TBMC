@@ -182,7 +182,7 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2>")) {
 				try {
@@ -222,7 +222,7 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2-2>")) {
 				try {
@@ -265,7 +265,7 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@1-2-3>")) {
 				try {
@@ -298,7 +298,7 @@ public class TAPFunctions {
 				"Press :four: if it's **NONE of the above**.";
 		String footer = "PLEASE BE PATIENT! DO NOT @mention unless absolutely necessary.";
 		
-		if (!isMember) desc = desc + "\n**IMPORTANT:**\nDo step 1 in #how-to-join first. You **need** this in order to proceed.\n";
+		if (!isMember) desc = desc + "\n\n**IMPORTANT:**\nDo step 1 in #how-to-join first. You **need** this in order to proceed.\n";
 		
 		EmbedBuilder embed = new EmbedBuilder();
 		embed.setColor(color);
@@ -527,7 +527,7 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@2>")) {
 				try {
@@ -574,7 +574,7 @@ public class TAPFunctions {
 		
 		for (Message m : history) {
 			String coords = null;
-			for (MessageEmbed em : m.getEmbeds()) {coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
+			for (MessageEmbed em : m.getEmbeds()) {if (em.getAuthor() != null) coords = em.getAuthor().getName().replace("TetrabearMC ", "");}
 			
 			if (m.getMember().getId().equals(Bot.jda.getSelfUser().getId()) && coords.equals("<@3>")) {
 				try {
