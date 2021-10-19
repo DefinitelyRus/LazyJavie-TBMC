@@ -27,7 +27,7 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 public class Bot {
 	
 	//Initialization of user-coded objects and variables
-	public static final String VERSION = "LazyJavie v2.0 ALPHA";
+	public static final String VERSION = "LazyJavie v2.1 - TBMC Edition ALPHA";
 	public static JDA jda;
 	
 	//Variables changeable via commands.
